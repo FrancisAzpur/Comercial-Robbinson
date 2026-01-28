@@ -150,7 +150,8 @@ body {
 .card-img-top {
     width: 100%;
     height: 100%;
-    object-fit: contain; /* Las imágenes se mantienen completas sin recortar */
+    object-fit: contain;
+    /* Las imágenes se mantienen completas sin recortar */
     transition: transform 0.6s ease;
 }
 
