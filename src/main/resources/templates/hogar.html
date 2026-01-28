@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -219,33 +219,29 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="#">Comercial Robinson</a>
+            <a class="navbar-brand" th:href="@{/}">Comercial Robinson</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" th:href="@{/}">Inicio</a>
+                        <a class="nav-link" th:href="@{/}">Inicio</a>
                     </li>
-                
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/hogar}">Hogar</a>
+                        <a class="nav-link active" th:href="@{/hogar}">Hogar</a>
                     </li>
-                
                     <li class="nav-item">
-                        <a class="nav-link" href="/electrodomesticos">Electrodomésticos</a>
+                        <a class="nav-link" th:href="@{/electrodomesticos}">Electrodomésticos</a>
                     </li>
-                
                     <li class="nav-item">
-                        <a class="nav-link" href="#productos">Productos</a>
+                        <a class="nav-link" href="/#productos">Productos</a>
                     </li>
-                
                     <li class="nav-item">
-                        <a class="nav-link" href="/contacto">Contacto</a>
+                        <a class="nav-link" th:href="@{/contacto}">Contacto</a>
                     </li>
                     <li class="nav-item ms-3">
-                        <a class="nav-link" href="#"><i class="fas fa-shopping-cart me-2"></i>Carrito (0)</a>
+                        <a class="nav-link" href="#"><i class="fas fa-shopping-cart me-2"></i>Carrito (<span class="cart-count">0</span>)</a>
                     </li>
                 </ul>
             </div>
@@ -292,12 +288,12 @@
                 <div class="col-sm-6 col-md-4 col-lg-3 product-item" data-category="menaje">
                     <div class="card product-card h-100">
                         <div class="image-container">
-                            <img src="img/sabanas1.webp" class="card-img-top" alt="Refrigerador">
+                            <img th:src="@{/img/sabanas1.webp}" class="card-img-top" alt="Juego de sábanas 200 hilos | 1 plaza">
                         </div>
                         <div class="card-body">
                             <h6 class="card-title">Juego de sábanas 200 hilos | 1 plaza</h6>
                             <p class="fw-bold text-danger">S/ 89</p>
-                            <button class="btn btn-agregar w-100">AGREGAR</button>
+                            <button class="btn btn-agregar w-100" onclick="agregarAlCarrito({id: 1, nombre: 'Juego de sábanas 200 hilos | 1 plaza', precio: 89})">AGREGAR</button>
                         </div>
                     </div>
                 </div>
@@ -305,12 +301,12 @@
                 <div class="col-sm-6 col-md-4 col-lg-3 product-item" data-category="menaje">
                     <div class="card product-card h-100">
                         <div class="image-container">
-                            <img src="img/sabana2.jpg" class="card-img-top" alt="Refrigerador">
+                            <img th:src="@{/img/sabana2.jpg}" class="card-img-top" alt="Juego de sábanas 200 hilos | 2 plazas">
                         </div>
                         <div class="card-body">
                             <h6 class="card-title">Juego de sábanas 200 hilos | 2 plazas</h6>
                             <p class="fw-bold text-danger">S/ 120</p>
-                            <button class="btn btn-agregar w-100">AGREGAR</button>
+                            <button class="btn btn-agregar w-100" onclick="agregarAlCarrito({id: 2, nombre: 'Juego de sábanas 200 hilos | 2 plazas', precio: 120})">AGREGAR</button>
                         </div>
                     </div>
                 </div>
