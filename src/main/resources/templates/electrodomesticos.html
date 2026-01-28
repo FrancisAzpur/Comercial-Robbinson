@@ -1,317 +1,73 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Electrodomésticos - Comercial Robinson</title>
-    
-    <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Google Fonts: Poppins -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- Animate.css -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-    
-    <!-- AOS para animaciones al scroll -->
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    
-    <!-- CSS Personalizado -->
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
-<body>
+<head th:replace="~{fragments/header :: head('Electrodomésticos')}"></head>
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg fixed-top">
-        <div class="container">
-            <a class="navbar-brand" href="/">Comercial Robinson</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="/">Inicio</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="/electrodomesticos">Electrodomésticos</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/hogar">Hogar</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/#productos">Productos</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/#contacto">Contacto</a></li>
-                    <li class="nav-item ms-3">
-                        <a class="nav-link" href="#"><i class="fas fa-shopping-cart me-2"></i>Carrito (<span class="cart-count">0</span>)</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+<body>
+    <!-- Header -->
+    <header th:replace="~{fragments/header :: header}"></header>
+
+    <!-- Margen superior para navbar fija -->
+    <div style="margin-top: 70px;">
 
     <!-- Header de Electrodomésticos -->
-    <section class="hero py-5" style="min-height: 50vh;">
+    <section class="hero py-2" style="min-height: 50vh;">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-12 text-center hero-content animate__animated animate__fadeInDown">
                     <h1 class="display-3 fw-bold">ELECTRODOMÉSTICOS</h1>
                     <p class="lead mb-4">Toda la tecnología para tu hogar en un solo lugar</p>
-                    <div class="d-flex justify-content-center gap-3 flex-wrap">
-                        <button class="btn btn-outline-light px-4" onclick="filtrarCategoria('todos')">Todos</button>
-                        <button class="btn btn-outline-light px-4" onclick="filtrarCategoria('refrigeracion')">Refrigeración</button>
-                        <button class="btn btn-outline-light px-4" onclick="filtrarCategoria('lavado')">Lavado</button>
-                        <button class="btn btn-outline-light px-4" onclick="filtrarCategoria('cocina')">Cocina</button>
-                        <button class="btn btn-outline-light px-4" onclick="filtrarCategoria('tv')">TV y Audio</button>
-                    </div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Catálogo de Productos -->
-    <section class="py-5 bg-light">
-        <div class="container">
-            <div class="row g-4" id="catalogo-productos">
-                <!-- Los productos se renderizarán aquí con JavaScript -->
-            </div>
+    <section class="container-fluid py-5">
+        <div class="row">
+            <!-- SIDEBAR -->
+            <aside class="col-md-3 col-lg-2 border-end bg-white p-4">
+                <h5 class="fw-bold mb-4">Electrodomésticos</h5>
+
+                <div class="mb-4">
+                    <h6 class="fw-semibold mb-2">Categorías</h6>
+                    <ul class="list-unstyled category-list">
+                        <li><button class="category-btn active" data-filter="all">Todos</button></li>
+                        <li><button class="category-btn" data-filter="refrigeracion">Refrigeración</button></li>
+                        <li><button class="category-btn" data-filter="lavado">Lavado</button></li>
+                        <li><button class="category-btn" data-filter="tv">TV y Audio</button></li>
+                        <li><button class="category-btn" data-filter="cocina">Cocina</button></li>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- PRODUCTOS -->
+            <main class="col-md-9 col-lg-10 p-4 bg-light">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="fw-bold">Electrodomésticos</h4>
+                    <select class="form-select w-auto">
+                        <option>Relevancia</option>
+                        <option>Menor precio</option>
+                        <option>Mayor precio</option>
+                    </select>
+                </div>
+
+                <div class="row g-4" id="catalogo-productos">
+                    <!-- Productos cargados dinámicamente -->
+                </div>
+            </main>
         </div>
     </section>
 
+    </div>
+
     <!-- Footer -->
-    <footer>
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-3 footer-section">
-                    <h5>Inicio</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="/">Inicio</a></li>
-                        <li><a href="/#contacto">Contacto</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-3 footer-section">
-                    <h5>Productos</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="/electrodomesticos">Electrodomésticos</a></li>
-                        <li><a href="/#productos">Productos Destacados</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-3 footer-section">
-                    <h5>Social media</h5>
-                    <div>
-                        <a href="https://facebook.com" class="social-icon"><i class="fab fa-facebook-f"></i></a>
-                        <a href="https://instagram.com" class="social-icon"><i class="fab fa-instagram"></i></a>
-                        <a href="https://twitter.com" class="social-icon"><i class="fab fa-twitter"></i></a>
-                    </div>
-                </div>
-                <div class="col-md-3 footer-section">
-                    <h5>Pago con método</h5>
-                    <div>
-                        <div class="payment-icon">VISA</div>
-                        <div class="payment-icon">MC</div>
-                        <div class="payment-icon">PP</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
 
     <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script th:src="@{/js/main.js}"></script>
+    <div th:replace="~{fragments/footer :: scripts}"></div>
     
-    <script>
-        // Catálogo completo de productos
-        const productosCompletos = [
-            // Refrigeración
-            {
-                id: 1,
-                nombre: 'Refrigerador No Frost 420L',
-                precio: 2899,
-                categoria: 'refrigeracion',
-                imagen: '/img/refrigerador.webp',
-                descripcion: 'Eficiencia A++'
-            },
-            {
-                id: 4,
-                nombre: 'Refrigerador Side by Side 600L',
-                precio: 4599,
-                categoria: 'refrigeracion',
-                imagen: 'https://via.placeholder.com/280x280/4a90e2/ffffff?text=Refrigerador+600L',
-                descripcion: 'Dispensador de agua y hielo'
-            },
-            {
-                id: 5,
-                nombre: 'Congeladora Vertical 250L',
-                precio: 1899,
-                categoria: 'refrigeracion',
-                imagen: 'https://via.placeholder.com/280x280/50c878/ffffff?text=Congeladora+250L',
-                descripcion: 'Ahorro energético'
-            },
-            
-            // Lavado
-            {
-                id: 2,
-                nombre: 'Lavadora 10kg Inverter',
-                precio: 1799,
-                categoria: 'lavado',
-                imagen: '/img/lavadora_inverter.webp',
-                descripcion: 'Silenciosa y eficiente'
-            },
-            {
-                id: 6,
-                nombre: 'Lavadora-Secadora 12kg',
-                precio: 2999,
-                categoria: 'lavado',
-                imagen: 'https://via.placeholder.com/280x280/ff6b6b/ffffff?text=Lavadora+Secadora',
-                descripcion: '2 en 1, ahorra espacio'
-            },
-            {
-                id: 7,
-                nombre: 'Secadora 8kg',
-                precio: 1499,
-                categoria: 'lavado',
-                imagen: 'https://via.placeholder.com/280x280/ffd93d/333333?text=Secadora+8kg',
-                descripcion: 'Sensor de humedad'
-            },
-            
-            // TV y Audio
-            {
-                id: 3,
-                nombre: 'Smart TV OLED 55"',
-                precio: 4499,
-                categoria: 'tv',
-                imagen: '/img/tv_oled_55.avif',
-                descripcion: '4K UHD + HDR'
-            },
-            {
-                id: 8,
-                nombre: 'Smart TV 65" QLED',
-                precio: 5999,
-                categoria: 'tv',
-                imagen: 'https://via.placeholder.com/280x280/6c5ce7/ffffff?text=TV+65+QLED',
-                descripcion: 'Quantum Dot, 120Hz'
-            },
-            {
-                id: 9,
-                nombre: 'Soundbar 5.1 Dolby Atmos',
-                precio: 999,
-                categoria: 'tv',
-                imagen: 'https://via.placeholder.com/280x280/a8e6cf/333333?text=Soundbar+5.1',
-                descripcion: 'Audio envolvente'
-            },
-            
-            // Cocina
-            {
-                id: 10,
-                nombre: 'Cocina a Gas 6 Hornillas',
-                precio: 1299,
-                categoria: 'cocina',
-                imagen: 'https://via.placeholder.com/280x280/ff8b94/ffffff?text=Cocina+6+Hornillas',
-                descripcion: 'Acero inoxidable'
-            },
-            {
-                id: 11,
-                nombre: 'Horno Microondas 28L',
-                precio: 499,
-                categoria: 'cocina',
-                imagen: 'https://via.placeholder.com/280x280/95e1d3/333333?text=Microondas+28L',
-                descripcion: 'Grill + convección'
-            },
-            {
-                id: 12,
-                nombre: 'Licuadora Industrial 2L',
-                precio: 349,
-                categoria: 'cocina',
-                imagen: 'https://via.placeholder.com/280x280/f38181/ffffff?text=Licuadora+2L',
-                descripcion: '1200W de potencia'
-            },
-            {
-                id: 13,
-                nombre: 'Campana Extractora 90cm',
-                precio: 799,
-                categoria: 'cocina',
-                imagen: 'https://via.placeholder.com/280x280/aa96da/ffffff?text=Campana+90cm',
-                descripcion: '3 velocidades, LED'
-            },
-            {
-                id: 14,
-                nombre: 'Horno Eléctrico 60L',
-                precio: 899,
-                categoria: 'cocina',
-                imagen: 'https://via.placeholder.com/280x280/fcbad3/333333?text=Horno+60L',
-                descripcion: 'Empotrable, convección'
-            },
-            {
-                id: 15,
-                nombre: 'Lavavajillas 14 Servicios',
-                precio: 1999,
-                categoria: 'cocina',
-                imagen: 'https://via.placeholder.com/280x280/ffffd2/333333?text=Lavavajillas',
-                descripcion: '6 programas de lavado'
-            }
-        ];
-
-        // Filtrar productos por categoría
-        let categoriaActual = 'todos';
-        
-        function filtrarCategoria(categoria) {
-            categoriaActual = categoria;
-            renderizarProductos();
-        }
-
-        function renderizarProductos() {
-            const container = document.getElementById('catalogo-productos');
-            const productosFiltrados = categoriaActual === 'todos' 
-                ? productosCompletos 
-                : productosCompletos.filter(p => p.categoria === categoriaActual);
-
-            container.innerHTML = productosFiltrados.map((producto, index) => `
-                <div class="col-md-4 col-lg-3" data-aos="fade-up" data-aos-delay="${index * 50}">
-                    <div class="card product-card h-100">
-                        <div class="image-container">
-                            <img src="${producto.imagen}" 
-                                 class="card-img-top" 
-                                 alt="${producto.nombre}"
-                                 onerror="this.src='https://via.placeholder.com/280x280/cccccc/666666?text=Sin+Imagen'">
-                        </div>
-                        <div class="card-body text-center d-flex flex-column">
-                            <h5 class="card-title">${producto.nombre}</h5>
-                            <p class="text-muted flex-grow-1">${producto.descripcion}</p>
-                            <h4 class="fw-bold text-danger mb-3">S/ ${producto.precio.toLocaleString()}</h4>
-                            <button class="btn btn-outline-primary mt-auto btn-add-cart" 
-                                    data-id="${producto.id}" 
-                                    data-nombre="${producto.nombre}" 
-                                    data-precio="${producto.precio}" 
-                                    data-imagen="${producto.imagen}">
-                                Añadir al carrito
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-
-            // Re-inicializar AOS después de renderizar
-            AOS.refresh();
-            
-            // Re-vincular eventos de botones
-            document.querySelectorAll('.btn-add-cart').forEach(boton => {
-                boton.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const producto = {
-                        id: parseInt(boton.dataset.id),
-                        nombre: boton.dataset.nombre,
-                        precio: parseFloat(boton.dataset.precio),
-                        imagen: boton.dataset.imagen
-                    };
-                    agregarAlCarrito(producto);
-                });
-            });
-        }
-
-        // Inicializar al cargar
-        document.addEventListener('DOMContentLoaded', () => {
-            renderizarProductos();
-            actualizarContadorCarrito();
-        });
-    </script>
+    <!-- Script específico de electrodomésticos -->
+    <script th:src="@{/js/electrodomesticos.js}"></script>
 </body>
 </html>
+

@@ -189,4 +189,22 @@ public class HomeController {
                 .findFirst()
                 .orElse(null);
     }
+
+    /**
+     * Página de carrito de compras
+     */
+    @GetMapping("/carrito")
+    public String carrito(Model model) {
+        model.addAttribute("titulo", "Mi Carrito");
+        return "carrito";
+    }
+
+    /**
+     * Panel de administración (Operarios)
+     */
+    @GetMapping("/admin-panel")
+    public String adminPanel(Model model) {
+        model.addAttribute("titulo", "Panel de Operarios");
+        return "admin-panel";
+    }
 }

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${titulo}">Formulario Venta</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --beige: #FDFBF7;
+            --dark-blue: #0d1b2a;
+            --medium-blue: #1b263b;
+            --accent-orange: #e07a5f;
+            --text-dark: #2d2d2d;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--beige);
+            color: var(--text-dark);
+        }
+        .navbar {
+            background: linear-gradient(90deg, var(--medium-blue), var(--dark-blue));
+        }
+        .navbar-brand {
+            font-weight: 800;
+            color: white !important;
+        }
+        .form-section {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+        .form-label {
+            font-weight: 600;
+            color: var(--dark-blue);
+        }
+        .form-control:focus {
+            border-color: var(--accent-orange);
+            box-shadow: 0 0 0 0.2rem rgba(224, 122, 95, 0.25);
+        }
+        .btn-primary {
+            background-color: var(--accent-orange);
+            border-color: var(--accent-orange);
+        }
+        .btn-primary:hover {
+            background-color: #c95e4a;
+        }
+        .info-monto {
+            background-color: #f8f9fa;
+            border-left: 4px solid var(--accent-orange);
+            padding: 1rem;
+            border-radius: 5px;
+            margin-top: 2rem;
+        }
+        .monto-total {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-orange);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-store me-2"></i>Comercial Robinson
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/gestion/ventas">
+                            <i class="fas fa-arrow-left me-1"></i>Volver
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <h1 class="fw-bold mb-4" style="color: #8d5524;">
+                    <i class="fas fa-cash-register me-2"></i><span th:text="${titulo}"></span>
+                </h1>
+
+                <div class="form-section">
+                    <!-- th:action vincula la acción del formulario: guardar si es nuevo, actualizar si existe -->
+                    <!-- th:object vincula el objeto venta del modelo para binding automático -->
+                    <form th:action="${venta.id != null ? '/gestion/ventas/' + venta.id + '/actualizar' : '/gestion/ventas/guardar'}" 
+                          method="POST" th:object="${venta}">
+                        
+                        <div class="row">
+                            <!-- Fecha de Venta: campo date para capturar la fecha -->
+                            <div class="col-md-6 mb-3">
+                                <label for="fechaVenta" class="form-label">Fecha de Venta <span class="text-danger">*</span></label>
+                                <!-- th:field vincula el campo al atributo fechaVenta de la venta -->
+                                <input type="date" class="form-control" id="fechaVenta" th:field="*{fechaVenta}" required>
+                            </div>
+
+                            <!-- ID del Cliente: campo numérico -->
+                            <div class="col-md-6 mb-3">
+                                <label for="clienteId" class="form-label">ID Cliente <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="clienteId" th:field="*{clienteId}" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- ID del Producto -->
+                            <div class="col-md-6 mb-3">
+                                <label for="productoId" class="form-label">ID Producto <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="productoId" th:field="*{productoId}" required>
+                            </div>
+
+                            <!-- Nombre del Producto -->
+                            <div class="col-md-6 mb-3">
+                                <label for="nombreProducto" class="form-label">Nombre del Producto <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="nombreProducto" th:field="*{nombreProducto}" 
+                                       placeholder="Ej: Almohada de Pluma" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- Cantidad Vendida: campo numérico para cantidad -->
+                            <div class="col-md-4 mb-3">
+                                <label for="cantidadVendida" class="form-label">Cantidad <span class="text-danger">*</span></label>
+                                <!-- JavaScript al cambiar calcula automáticamente el monto total -->
+                                <input type="number" class="form-control" id="cantidadVendida" th:field="*{cantidadVendida}" 
+                                       min="1" placeholder="0" onchange="calcularMonto()" required>
+                            </div>
+
+                            <!-- Precio Unitario en Soles -->
+                            <div class="col-md-4 mb-3">
+                                <label for="precioUnitario" class="form-label">Precio Unitario (S/.) <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="precioUnitario" th:field="*{precioUnitario}" 
+                                       step="0.01" placeholder="0.00" onchange="calcularMonto()" required>
+                            </div>
+
+                            <!-- Monto Total: calculado automáticamente (cantidad × precio) -->
+                            <div class="col-md-4 mb-3">
+                                <label for="montoTotal" class="form-label">Monto Total (S/.) <span class="text-danger">*</span></label>
+                                <!-- Campo readonly porque se calcula automáticamente -->
+                                <input type="number" class="form-control" id="montoTotal" th:field="*{montoTotal}" 
+                                       step="0.01" placeholder="0.00" readonly style="background-color: #f0f0f0;">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- Nombre del Vendedor -->
+                            <div class="col-md-6 mb-3">
+                                <label for="vendedor" class="form-label">Vendedor <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="vendedor" th:field="*{vendedor}" 
+                                       placeholder="Nombre del vendedor" required>
+                            </div>
+                        </div>
+
+                        <!-- Resumen de monto total calculado -->
+                        <div class="info-monto" id="resumenMonto">
+                            <small class="text-muted">RESUMEN DE VENTA</small><br>
+                            <span class="monto-total">
+                                S/. <span id="totalDisplay">0.00</span>
+                            </span>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <a href="/gestion/ventas" class="btn btn-secondary btn-lg">
+                                <i class="fas fa-times me-2"></i>Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-save me-2"></i>
+                                <!-- Mostrar texto dinámico: "Actualizar" si es edición, "Guardar" si es nuevo -->
+                                <span th:text="${venta.id != null ? 'Actualizar' : 'Guardar'}"></span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Script para calcular el monto total automáticamente -->
+    <script>
+        function calcularMonto() {
+            // Obtener los valores de cantidad y precio unitario
+            const cantidad = parseFloat(document.getElementById('cantidadVendida').value) || 0;
+            const precio = parseFloat(document.getElementById('precioUnitario').value) || 0;
+            
+            // Calcular el monto total (cantidad × precio)
+            const monto = cantidad * precio;
+            
+            // Mostrar el monto total en el campo (con 2 decimales)
+            document.getElementById('montoTotal').value = monto.toFixed(2);
+            
+            // También mostrar en el resumen con formato de soles
+            document.getElementById('totalDisplay').textContent = monto.toFixed(2);
+        }
+        
+        // Calcular al cargar la página si hay valores previos
+        document.addEventListener('DOMContentLoaded', function() {
+            calcularMonto();
+        });
+    </script>
+</body>
+</html>

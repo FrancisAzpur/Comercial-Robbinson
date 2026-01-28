@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gráficos de Pedidos - Comercial Robinson</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chart.js para crear gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <style>
+        :root {
+            --beige: #FDFBF7;
+            --dark-blue: #0d1b2a;
+            --medium-blue: #1b263b;
+            --accent-orange: #e07a5f;
+            --text-dark: #2d2d2d;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--beige);
+            color: var(--text-dark);
+        }
+        .navbar {
+            background: linear-gradient(90deg, var(--medium-blue), var(--dark-blue));
+        }
+        .navbar-brand {
+            font-weight: 800;
+            color: white !important;
+        }
+        .chart-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            border-top: 4px solid var(--accent-orange);
+        }
+        .chart-title {
+            font-weight: 700;
+            color: var(--dark-blue);
+            margin-bottom: 1.5rem;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .stat-box {
+            background: linear-gradient(135deg, var(--medium-blue), var(--dark-blue));
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent-orange);
+        }
+        .stat-label {
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+        .badge-estado {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+        .badge-pendiente { background-color: #fff3cd; color: #856404; }
+        .badge-procesando { background-color: #cfe2ff; color: #084298; }
+        .badge-enviado { background-color: #e7d4f5; color: #6c327c; }
+        .badge-entregado { background-color: #d1e7dd; color: #0f5132; }
+    </style>
+</head>
+<body>
+    <!-- Navbar de navegación -->
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-store me-2"></i>Comercial Robinson
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/gestion/dashboard">
+                            <i class="fas fa-chart-line me-1"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/gestion/pedidos">
+                            <i class="fas fa-shopping-cart me-1"></i>Pedidos
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid py-5">
+        <h1 class="fw-bold mb-5" style="color: #8d5524;">
+            <i class="fas fa-chart-bar me-2"></i>Análisis de Pedidos
+        </h1>
+
+        <!-- Estadísticas principales de pedidos -->
+        <!-- Tarjetas con conteos de pedidos por estado -->
+        <div class="stats-grid">
+            <div class="stat-box">
+                <i class="fas fa-hourglass-half fa-2x mb-2" style="color: #ffc107;"></i>
+                <div class="stat-label">Pendientes</div>
+                <div class="stat-value" th:text="${conteoEstados[0]}">0</div>
+            </div>
+            <div class="stat-box">
+                <i class="fas fa-spinner fa-2x mb-2" style="color: #0dcaf0;"></i>
+                <div class="stat-label">Procesando</div>
+                <div class="stat-value" th:text="${conteoEstados[1]}">0</div>
+            </div>
+            <div class="stat-box">
+                <i class="fas fa-truck fa-2x mb-2" style="color: #6f42c1;"></i>
+                <div class="stat-label">Enviados</div>
+                <div class="stat-value" th:text="${conteoEstados[2]}">0</div>
+            </div>
+            <div class="stat-box">
+                <i class="fas fa-check-circle fa-2x mb-2" style="color: #198754;"></i>
+                <div class="stat-label">Entregados</div>
+                <div class="stat-value" th:text="${conteoEstados[3]}">0</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Gráfico Circular: Distribución de Estados de Pedidos -->
+            <!-- Este gráfico pie muestra la proporción de cada estado en los pedidos -->
+            <div class="col-lg-6">
+                <div class="chart-card">
+                    <h5 class="chart-title">
+                        <i class="fas fa-chart-pie me-2"></i>Distribución de Estados (Circular)
+                    </h5>
+                    <canvas id="estadosChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Gráfico de Barras: Cantidad de Pedidos por Estado -->
+            <!-- Muestra de forma visual la cantidad de pedidos en cada estado -->
+            <div class="col-lg-6">
+                <div class="chart-card">
+                    <h5 class="chart-title">
+                        <i class="fas fa-chart-bar me-2"></i>Pedidos por Estado (Barras)
+                    </h5>
+                    <canvas id="pedidosEstadoChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <!-- Gráfico de Línea: Tendencia de Pedidos por Fecha -->
+            <!-- La línea muestra cómo evolucionan los pedidos a lo largo del tiempo -->
+            <div class="col-lg-12">
+                <div class="chart-card">
+                    <h5 class="chart-title">
+                        <i class="fas fa-chart-line me-2"></i>Tendencia de Pedidos en el Tiempo (Línea)
+                    </h5>
+                    <canvas id="tendenciaPedidosChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráfico de Barras: Métodos de Pago Utilizados -->
+        <div class="row mt-4">
+            <div class="col-lg-6">
+                <div class="chart-card">
+                    <h5 class="chart-title">
+                        <i class="fas fa-credit-card me-2"></i>Métodos de Pago (Barras)
+                    </h5>
+                    <canvas id="metodoPagoChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Tabla: Desglose de Estados -->
+            <div class="col-lg-6">
+                <div class="chart-card">
+                    <h5 class="chart-title">
+                        <i class="fas fa-table me-2"></i>Desglose por Estado
+                    </h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead style="background-color: var(--medium-blue); color: white;">
+                                <tr>
+                                    <th>Estado</th>
+                                    <th>Cantidad</th>
+                                    <th>Porcentaje</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- th:each itera sobre los estados y sus conteos -->
+                                <tr>
+                                    <td><span class="badge-estado badge-pendiente">Pendiente</span></td>
+                                    <td th:text="${conteoEstados[0]}">0</td>
+                                    <td th:text="${conteoEstados[0] > 0 ? ((conteoEstados[0] * 100) / (conteoEstados[0] + conteoEstados[1] + conteoEstados[2] + conteoEstados[3])).intValue() + '%' : '0%'}">0%</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="badge-estado badge-procesando">Procesando</span></td>
+                                    <td th:text="${conteoEstados[1]}">0</td>
+                                    <td th:text="${conteoEstados[1] > 0 ? ((conteoEstados[1] * 100) / (conteoEstados[0] + conteoEstados[1] + conteoEstados[2] + conteoEstados[3])).intValue() + '%' : '0%'}">0%</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="badge-estado badge-enviado">Enviado</span></td>
+                                    <td th:text="${conteoEstados[2]}">0</td>
+                                    <td th:text="${conteoEstados[2] > 0 ? ((conteoEstados[2] * 100) / (conteoEstados[0] + conteoEstados[1] + conteoEstados[2] + conteoEstados[3])).intValue() + '%' : '0%'}">0%</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="badge-estado badge-entregado">Entregado</span></td>
+                                    <td th:text="${conteoEstados[3]}">0</td>
+                                    <td th:text="${conteoEstados[3] > 0 ? ((conteoEstados[3] * 100) / (conteoEstados[0] + conteoEstados[1] + conteoEstados[2] + conteoEstados[3])).intValue() + '%' : '0%'}">0%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script th:inline="javascript">
+        // Datos de conteo de estados: [Pendiente, Procesando, Enviado, Entregado]
+        const conteoEstados = /*[[${conteoEstados}]]*/ [0, 0, 0, 0];
+        
+        // Datos adicionales enviados desde el controlador
+        const pedidosPorFecha = /*[[${pedidosPorFecha}]]*/ {};
+        const pedidosPorMetodo = /*[[${pedidosPorMetodo}]]*/ {};
+
+        // Colores específicos para cada estado
+        const coloresEstados = [
+            'rgba(255, 193, 7, 0.8)',       // Amarillo para Pendiente
+            'rgba(13, 202, 240, 0.8)',      // Cyan para Procesando
+            'rgba(111, 66, 193, 0.8)',      // Púrpura para Enviado
+            'rgba(25, 135, 84, 0.8)'        // Verde para Entregado
+        ];
+
+        const nombresEstados = ['Pendiente', 'Procesando', 'Enviado', 'Entregado'];
+
+        // ========== GRÁFICO 1: Distribución de Estados (Circular/Pie) ==========
+        // Este gráfico circular muestra la proporción de cada estado en los pedidos
+        const ctxEstados = document.getElementById('estadosChart').getContext('2d');
+        new Chart(ctxEstados, {
+            type: 'doughnut',  // Tipo: gráfico circular con agujero en el centro
+            data: {
+                labels: nombresEstados,  // Estados: Pendiente, Procesando, Enviado, Entregado
+                datasets: [{
+                    data: conteoEstados,  // Conteos de cada estado
+                    backgroundColor: coloresEstados,  // Colores específicos por estado
+                    borderColor: 'white',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',  // Leyenda debajo del gráfico
+                        labels: { font: { family: "'Poppins', sans-serif" } }
+                    }
+                }
+            }
+        });
+
+        // ========== GRÁFICO 2: Pedidos por Estado (Barras) ==========
+        // Este gráfico de barras muestra la cantidad de pedidos en cada estado
+        const ctxEstadoBar = document.getElementById('pedidosEstadoChart').getContext('2d');
+        new Chart(ctxEstadoBar, {
+            type: 'bar',  // Tipo: gráfico de barras
+            data: {
+                labels: nombresEstados,  // Estados
+                datasets: [{
+                    label: 'Cantidad de Pedidos',
+                    data: conteoEstados,  // Conteos
+                    backgroundColor: coloresEstados,  // Colores por estado
+                    borderColor: 'rgba(0, 0, 0, 0.2)',
+                    borderWidth: 1,
+                    borderRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: { font: { family: "'Poppins', sans-serif" } }
+                    }
+                },
+                scales: {
+                    y: { beginAtZero: true }  // Eje Y comienza en 0
+                }
+            }
+        });
+
+        // ========== GRÁFICO 3: Tendencia de Pedidos (Línea) ==========
+        // Este gráfico de línea muestra cómo evolucionan los pedidos en el tiempo
+        const ctxTendencia = document.getElementById('tendenciaPedidosChart').getContext('2d');
+        new Chart(ctxTendencia, {
+            type: 'line',  // Tipo: gráfico de línea
+            data: {
+                labels: Object.keys(pedidosPorFecha),  // Fechas
+                datasets: [{
+                    label: 'Pedidos Diarios',
+                    data: Object.values(pedidosPorFecha),  // Cantidad por fecha
+                    borderColor: 'rgba(224, 122, 95, 1)',  // Color naranja
+                    backgroundColor: 'rgba(224, 122, 95, 0.1)',  // Área bajo la línea
+                    fill: true,
+                    tension: 0.4,  // Suavidad de la curva
+                    pointRadius: 5,
+                    pointBackgroundColor: 'rgba(224, 122, 95, 1)',
+                    pointBorderColor: 'white',
+                    pointBorderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: { font: { family: "'Poppins', sans-serif" } }
+                    }
+                },
+                scales: {
+                    y: { beginAtZero: true }  // Eje Y comienza en 0
+                }
+            }
+        });
+
+        // ========== GRÁFICO 4: Métodos de Pago (Barras) ==========
+        // Este gráfico de barras muestra cuántos pedidos se pagaron por cada método
+        const ctxMetodo = document.getElementById('metodoPagoChart').getContext('2d');
+        new Chart(ctxMetodo, {
+            type: 'bar',  // Tipo: gráfico de barras
+            data: {
+                labels: Object.keys(pedidosPorMetodo),  // Métodos: Efectivo, Tarjeta, Transferencia, Cheque
+                datasets: [{
+                    label: 'Cantidad de Pedidos',
+                    data: Object.values(pedidosPorMetodo),  // Conteo por método
+                    backgroundColor: [
+                        'rgba(27, 38, 59, 0.8)',        // Azul oscuro
+                        'rgba(224, 122, 95, 0.8)',      // Naranja
+                        'rgba(141, 85, 36, 0.8)',       // Marrón
+                        'rgba(45, 45, 45, 0.8)'         // Gris
+                    ],
+                    borderColor: 'rgba(0, 0, 0, 0.2)',
+                    borderWidth: 1,
+                    borderRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: { font: { family: "'Poppins', sans-serif" } }
+                    }
+                },
+                scales: {
+                    y: { beginAtZero: true }  // Eje Y comienza en 0
+                }
+            }
+        });
+    </script>
+</body>
+</html>

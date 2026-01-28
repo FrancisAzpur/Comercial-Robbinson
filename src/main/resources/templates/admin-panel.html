@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Panel de Operarios')}"></head>
+
+<body>
+    <!-- Header -->
+    <header th:replace="~{fragments/header :: header}"></header>
+
+    <!-- Contenedor principal con margen superior para navbar fija -->
+    <div style="margin-top: 80px;">
+
+    <!-- Panel de Operarios - Sección dormida por ahora -->
+    <div class="container mt-5 mb-5">
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <h1 class="text-center mb-4">
+                    <i class="fas fa-cogs text-danger"></i> Panel de Operarios
+                </h1>
+                <p class="text-center text-muted">Área de administración y gestión de operaciones (Actualmente dormida)</p>
+            </div>
+        </div>
+
+        <!-- Tarjeta informativa -->
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            <i class="fas fa-info-circle me-2"></i>
+            <strong>Información:</strong> Este panel está disponible pero sin funcionalidad activa por ahora. 
+            Se encuentra listo para ser activado cuando sea necesario.
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <!-- Grid de opciones de administración -->
+        <div class="row g-4">
+
+            <!-- Gestión de Clientes -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body text-center">
+                        <i class="fas fa-users fa-3x mb-3" style="color: #0d1b2a;"></i>
+                        <h5 class="card-title">Gestión de Clientes</h5>
+                        <p class="card-text text-muted">Crear, editar y eliminar clientes del sistema</p>
+                        <a href="#" class="btn btn-sm btn-outline-primary" onclick="mostrarAviso('Gestión de Clientes')">
+                            <i class="fas fa-arrow-right me-1"></i> Acceder
+                        </a>
+                    </div>
+                    <div class="card-footer bg-light border-0 text-muted small">
+                        <i class="fas fa-lock me-1"></i> Sin usar
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gestión de Pedidos -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body text-center">
+                        <i class="fas fa-shopping-bag fa-3x mb-3" style="color: #1b263b;"></i>
+                        <h5 class="card-title">Gestión de Pedidos</h5>
+                        <p class="card-text text-muted">Crear, procesar y cambiar estado de pedidos</p>
+                        <a href="#" class="btn btn-sm btn-outline-primary" onclick="mostrarAviso('Gestión de Pedidos')">
+                            <i class="fas fa-arrow-right me-1"></i> Acceder
+                        </a>
+                    </div>
+                    <div class="card-footer bg-light border-0 text-muted small">
+                        <i class="fas fa-lock me-1"></i> Sin usar
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gestión de Ventas -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body text-center">
+                        <i class="fas fa-cash-register fa-3x mb-3" style="color: #e07a5f;"></i>
+                        <h5 class="card-title">Gestión de Ventas</h5>
+                        <p class="card-text text-muted">Registrar transacciones y analizar ventas</p>
+                        <a href="#" class="btn btn-sm btn-outline-primary" onclick="mostrarAviso('Gestión de Ventas')">
+                            <i class="fas fa-arrow-right me-1"></i> Acceder
+                        </a>
+                    </div>
+                    <div class="card-footer bg-light border-0 text-muted small">
+                        <i class="fas fa-lock me-1"></i> Sin usar
+                    </div>
+                </div>
+            </div>
+
+            <!-- Análisis de Gráficos -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body text-center">
+                        <i class="fas fa-chart-bar fa-3x mb-3" style="color: #0d1b2a;"></i>
+                        <h5 class="card-title">Gráficos de Ventas</h5>
+                        <p class="card-text text-muted">Visualizar análisis y reportes de ventas</p>
+                        <a href="#" class="btn btn-sm btn-outline-primary" onclick="mostrarAviso('Gráficos de Ventas')">
+                            <i class="fas fa-arrow-right me-1"></i> Acceder
+                        </a>
+                    </div>
+                    <div class="card-footer bg-light border-0 text-muted small">
+                        <i class="fas fa-lock me-1"></i> Sin usar
+                    </div>
+                </div>
+            </div>
+
+            <!-- Análisis de Pedidos -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body text-center">
+                        <i class="fas fa-chart-line fa-3x mb-3" style="color: #1b263b;"></i>
+                        <h5 class="card-title">Gráficos de Pedidos</h5>
+                        <p class="card-text text-muted">Análisis detallado de órdenes y estados</p>
+                        <a href="#" class="btn btn-sm btn-outline-primary" onclick="mostrarAviso('Gráficos de Pedidos')">
+                            <i class="fas fa-arrow-right me-1"></i> Acceder
+                        </a>
+                    </div>
+                    <div class="card-footer bg-light border-0 text-muted small">
+                        <i class="fas fa-lock me-1"></i> Sin usar
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body text-center">
+                        <i class="fas fa-th-large fa-3x mb-3" style="color: #e07a5f;"></i>
+                        <h5 class="card-title">Dashboard</h5>
+                        <p class="card-text text-muted">Panel de control y estadísticas generales</p>
+                        <a href="#" class="btn btn-sm btn-outline-primary" onclick="mostrarAviso('Dashboard')">
+                            <i class="fas fa-arrow-right me-1"></i> Acceder
+                        </a>
+                    </div>
+                    <div class="card-footer bg-light border-0 text-muted small">
+                        <i class="fas fa-lock me-1"></i> Sin usar
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Sección de información adicional -->
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <div class="card bg-light border-0">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fas fa-clock me-2"></i> Estado del Panel
+                        </h5>
+                        <p class="card-text">
+                            Este panel de operarios está actualmente en estado <strong>"dormido"</strong> 
+                            (sin funcionalidad activa). Se encuentra completamente implementado en el código 
+                            y listo para ser activado en cualquier momento que sea necesario.
+                        </p>
+                        <p class="card-text text-muted">
+                            <small>
+                                <i class="fas fa-check-circle me-1"></i> Todas las rutas están configuradas<br>
+                                <i class="fas fa-check-circle me-1"></i> Base de datos lista<br>
+                                <i class="fas fa-check-circle me-1"></i> Interfaz diseñada<br>
+                                <i class="fas fa-lock me-1"></i> Esperando activación
+                            </small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+
+    <!-- Scripts -->
+    <div th:replace="~{fragments/footer :: scripts}"></div>
+
+    <!-- Script para mostrar avisos -->
+    <script>
+        function mostrarAviso(seccion) {
+            alert(`La sección "${seccion}" está actualmente sin usar.\n\nEsta funcionalidad será activada cuando sea necesaria.`);
+        }
+    </script>
+</body>
+</html>

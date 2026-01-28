@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${titulo}">Clientes</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --beige: #FDFBF7;
+            --dark-blue: #0d1b2a;
+            --medium-blue: #1b263b;
+            --accent-orange: #e07a5f;
+            --text-dark: #2d2d2d;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--beige);
+            color: var(--text-dark);
+        }
+        .navbar {
+            background: linear-gradient(90deg, var(--medium-blue), var(--dark-blue));
+        }
+        .navbar-brand {
+            font-weight: 800;
+            color: white !important;
+            font-size: 1.5rem;
+        }
+        .nav-link {
+            color: rgba(255, 255, 255, 0.85) !important;
+            font-weight: 500;
+        }
+        .nav-link:hover {
+            color: var(--accent-orange) !important;
+        }
+        .btn-primary {
+            background-color: var(--accent-orange);
+            border-color: var(--accent-orange);
+        }
+        .btn-primary:hover {
+            background-color: #c95e4a;
+        }
+        .table-hover tbody tr:hover {
+            background-color: rgba(224, 122, 95, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar con navegación -->
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-store me-2"></i>Comercial Robinson
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/gestion/dashboard">
+                            <i class="fas fa-chart-line me-1"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/gestion/clientes">
+                            <i class="fas fa-users me-1"></i>Clientes
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/gestion/pedidos">
+                            <i class="fas fa-shopping-cart me-1"></i>Pedidos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/gestion/ventas">
+                            <i class="fas fa-cash-register me-1"></i>Ventas
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="fas fa-home me-1"></i>Inicio
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid py-5">
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h1 class="fw-bold" style="color: #8d5524;">
+                    <i class="fas fa-users me-2"></i>Gestión de Clientes
+                </h1>
+                <p class="text-muted">Administra todos los clientes registrados en el sistema</p>
+            </div>
+            <div class="col-md-6 text-end">
+                <a href="/gestion/clientes/nuevo" class="btn btn-primary btn-lg">
+                    <i class="fas fa-user-plus me-2"></i>Nuevo Cliente
+                </a>
+            </div>
+        </div>
+
+        <!-- Formulario de búsqueda -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <form class="input-group input-group-lg" method="get" action="/gestion/clientes/buscar">
+                    <input type="text" name="nombre" class="form-control" placeholder="Buscar cliente por nombre..." required>
+                    <button class="btn btn-primary" type="submit">
+                        <i class="fas fa-search me-1"></i>Buscar
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Tabla de clientes -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-list me-2"></i>Listado de Clientes
+                            <span class="badge bg-info float-end" th:text="'Total: ' + ${#lists.size(clientes)}"></span>
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <!-- Usando th:if para validar si hay clientes -->
+                        <div th:if="${clientes.isEmpty()}" class="alert alert-warning m-3">
+                            <i class="fas fa-info-circle me-2"></i>No hay clientes registrados
+                        </div>
+                        
+                        <!-- Tabla con th:each para iterar sobre clientes -->
+                        <table class="table table-hover mb-0" th:unless="${clientes.isEmpty()}">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre Completo</th>
+                                    <th>Email</th>
+                                    <th>Teléfono</th>
+                                    <th>Ciudad</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- th:each itera sobre la lista de clientes -->
+                                <tr th:each="cliente : ${clientes}">
+                                    <!-- th:text para mostrar datos del cliente -->
+                                    <td><strong th:text="${cliente.id}"></strong></td>
+                                    <td th:text="${cliente.nombreCompleto}"></td>
+                                    <td th:text="${cliente.email}"></td>
+                                    <td th:text="${cliente.telefono}"></td>
+                                    <td th:text="${cliente.ciudad}"></td>
+                                    <td>
+                                        <!-- th:href para generar URLs dinámicas con el ID del cliente -->
+                                        <a class="btn btn-sm btn-info" th:href="@{/gestion/clientes/{id}(id=${cliente.id})}">
+                                            <i class="fas fa-eye"></i> Ver
+                                        </a>
+                                        <a class="btn btn-sm btn-warning" th:href="@{/gestion/clientes/{id}/editar(id=${cliente.id})}">
+                                            <i class="fas fa-edit"></i> Editar
+                                        </a>
+                                        <a class="btn btn-sm btn-danger" th:href="@{/gestion/clientes/{id}/eliminar(id=${cliente.id})}" 
+                                           onclick="return confirm('¿Estás seguro de eliminar este cliente?')">
+                                            <i class="fas fa-trash"></i> Eliminar
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

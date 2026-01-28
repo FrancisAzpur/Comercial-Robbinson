@@ -21,7 +21,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     
     <!-- Custom CSS -->
+    <link th:href="@{/css/style.css}" rel="stylesheet">
     <link th:href="@{/css/styles.css}" rel="stylesheet">
+    
+    <!-- CSS específicos por página -->
+    <link th:if="${titulo == 'Electrodomésticos'}" th:href="@{/css/electrodomesticos.css}" rel="stylesheet">
+    <link th:if="${titulo == 'Hogar'}" th:href="@{/css/hogar.css}" rel="stylesheet">
+    <link th:if="${titulo == 'Contacto'}" th:href="@{/css/contactos.css}" rel="stylesheet">
 </head>
 <body>
     <!-- Header/Navbar Fragment -->
@@ -41,45 +47,44 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/}" 
-                           th:classappend="${#strings.equals(#request.requestURI, '/') || #strings.equals(#request.requestURI, '/home')} ? 'active' : ''">
+                        <a class="nav-link" th:href="@{/}">
                             <i class="fas fa-home me-1"></i> Inicio
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/electrodomesticos}"
-                           th:classappend="${#strings.contains(#request.requestURI, 'electrodomesticos')} ? 'active' : ''">
+                        <a class="nav-link" th:href="@{/electrodomesticos}">
                             <i class="fas fa-blender me-1"></i> Electrodomésticos
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/hogar}"
-                           th:classappend="${#strings.contains(#request.requestURI, 'hogar')} ? 'active' : ''">
+                        <a class="nav-link" th:href="@{/hogar}">
                             <i class="fas fa-couch me-1"></i> Hogar
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/categorias}"
-                           th:classappend="${#strings.contains(#request.requestURI, 'categorias')} ? 'active' : ''">
+                        <a class="nav-link" th:href="@{/categorias}">
                             <i class="fas fa-th-large me-1"></i> Categorías
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/ofertas}"
-                           th:classappend="${#strings.contains(#request.requestURI, 'ofertas')} ? 'active' : ''">
+                        <a class="nav-link" th:href="@{/ofertas}">
                             <i class="fas fa-tags me-1"></i> Ofertas
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/contacto}"
-                           th:classappend="${#strings.contains(#request.requestURI, 'contacto')} ? 'active' : ''">
+                        <a class="nav-link" th:href="@{/contacto}">
                             <i class="fas fa-envelope me-1"></i> Contacto
                         </a>
                     </li>
                     <li class="nav-item ms-2">
-                        <a class="nav-link cart-icon" href="#" data-bs-toggle="modal" data-bs-target="#cartModal">
+                        <a class="nav-link cart-icon" th:href="@{/carrito}">
                             <i class="fas fa-shopping-cart"></i>
                             <span class="badge bg-danger cart-count">0</span>
+                        </a>
+                    </li>
+                    <li class="nav-item ms-2">
+                        <a class="nav-link" th:href="@{/admin-panel}" style="color: #e07a5f; font-weight: 600;">
+                            <i class="fas fa-cogs me-1"></i> Admin
                         </a>
                     </li>
                 </ul>
