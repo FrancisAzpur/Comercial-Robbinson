@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import com.Robbinson.ComRobinson.modelo.Categoria;
 import com.Robbinson.ComRobinson.modelo.Producto;
 
 /**
@@ -36,9 +35,6 @@ public class HomeController {
     public String home(Model model) {
         // Pasar título de la página
         model.addAttribute("titulo", "Inicio");
-        
-        // Pasar categorías para mostrar en la página
-        model.addAttribute("categorias", obtenerCategorias());
         
         // Pasar productos destacados (simulados, para demostración)
         model.addAttribute("productosDestacados", obtenerProductosDestacados());
@@ -96,18 +92,6 @@ public class HomeController {
     }
 
     /**
-     * Página de Categorías
-     * Ruta: GET /categorias
-     * Muestra todas las categorías de productos disponibles
-     */
-    @GetMapping("/categorias")
-    public String categorias(Model model) {
-        model.addAttribute("titulo", "Categorías");
-        model.addAttribute("categorias", obtenerCategorias());
-        return "categorias";  // templates/categorias.html
-    }
-
-    /**
      * Detalle de producto
      */
     @GetMapping("/producto/{id}")
@@ -151,23 +135,6 @@ public class HomeController {
     // Los datos están hardcodeados en el código (no en BD real)
     // En producción, estos datos vendrían de un repositorio con JPA/Hibernate
     
-    /**
-     * Obtiene las categorías de productos
-     * @return Lista de categorías con nombre, descripción, icono e imagen
-     */
-    private List<Categoria> obtenerCategorias() {
-        List<Categoria> categorias = new ArrayList<>();
-        categorias.add(new Categoria(1L, "Electrodomésticos", "Todo para tu cocina y hogar", 
-                "fa-blender", "SmartTv.jpeg", 25));
-        categorias.add(new Categoria(2L, "Hogar", "Decoración y confort", 
-                "fa-couch", "Moderno.jpg", 30));
-        categorias.add(new Categoria(3L, "Refrigeración", "Refrigeradoras y congeladores", 
-                "fa-snowflake", "Refri1.jpg", 15));
-        categorias.add(new Categoria(4L, "Lavado", "Lavadoras y secadoras", 
-                "fa-soap", "Lavadora1.jpg", 12));
-        return categorias;
-    }
-
     /**
      * Obtiene todos los productos disponibles (SIMULADO)
      * 
