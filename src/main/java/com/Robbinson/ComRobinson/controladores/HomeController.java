@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import com.Robbinson.ComRobinson.modelo.Categoria;
 import com.Robbinson.ComRobinson.modelo.Producto;
@@ -116,6 +117,34 @@ public class HomeController {
         model.addAttribute("producto", producto);
         return "detalle-producto";
     }
+
+
+    /**
+     * Página de Inicio de Sesión
+     * Ruta: GET /login
+     * Permite a los usuarios ingresar a su cuenta
+     */
+    @GetMapping("/login")
+    public String login(Model model) {
+        model.addAttribute("titulo", "Iniciar Sesión");
+        return "login";
+    }
+    
+    @PostMapping("/login")
+    public String procesarLogin() {
+        return "redirect:/";
+    }
+
+    /**
+     * Página de Registro de Usuario
+     * Ruta: GET /registro
+     * Permite crear una nueva cuenta
+     */
+     @GetMapping("/registro")
+     public String registro(Model model) {
+        model.addAttribute("titulo", "Registro");
+        return "registro";  // templates/registro.html
+     }
 
     // ==================== MÉTODOS AUXILIARES ====================
     // NOTA: Estos métodos simulan una base de datos.
