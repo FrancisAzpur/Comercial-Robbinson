@@ -52,34 +52,6 @@
             </div>
         </section>
 
-        <section class="mb-4">
-            <h2 class="h6 fw-bold mb-3">Ventas</h2>
-            <div class="list-group shadow-sm">
-                <a href="#" class="list-group-item list-group-item-action d-flex align-items-center p-3 border-0 border-bottom">
-                    <div class="icon-circle bg-yellow me-3">🏷️</div>
-                    <div class="flex-grow-1">
-                        <h3 class="h6 mb-1 fw-normal text-dark">Reputación, ventas y envíos</h3>
-                        <p class="small text-muted mb-0">Reclamar por tu reputación, consultar por un envío, pago o devolución.</p>
-                    </div>
-                    <span class="text-secondary opacity-50 fs-4">›</span>
-                </a>
-                <a href="#" class="list-group-item list-group-item-action d-flex align-items-center p-3 border-0 border-bottom">
-                    <div class="icon-circle bg-yellow me-3">📄</div>
-                    <div class="flex-grow-1">
-                        <h3 class="h6 mb-1 fw-normal text-dark">Administrar publicaciones</h3>
-                        <p class="small text-muted mb-0">Mejorar la calidad, modificar, eliminar o resolver problemas.</p>
-                    </div>
-                    <span class="text-secondary opacity-50 fs-4">›</span>
-                </a>
-                <a href="#" class="list-group-item list-group-item-action d-flex align-items-center p-3 border-0">
-                    <div class="icon-circle bg-yellow me-3">?</div>
-                    <div class="flex-grow-1">
-                        <h3 class="h6 mb-0 fw-normal text-dark">Preguntas frecuentes sobre ventas</h3>
-                    </div>
-                    <span class="text-secondary opacity-50 fs-4">›</span>
-                </a>
-            </div>
-        </section>
 
         <section class="mb-4">
             <h2 class="h6 fw-bold mb-3">Ayuda sobre tu cuenta</h2>
@@ -98,13 +70,113 @@
         <section class="mb-4">
             <h2 class="h6 fw-bold mb-3">¿Necesitas más ayuda?</h2>
             <div class="list-group shadow-sm">
-                <a href="#" class="list-group-item list-group-item-action d-flex align-items-center p-3 border-0">
+                <a href="#contacto-form" class="list-group-item list-group-item-action d-flex align-items-center p-3 border-0">
                     <div class="flex-grow-1"><h3 class="h6 mb-0 fw-normal">Contáctanos</h3></div>
                     <span class="text-secondary opacity-50 fs-4">›</span>
                 </a>
             </div>
         </section>
     </div>
+
+    <!-- SECCIÓN DE FORMULARIO DE CONTACTO -->
+    <section id="contacto-form" class="py-5" style="background: linear-gradient(135deg, var(--dark-blue) 0%, var(--medium-blue) 100%);">
+        <div class="container">
+            <h2 class="text-white text-center mb-5 fw-bold">Ponte en contacto con nosotros</h2>
+            
+            <div class="row g-4">
+                <!-- PANEL IZQUIERDO - INFORMACIÓN DE LA EMPRESA -->
+                <div class="col-lg-5">
+                    <div class="contact-info-panel">
+                        <div class="contact-info-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="contact-content">
+                                <h5>Dirección</h5>
+                                <p>Av. Comercial 842, Piura<br>Perú</p>
+                            </div>
+                        </div>
+
+                        <div class="contact-info-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <div class="contact-content">
+                                <h5>Teléfono</h5>
+                                <p>+51 (973) 547-821</p>
+                            </div>
+                        </div>
+
+                        <div class="contact-info-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="contact-content">
+                                <h5>Email</h5>
+                                <p>contacto@comercialrobbinson.com</p>
+                            </div>
+                        </div>
+
+                        <div class="contact-info-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-globe"></i>
+                            </div>
+                            <div class="contact-content">
+                                <h5>País</h5>
+                                <p>Perú - Región Piura</p>
+                            </div>
+                        </div>
+
+                        <div class="contact-info-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="contact-content">
+                                <h5>Horario de atención</h5>
+                                <p>Lunes a Viernes: 9:00 AM - 6:00 PM<br>Sábado: 10:00 AM - 4:00 PM</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PANEL DERECHO - FORMULARIO -->
+                <div class="col-lg-7">
+                    <form class="contact-form">
+                        <div class="mb-4">
+                            <label for="nombre" class="form-label text-white fw-semibold">Nombre Completo</label>
+                            <input type="text" class="form-control form-control-lg" id="nombre" placeholder="Tu nombre" required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="correo" class="form-label text-white fw-semibold">Correo Electrónico</label>
+                            <input type="email" class="form-control form-control-lg" id="correo" placeholder="tu@email.com" required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="asunto" class="form-label text-white fw-semibold">Asunto</label>
+                            <select class="form-select form-select-lg" id="asunto" required>
+                                <option selected disabled>Selecciona un tema</option>
+                                <option value="compra">Problemas con mi compra</option>
+                                <option value="devolucion">Devoluciones y reembolsos</option>
+                                <option value="producto">Consulta sobre un producto</option>
+                                <option value="envio">Seguimiento de envío</option>
+                                <option value="otro">Otro</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="mensaje" class="form-label text-white fw-semibold">Mensaje</label>
+                            <textarea class="form-control" id="mensaje" rows="5" placeholder="Cuéntanos cómo podemos ayudarte..." required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-enviar btn-lg w-100 fw-bold">
+                            <i class="fas fa-paper-plane me-2"></i>Enviar Mensaje
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
 
     </div>
 
