@@ -1,267 +1,296 @@
-const productosOferta = [
-    // Menaje - Sábanas
-    {
-        id: 1,
-        nombre: 'Juego de sábanas 200 hilos | 1 plaza',
-        precio: 89,
-        categoria: 'menaje',
-        imagen: '/img/sabanas1.webp',
-        descripcion: 'Sábanas de algodón suave'
-    },
-    {
-        id: 2,
-        nombre: 'Juego de sábanas 200 hilos | 2 plazas',
-        precio: 120,
-        categoria: 'menaje',
-        imagen: '/img/sabana2.jpg',
-        descripcion: 'Ideal para cama matrimonial'
-    },
-    {
-        id: 3,
-        nombre: 'Edredón reversible cama matrimonial',
-        precio: 200,
-        categoria: 'menaje',
-        imagen: '/img/sabanas3.webp',
-        descripcion: 'Diseño elegante y moderno'
-    },
-    {
-        id: 4,
-        nombre: 'Almohada hotelera premium (unidad)',
-        precio: 60,
-        categoria: 'menaje',
-        imagen: '/img/almohada.avif',
-        descripcion: 'Máximo confort'
-    },
-    
-    // Menaje - Toallas
-    {
-        id: 5,
-        nombre: 'Juego de toallas 4 piezas algodón',
-        precio: 140,
-        categoria: 'menaje',
-        imagen: '/img/toallas1.webp',
-        descripcion: 'Suaves y absorbentes'
-    },
-    {
-        id: 6,
-        nombre: 'Set x4 Toallas Mano/Baño Roberta Allen Lollipop',
-        precio: 80,
-        categoria: 'menaje',
-        imagen: '/img/toallas2.avif',
-        descripcion: 'Diseño exclusivo'
-    },
-    {
-        id: 7,
-        nombre: 'Toalla Clásica Baño',
-        precio: 75,
-        categoria: 'menaje',
-        imagen: '/img/toallas3.avif',
-        descripcion: 'Algodón 100%'
-    },
-    {
-        id: 8,
-        nombre: 'Toalla Premium Baño',
-        precio: 99,
-        categoria: 'menaje',
-        imagen: '/img/toallas4.avif',
-        descripcion: 'Extra absorbente'
-    },
-    
-    // Cocina - Vajillas
-    {
-        id: 9,
-        nombre: 'Juego de Vajilla Porcelana Combo 60 Piezas',
-        precio: 249.90,
-        categoria: 'cocina',
-        imagen: '/img/vajilla1.webp',
-        descripcion: 'Juego completo para 12 personas'
-    },
-    {
-        id: 10,
-        nombre: 'Juego de Vajilla Porcelana 30 Piezas Paula',
-        precio: 199.90,
-        categoria: 'cocina',
-        imagen: '/img/vajilla2.webp',
-        descripcion: 'Diseño elegante Paula'
-    },
-    {
-        id: 11,
-        nombre: 'Vajilla x16 Piezas Porcelana con Textura',
-        precio: 99.90,
-        categoria: 'cocina',
-        imagen: '/img/vajilla3.webp',
-        descripcion: 'Textura moderna'
-    },
-    {
-        id: 12,
-        nombre: 'Set Vajilla Decal Rosa 16 Piezas',
-        precio: 49.90,
-        categoria: 'cocina',
-        imagen: '/img/vajilla4.jpg',
-        descripcion: 'Delicado diseño rosa'
-    },
-    
-    // Decoración - Plantas
-    {
-        id: 13,
-        nombre: 'Planta Olivo Artificial 30×132 cm',
-        precio: 129.90,
-        categoria: 'decoracion',
-        imagen: '/img/planta1.webp',
-        descripcion: 'Planta artificial grande'
-    },
-    {
-        id: 14,
-        nombre: 'Planta Grande Eucalipto 120 cm',
-        precio: 99.90,
-        categoria: 'decoracion',
-        imagen: '/img/planta2.webp',
-        descripcion: 'Eucalipto decorativo'
-    },
-    {
-        id: 15,
-        nombre: 'Planta Ficus artificial 154 cm',
-        precio: 179.90,
-        categoria: 'decoracion',
-        imagen: '/img/planta3.avif',
-        descripcion: 'Ficus realista'
-    },
-    {
-        id: 16,
-        nombre: 'Planta Sansevieria Artificial con maceta',
-        precio: 83.70,
-        categoria: 'decoracion',
-        imagen: '/img/planta4.avif',
-        descripcion: 'Perfecta para interiores'
-    }
-];
+// ofertas.js - Funcionalidades específicas para página de ofertas
 
-function renderizarProductos(productosFiltrados) {
-    const catalogo = document.querySelector('.row.g-4');
-    if (!catalogo) return;
+document.addEventListener('DOMContentLoaded', function() {
+    // Datos de ejemplo para productos en oferta
+    const productosOferta = [
+        {
+            id: 1,
+            nombre: "Refrigerador Samsung Side by Side",
+            descripcion: "Refrigerador de 580L con tecnología Twin Cooling Plus",
+            precioAnterior: 1299.99,
+            precioOferta: 999.99,
+            descuento: 23,
+            imagen: "https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+            categoria: "destacados",
+            stock: 8,
+            destacado: true
+        },
+        {
+            id: 2,
+            nombre: "Lavadora LG TurboWash",
+            descripcion: "Lavadora de 19kg con tecnología TurboWash y WiFi",
+            precioAnterior: 899.99,
+            precioOferta: 699.99,
+            descuento: 22,
+            imagen: "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+            categoria: "rebajados",
+            stock: 15,
+            destacado: false
+        },
+        // ... (agrega más productos según necesites)
+    ];
 
-    catalogo.innerHTML = productosFiltrados.map(producto => `
-        <div class="col-sm-6 col-md-4 col-lg-3 product-item" data-category="${producto.categoria}">
-            <div class="card product-card h-100">
-                <div class="image-container">
-                    <img src="${producto.imagen}" class="card-img-top" alt="${producto.nombre}">
-                </div>
-                <div class="card-body">
-                    <h6 class="card-title">${producto.nombre}</h6>
-                    <p class="small text-muted mb-2">${producto.descripcion}</p>
-                    <p class="fw-bold text-danger mb-3">S/ ${producto.precio.toFixed(2)}</p>
-                    <button class="btn btn-agregar w-100" onclick="agregarAlCarrito(${producto.id}, 'hogar')">
-                        <i class="fas fa-cart-plus me-2"></i>AGREGAR
-                    </button>
-                </div>
-            </div>
-        </div>
-    `).join('');
-}
-
-// Inicializar catálogo al cargar la página
-document.addEventListener('DOMContentLoaded', () => {
-    renderizarProductos(productosOferta);
+    // Inicializar contador
+    inicializarContadorOferta();
     
-    // Configurar filtros de categoría
-    const categoryButtons = document.querySelectorAll('.category-btn');
-    categoryButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            // Actualizar botón activo
-            categoryButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            
-            // Filtrar productos
-            const filter = button.dataset.filter;
-            const productosFiltrados = filter === 'all' 
-                ? productosHogar 
-                : productosHogar.filter(p => p.categoria === filter);
-            
-            renderizarProductos(productosFiltrados);
-        });
-    });
+    // Cargar productos
+    cargarProductos(productosOferta);
     
-    // Configurar ordenamiento
-    const sortSelect = document.querySelector('#sortSelect');
-    if (sortSelect) {
-        sortSelect.addEventListener('change', (e) => {
-            let productosOrdenados = [...productosHogar];
-            
-            switch(e.target.value) {
-                case 'menor-precio':
-                    productosOrdenados.sort((a, b) => a.precio - b.precio);
-                    break;
-                case 'mayor-precio':
-                    productosOrdenados.sort((a, b) => b.precio - a.precio);
-                    break;
-                default: // Relevancia
-                    productosOrdenados = [...productosHogar];
-            }
-            
-            renderizarProductos(productosOrdenados);
-        });
-    }
+    // Configurar filtros
+    configurarFiltros();
+    
+    // Configurar eventos de carrito
+    configurarEventosCarrito();
 });
 
-// ==========================================
-// FUNCIÓN PARA AGREGAR AL CARRITO
-// ==========================================
-
-function agregarAlCarrito(productoId, tipo) {
-    const producto = productosOferta.find(p => p.id === productoId);
-    if (!producto) return;
-
-    // Obtener carrito del localStorage
-    let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+function inicializarContadorOferta() {
+    // Contador regresivo de 72 horas
+    let horas = 72;
+    let minutos = 0;
+    let segundos = 0;
     
-    // Verificar si el producto ya existe en el carrito
-    const productoExistente = carrito.find(item => item.id === productoId && item.tipo === tipo);
-    
-    if (productoExistente) {
-        productoExistente.cantidad += 1;
-    } else {
-        carrito.push({
-            id: producto.id,
-            nombre: producto.nombre,
-            precio: producto.precio,
-            imagen: producto.imagen,
-            cantidad: 1,
-            tipo: tipo
-        });
+    function actualizarContador() {
+        if (segundos === 0) {
+            if (minutos === 0) {
+                if (horas === 0) {
+                    // Oferta terminada
+                    clearInterval(intervalo);
+                    document.getElementById('contador-oferta').textContent = "00:00:00";
+                    document.getElementById('contador-oferta').classList.add('text-danger');
+                    return;
+                }
+                horas--;
+                minutos = 59;
+            } else {
+                minutos--;
+            }
+            segundos = 59;
+        } else {
+            segundos--;
+        }
+        
+        // Formatear y mostrar
+        const formato = `${horas.toString().padStart(2, '0')}:${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
+        document.getElementById('contador-oferta').textContent = formato;
     }
     
-    // Guardar en localStorage
-    localStorage.setItem('carrito', JSON.stringify(carrito));
-    
-    // Actualizar contador del carrito
-    actualizarContadorCarrito();
-    
-    // Mostrar notificación
-    mostrarNotificacion('Producto agregado al carrito');
+    // Actualizar cada segundo
+    const intervalo = setInterval(actualizarContador, 1000);
+    actualizarContador(); // Ejecutar inmediatamente
 }
 
-function actualizarContadorCarrito() {
-    const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-    const totalItems = carrito.reduce((sum, item) => sum + item.cantidad, 0);
+function cargarProductos(productos) {
+    const container = document.getElementById('productos-oferta-container');
     
-    const badges = document.querySelectorAll('.cart-count');
-    badges.forEach(badge => {
-        badge.textContent = totalItems;
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    productos.forEach((producto, index) => {
+        const col = document.createElement('div');
+        col.className = 'col-md-4 col-lg-3';
+        col.innerHTML = `
+            <div class="card card-oferta h-100 producto-animado" 
+                 style="animation-delay: ${index * 0.1}s;"
+                 data-categoria="${producto.categoria}">
+                <div class="position-relative">
+                    <span class="oferta-badge">-${producto.descuento}%</span>
+                    <img src="${producto.imagen}" class="card-img-top" alt="${producto.nombre}" 
+                         style="height: 200px; object-fit: cover;">
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">${producto.nombre}</h5>
+                    <p class="card-text text-muted flex-grow-1">${producto.descripcion}</p>
+                    <div class="mt-auto">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="precio-anterior text-decoration-line-through">$${producto.precioAnterior.toFixed(2)}</span>
+                            <span class="precio-oferta">$${producto.precioOferta.toFixed(2)}</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="stock ${producto.stock < 5 ? 'stock-bajo' : 'text-success'}">
+                                <i class="fas ${producto.stock < 5 ? 'fa-exclamation-triangle' : 'fa-check-circle'} me-1"></i>
+                                ${producto.stock < 5 ? `Solo ${producto.stock} unidades` : 'En stock'}
+                            </span>
+                        </div>
+                        <button class="btn btn-primary w-100 btn-agregar-carrito" 
+                                data-id="${producto.id}"
+                                data-nombre="${producto.nombre}"
+                                data-precio="${producto.precioOferta}"
+                                data-imagen="${producto.imagen}">
+                            <i class="fas fa-cart-plus me-2"></i>Agregar al carrito
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        container.appendChild(col);
     });
 }
 
-function mostrarNotificacion(mensaje) {
-    // Crear notificación temporal
-    const notif = document.createElement('div');
-    notif.className = 'alert alert-success position-fixed top-0 start-50 translate-middle-x mt-3';
-    notif.style.zIndex = '9999';
-    notif.innerHTML = `<i class="fas fa-check-circle me-2"></i>${mensaje}`;
-    document.body.appendChild(notif);
+function configurarFiltros() {
+    const filtros = document.querySelectorAll('.filtro-btn');
+    const selectOrden = document.getElementById('ordenar');
     
-    setTimeout(() => {
-        notif.remove();
-    }, 2000);
+    filtros.forEach(filtro => {
+        filtro.addEventListener('click', function() {
+            // Quitar active de todos
+            filtros.forEach(f => f.classList.remove('active'));
+            // Agregar active al clickeado
+            this.classList.add('active');
+            
+            // Aquí puedes implementar el filtrado real
+            const categoria = this.dataset.categoria;
+            console.log(`Filtrar por: ${categoria}`);
+        });
+    });
+    
+    if (selectOrden) {
+        selectOrden.addEventListener('change', function() {
+            console.log(`Ordenar por: ${this.value}`);
+        });
+    }
 }
 
-// Actualizar contador al cargar la página
-document.addEventListener('DOMContentLoaded', actualizarContadorCarrito);
+function configurarEventosCarrito() {
+    // Eventos para agregar productos al carrito
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.btn-agregar-carrito')) {
+            const boton = e.target.closest('.btn-agregar-carrito');
+            agregarProductoAlCarrito(boton);
+        }
+        
+        if (e.target.closest('.btn-combo-agregar')) {
+            const boton = e.target.closest('.btn-combo-agregar');
+            agregarComboAlCarrito(boton);
+        }
+    });
+    
+    // Newsletter
+    const formNewsletter = document.getElementById('form-newsletter');
+    if (formNewsletter) {
+        formNewsletter.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = this.querySelector('input[type="email"]').value;
+            
+            // Simular envío
+            this.innerHTML = `
+                <div class="alert alert-success" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>
+                    ¡Gracias por suscribirte! Te enviaremos nuestras mejores ofertas a: ${email}
+                </div>
+            `;
+            
+            // En un caso real, aquí harías una petición AJAX al servidor
+        });
+    }
+}
+
+function agregarProductoAlCarrito(boton) {
+    const producto = {
+        id: boton.dataset.id,
+        nombre: boton.dataset.nombre,
+        precio: parseFloat(boton.dataset.precio),
+        imagen: boton.dataset.imagen,
+        cantidad: 1
+    };
+    
+    // Usar la función del carrito si existe
+    if (typeof agregarAlCarrito === 'function') {
+        agregarAlCarrito(producto);
+        mostrarNotificacionCarrito(producto.nombre);
+    } else {
+        // Fallback a localStorage
+        agregarAlCarritoFallback(producto);
+    }
+}
+
+function agregarComboAlCarrito(boton) {
+    const comboId = boton.dataset.combo;
+    let combo;
+    
+    if (comboId === '1') {
+        combo = {
+            id: 'combo-1',
+            nombre: 'Combo Cocina Completa',
+            precio: 1999.99,
+            imagen: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+            cantidad: 1,
+            esCombo: true
+        };
+    } else {
+        combo = {
+            id: 'combo-2',
+            nombre: 'Combo Lavandería',
+            precio: 1399.99,
+            imagen: 'https://images.unsplash.com/photo-1560185007-cde436f6a4d0?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+            cantidad: 1,
+            esCombo: true
+        };
+    }
+    
+    // Usar la función del carrito si existe
+    if (typeof agregarAlCarrito === 'function') {
+        agregarAlCarrito(combo);
+        mostrarNotificacionCarrito(combo.nombre);
+    } else {
+        // Fallback a localStorage
+        agregarAlCarritoFallback(combo);
+    }
+}
+
+function agregarAlCarritoFallback(item) {
+    let carrito = JSON.parse(localStorage.getItem('carritoRobinson')) || [];
+    
+    // Verificar si ya existe
+    const index = carrito.findIndex(p => p.id === item.id);
+    
+    if (index !== -1) {
+        carrito[index].cantidad += 1;
+    } else {
+        carrito.push(item);
+    }
+    
+    localStorage.setItem('carritoRobinson', JSON.stringify(carrito));
+    actualizarContadorCarritoFallback();
+    mostrarNotificacionCarrito(item.nombre);
+}
+
+function actualizarContadorCarritoFallback() {
+    const carrito = JSON.parse(localStorage.getItem('carritoRobinson')) || [];
+    const total = carrito.reduce((sum, item) => sum + item.cantidad, 0);
+    
+    // Actualizar en el navbar
+    const contador = document.querySelector('.cart-count');
+    if (contador) {
+        contador.textContent = total;
+        contador.style.display = total > 0 ? 'inline-block' : 'none';
+    }
+}
+
+function mostrarNotificacionCarrito(nombreProducto) {
+    // Crear notificación temporal
+    const notificacion = document.createElement('div');
+    notificacion.className = 'position-fixed top-0 end-0 m-3 p-3 bg-success text-white rounded shadow-lg';
+    notificacion.style.zIndex = '9999';
+    notificacion.innerHTML = `
+        <div class="d-flex align-items-center">
+            <i class="fas fa-check-circle fa-2x me-3"></i>
+            <div>
+                <strong>¡Producto agregado!</strong><br>
+                ${nombreProducto} se agregó al carrito.
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(notificacion);
+    
+    // Remover después de 3 segundos
+    setTimeout(() => {
+        notificacion.classList.add('animate__animated', 'animate__fadeOutRight');
+        setTimeout(() => {
+            if (notificacion.parentNode) {
+                notificacion.parentNode.removeChild(notificacion);
+            }
+        }, 500);
+    }, 3000);
+}

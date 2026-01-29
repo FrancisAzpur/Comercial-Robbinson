@@ -288,7 +288,7 @@
     <script>
         // Cargar carrito del localStorage
         function cargarCarrito() {
-            const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+            const carrito = JSON.parse(localStorage.getItem('carritoRobinson')) || [];
             const contenedor = document.getElementById('cartItems');
             
             if (carrito.length === 0) {
@@ -344,7 +344,7 @@
 
         // Cambiar cantidad
         function cambiarCantidad(index, cambio) {
-            let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+            let carrito = JSON.parse(localStorage.getItem('carritoRobinson')) || [];
             carrito[index].cantidad += cambio;
 
             if (carrito[index].cantidad <= 0) {
@@ -358,7 +358,7 @@
         // Eliminar del carrito
         function eliminarDelCarrito(index) {
             if (confirm('¿Deseas eliminar este producto del carrito?')) {
-                let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+                let carrito = JSON.parse(localStorage.getItem('carritoRobinson')) || [];
                 carrito.splice(index, 1);
                 localStorage.setItem('carrito', JSON.stringify(carrito));
                 cargarCarrito();
@@ -367,7 +367,7 @@
 
         // Actualizar totales
         function actualizarTotales() {
-            const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+            const carrito = JSON.parse(localStorage.getItem('carritoRobinson')) || [];
             const subtotal = carrito.reduce((total, item) => total + (item.precio * item.cantidad), 0);
             const igv = subtotal * 0.18;
             const total = subtotal + igv;
@@ -379,7 +379,7 @@
 
         // Procesar pago
         function procesarPago() {
-            const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+            const carrito = JSON.parse(localStorage.getItem('carritoRobinson')) || [];
             if (carrito.length === 0) {
                 alert('Tu carrito está vacío');
                 return;
@@ -425,7 +425,7 @@
                 return;
             }
 
-            const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+            const carrito = JSON.parse(localStorage.getItem('carritoRobinson')) || [];
             const subtotal = carrito.reduce((total, item) => total + (item.precio * item.cantidad), 0);
             const igv = subtotal * 0.18;
             const total = subtotal + igv;
@@ -469,7 +469,7 @@
                 modalConfirm.show();
                 
                 // Limpiar carrito y datos
-                localStorage.removeItem('carrito');
+                localStorage.removeItem('carritoRobinson');
                 document.getElementById('formCliente').reset();
                 cargarCarrito();
             }, 300);
@@ -478,7 +478,7 @@
         // Limpiar carrito
         function limpiarCarrito() {
             if (confirm('¿Estás seguro de que deseas vaciar tu carrito?')) {
-                localStorage.removeItem('carrito');
+                localStorage.removeItem('carritoRobinson');
                 cargarCarrito();
             }
         }
