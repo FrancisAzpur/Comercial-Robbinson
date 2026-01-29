@@ -1,0 +1,279 @@
+/* ============================================
+   ESTILOS PARA PÁGINA DE CONTACTO
+   ============================================ */
+
+:root {
+    --dark-blue: #0d1b2a;
+    --medium-blue: #1b263b;
+    --light-blue: #415a77;
+    --accent-orange: #e07a5f;
+    --accent-orange-dark: #c95e4a;
+    --text-dark: #2d2d2d;
+}
+
+/* ========== PANEL DE INFORMACIÓN ==========*/
+.contact-info-panel {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 40px 30px;
+    backdrop-filter: blur(10px);
+    transition: all 0.4s ease;
+    height: 100%;
+}
+
+.contact-info-panel:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+.contact-info-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 35px;
+    animation: slideInLeft 0.6s ease forwards;
+}
+
+.contact-info-item:nth-child(1) { animation-delay: 0.1s; }
+.contact-info-item:nth-child(2) { animation-delay: 0.2s; }
+.contact-info-item:nth-child(3) { animation-delay: 0.3s; }
+.contact-info-item:nth-child(4) { animation-delay: 0.4s; }
+.contact-info-item:nth-child(5) { animation-delay: 0.5s; }
+
+.contact-info-item:last-child {
+    margin-bottom: 0;
+}
+
+.contact-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--accent-orange), #ff9a80);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: white;
+    margin-right: 20px;
+    flex-shrink: 0;
+    box-shadow: 0 8px 20px rgba(224, 122, 95, 0.4);
+}
+
+.contact-content h5 {
+    color: white;
+    font-weight: 700;
+    margin-bottom: 8px;
+    font-size: 18px;
+}
+
+.contact-content p {
+    color: rgba(255, 255, 255, 0.85);
+    margin-bottom: 0;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+/* ========== FORMULARIO DE CONTACTO ==========*/
+.contact-form {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    animation: slideInRight 0.6s ease;
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Estilos para inputs */
+.contact-form .form-control,
+.contact-form .form-select {
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.3s ease;
+    background-color: white;
+}
+
+.contact-form .form-control:focus,
+.contact-form .form-select:focus {
+    border-color: var(--accent-orange);
+    box-shadow: 0 0 0 0.2rem rgba(224, 122, 95, 0.25);
+    background-color: white;
+}
+
+.contact-form .form-control::placeholder {
+    color: #999;
+    font-weight: 400;
+}
+
+.contact-form .form-label {
+    font-size: 15px;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+}
+
+.contact-form textarea.form-control {
+    resize: none;
+    font-family: 'Poppins', sans-serif;
+    min-height: 140px;
+}
+
+.contact-form textarea.form-control:focus {
+    border-color: var(--accent-orange);
+    box-shadow: 0 0 0 0.2rem rgba(224, 122, 95, 0.25);
+}
+
+/* ========== BOTÓN ENVIAR ==========*/
+.btn-enviar {
+    background: linear-gradient(45deg, var(--accent-orange), #ff9a80);
+    border: none;
+    color: white;
+    padding: 14px 32px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 16px;
+    transition: all 0.4s ease;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    box-shadow: 0 8px 25px rgba(224, 122, 95, 0.4);
+}
+
+.btn-enviar:hover {
+    background: linear-gradient(45deg, var(--accent-orange-dark), var(--accent-orange));
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(224, 122, 95, 0.6);
+    color: white;
+}
+
+.btn-enviar:active {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(224, 122, 95, 0.4);
+}
+
+/* ========== RESPONSIVO ==========*/
+@media (max-width: 992px) {
+    .contact-form {
+        padding: 30px;
+    }
+
+    .contact-info-panel {
+        padding: 30px 20px;
+    }
+
+    .contact-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+    }
+
+    .contact-content h5 {
+        font-size: 16px;
+    }
+
+    .contact-content p {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 768px) {
+    .contact-form {
+        padding: 25px;
+    }
+
+    .contact-info-panel {
+        padding: 25px 15px;
+    }
+
+    .contact-info-item {
+        margin-bottom: 25px;
+    }
+
+    .contact-icon {
+        width: 45px;
+        height: 45px;
+        font-size: 18px;
+        margin-right: 15px;
+    }
+
+    .contact-content h5 {
+        font-size: 15px;
+    }
+
+    .contact-form .form-control,
+    .contact-form .form-select {
+        font-size: 14px;
+    }
+
+    .btn-enviar {
+        font-size: 14px;
+        padding: 12px 24px;
+    }
+}
+
+@media (max-width: 576px) {
+    .contact-form {
+        padding: 20px;
+    }
+
+    .contact-info-panel {
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+
+    .contact-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+        margin-right: 12px;
+    }
+
+    .contact-content h5 {
+        font-size: 14px;
+    }
+
+    .contact-content p {
+        font-size: 13px;
+    }
+
+    .contact-form .form-label {
+        font-size: 13px;
+    }
+
+    .btn-enviar {
+        font-size: 13px;
+        padding: 10px 20px;
+    }
+}
+
+/* ========== VALIDACIÓN DE FORMULARIO ==========*/
+.contact-form .form-control.is-invalid,
+.contact-form .form-select.is-invalid {
+    border-color: #dc3545;
+}
+
+.contact-form .form-control.is-valid,
+.contact-form .form-select.is-valid {
+    border-color: #198754;
+}
