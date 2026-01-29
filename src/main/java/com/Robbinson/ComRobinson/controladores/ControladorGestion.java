@@ -24,31 +24,39 @@ import com.Robbinson.ComRobinson.servicios.ServicioVenta;
  * Controlador de Gestión para administrar Clientes, Pedidos y Ventas
  * Proporciona operaciones CRUD completas y vistas para el sistema
  */
-@Controller
-@RequestMapping("/gestion")
+@Controller  // Le dice a Spring que esta clase maneja las páginas web
+@RequestMapping("/gestion")  // Todas las rutas de este controlador empiezan con /gestion
 public class ControladorGestion {
 
-    // Inyectamos los servicios
-    @Autowired
-    private ServicioCliente servicioCliente;
+    // ========== SERVICIOS - Son como ayudantes que hacen el trabajo pesado ==========
+    // Los servicios contienen la lógica de negocio y se comunican con la base de datos
+    
+    @Autowired  // Spring inyecta automáticamente el servicio (Inyección de Dependencias)
+    private ServicioCliente servicioCliente;  // Maneja todo lo relacionado con clientes
 
     @Autowired
-    private ServicioPedido servicioPedido;
+    private ServicioPedido servicioPedido;  // Maneja todo lo relacionado con pedidos
 
     @Autowired
-    private ServicioVenta servicioVenta;
+    private ServicioVenta servicioVenta;  // Maneja todo lo relacionado con ventas
 
     // ==================== RUTAS DE CLIENTES ====================
 
     /**
      * Mostrar página de listado de clientes
+     * Ruta: GET /gestion/clientes
      */
-    @GetMapping("/clientes")
+    @GetMapping("/clientes")  // Responde a peticiones GET (para mostrar páginas)
     public String listarClientes(Model modelo) {
+        // 1. Obtener todos los clientes desde la base de datos usando el servicio
         List<Cliente> clientes = servicioCliente.obtenerTodosLosClientes();
-        modelo.addAttribute("clientes", clientes);
-        modelo.addAttribute("titulo", "Gestión de Clientes");
-        return "gestion/clientes-listado";
+        
+        // 2. Pasar los datos a la vista (página HTML) usando el modelo
+        modelo.addAttribute("clientes", clientes);  // Los clientes estarán disponibles en la vista
+        modelo.addAttribute("titulo", "Gestión de Clientes");  // El título de la página
+        
+        // 3. Retornar el nombre de la vista (archivo HTML en templates/gestion/)
+        return "gestion/clientes-listado";  // Spring busca: templates/gestion/clientes-listado.html
     }
 
     /**
@@ -63,24 +71,38 @@ public class ControladorGestion {
 
     /**
      * Procesar el formulario y agregar cliente
+     * Ruta: POST /gestion/clientes/guardar
      */
-    @PostMapping("/clientes/guardar")
+    @PostMapping("/clientes/guardar")  // POST se usa para enviar datos (formularios)
     public String guardarCliente(Cliente cliente) {
-        servicioCliente.agregarCliente(cliente);
-        return "redirect:/gestion/clientes";
+        // Spring automáticamente crea el objeto Cliente con los datos del formulario
+        // Esto se llama "Data Binding" - los campos del formulario se mapean a las propiedades del objeto
+        
+        servicioCliente.agregarCliente(cliente);  // Guardar el cliente en la base de datos
+        
+        // redirect: redirige a otra página (en lugar de mostrar una vista)
+        return "redirect:/gestion/clientes";  // Volver a la lista de clientes
     }
 
     /**
      * Mostrar detalle de un cliente específico
+     * Ruta: GET /gestion/clientes/{id}  Ejemplo: /gestion/clientes/5
      */
-    @GetMapping("/clientes/{id}")
+    @GetMapping("/clientes/{id}")  // {id} es una variable en la URL
     public String detalleCliente(@PathVariable Long id, Model modelo) {
+        // @PathVariable extrae el valor de {id} de la URL y lo convierte a Long
+        // Ejemplo: si la URL es /clientes/5, entonces id = 5
+        
+        // Optional es un contenedor que puede tener un valor o estar vacío (evita null)
         Optional<Cliente> cliente = servicioCliente.obtenerClientePorId(id);
-        if (cliente.isPresent()) {
-            modelo.addAttribute("cliente", cliente.get());
+        
+        // Verificar si encontramos el cliente
+        if (cliente.isPresent()) {  // Si existe el cliente
+            modelo.addAttribute("cliente", cliente.get());  // Enviar cliente a la vista
             modelo.addAttribute("titulo", "Detalle del Cliente");
-            return "gestion/clientes-detalle";
+            return "gestion/clientes-detalle";  // Mostrar página de detalle
         }
+        // Si no existe, redirigir a la lista de clientes
         return "redirect:/gestion/clientes";
     }
 
@@ -118,12 +140,18 @@ public class ControladorGestion {
 
     /**
      * Buscar clientes por nombre
+     * Ruta: GET /gestion/clientes/buscar?nombre=Juan
      */
     @GetMapping("/clientes/buscar")
     public String buscarClientes(@RequestParam String nombre, Model modelo) {
+        // @RequestParam obtiene parámetros de la URL después del ?
+        // Ejemplo: /clientes/buscar?nombre=Juan → nombre = "Juan"
+        
         List<Cliente> clientes = servicioCliente.buscarPorNombre(nombre);
         modelo.addAttribute("clientes", clientes);
         modelo.addAttribute("titulo", "Resultados de búsqueda: " + nombre);
+        
+        // Reutilizamos la misma vista de listado para mostrar los resultados
         return "gestion/clientes-listado";
     }
 
@@ -131,17 +159,23 @@ public class ControladorGestion {
 
     /**
      * Mostrar página de listado de pedidos
+     * Ruta: GET /gestion/pedidos
      */
     @GetMapping("/pedidos")
     public String listarPedidos(Model modelo) {
+        // Obtener todos los pedidos
         List<Pedido> pedidos = servicioPedido.obtenerTodosLosPedidos();
+        
+        // Obtener estadísticas: cuántos pedidos hay en cada estado
+        // Array con 4 posiciones: [Pendiente, Procesando, Enviado, Entregado]
         int[] conteos = servicioPedido.contarPedidosPorEstado();
         
+        // Pasar todos los datos a la vista
         modelo.addAttribute("pedidos", pedidos);
-        modelo.addAttribute("totalPendiente", conteos[0]);
-        modelo.addAttribute("totalProcesando", conteos[1]);
-        modelo.addAttribute("totalEnviado", conteos[2]);
-        modelo.addAttribute("totalEntregado", conteos[3]);
+        modelo.addAttribute("totalPendiente", conteos[0]);    // Pedidos pendientes
+        modelo.addAttribute("totalProcesando", conteos[1]);   // Pedidos en proceso
+        modelo.addAttribute("totalEnviado", conteos[2]);      // Pedidos enviados
+        modelo.addAttribute("totalEntregado", conteos[3]);    // Pedidos entregados
         modelo.addAttribute("titulo", "Gestión de Pedidos");
         
         return "gestion/pedidos-listado";
@@ -159,15 +193,19 @@ public class ControladorGestion {
 
     /**
      * Guardar nuevo pedido
+     * Ruta: POST /gestion/pedidos/guardar
      */
     @PostMapping("/pedidos/guardar")
     public String guardarPedido(Pedido pedido) {
-        // Generar número de orden automático
+        // Generar número de orden automático si no existe
+        // System.currentTimeMillis() retorna el tiempo actual en milisegundos (es único)
         if (pedido.getNumeroOrden() == null || pedido.getNumeroOrden().isEmpty()) {
             pedido.setNumeroOrden("ORD-" + System.currentTimeMillis());
+            // Ejemplo: ORD-1706472345678
         }
-        servicioPedido.agregarPedido(pedido);
-        return "redirect:/gestion/pedidos";
+        
+        servicioPedido.agregarPedido(pedido);  // Guardar en la base de datos
+        return "redirect:/gestion/pedidos";     // Volver al listado
     }
 
     /**
@@ -190,7 +228,7 @@ public class ControladorGestion {
     @GetMapping("/pedidos/{id}/editar")
     public String formularioEditarPedido(@PathVariable Long id, Model modelo) {
         Optional<Pedido> pedido = servicioPedido.obtenerPedidoPorId(id);
-        if (pedido.isPresent()) {
+        if (pedido.isPresent()) { // isPresent verifica si el pedido existe
             modelo.addAttribute("pedido", pedido.get());
             modelo.addAttribute("titulo", "Editar Pedido");
             return "gestion/pedidos-formulario";
@@ -209,11 +247,17 @@ public class ControladorGestion {
 
     /**
      * Cambiar estado de un pedido
+     * Ruta: POST /gestion/pedidos/{id}/cambiar-estado
+     * Combina @PathVariable (id del pedido) y @RequestParam (nuevo estado)
      */
     @PostMapping("/pedidos/{id}/cambiar-estado")
     public String cambiarEstadoPedido(@PathVariable Long id, @RequestParam String estado) {
-        servicioPedido.cambiarEstadoPedido(id, estado);
-        return "redirect:/gestion/pedidos/" + id;
+        // Ejemplo de URL: /pedidos/5/cambiar-estado?estado=Enviado
+        // id = 5 (de la URL)
+        // estado = "Enviado" (parámetro)
+        
+        servicioPedido.cambiarEstadoPedido(id, estado);  // Actualizar estado
+        return "redirect:/gestion/pedidos/" + id;        // Volver al detalle del pedido
     }
 
     /**
@@ -229,16 +273,24 @@ public class ControladorGestion {
 
     /**
      * Mostrar página de listado de ventas
+     * Ruta: GET /gestion/ventas
      */
     @GetMapping("/ventas")
     public String listarVentas(Model modelo) {
+        // Obtener todas las ventas
         List<Venta> ventas = servicioVenta.obtenerTodasLasVentas();
-        BigDecimal totalVentas = servicioVenta.calcularTotalVentas();
-        int totalUnidades = servicioVenta.obtenerTotalUnidadesVendidas();
         
+        // Calcular estadísticas importantes
+        BigDecimal totalVentas = servicioVenta.calcularTotalVentas();  // Suma de todos los montos
+        int totalUnidades = servicioVenta.obtenerTotalUnidadesVendidas();  // Total de productos vendidos
+        
+        // Pasar datos a la vista
         modelo.addAttribute("ventas", ventas);
         modelo.addAttribute("totalVentas", totalVentas);
         modelo.addAttribute("totalUnidades", totalUnidades);
+        
+        // Calcular promedio de venta (evitar división por cero)
+        // BigDecimal se usa para cálculos monetarios precisos (no usa double por imprecisión)
         modelo.addAttribute("promedio", ventas.isEmpty() ? BigDecimal.ZERO : 
             totalVentas.divide(new BigDecimal(ventas.size()), 2, java.math.RoundingMode.HALF_UP));
         modelo.addAttribute("titulo", "Gestión de Ventas");
@@ -330,50 +382,64 @@ public class ControladorGestion {
 
     // ==================== RUTA PRINCIPAL DE GESTIÓN ====================
 
+    // ==================== DASHBOARD - PANEL PRINCIPAL ====================
+    
     /**
      * Dashboard principal de gestión
+     * Muestra un resumen general con estadísticas clave del negocio
+     * Ruta: GET /gestion/dashboard
      */
     @GetMapping("/dashboard")
     public String dashboard(Model modelo) {
-        int totalClientes = servicioCliente.contarClientes();
-        int totalPedidos = servicioPedido.contarPedidos();
-        int totalVentas = servicioVenta.contarVentas();
-        BigDecimal totalVentasMonto = servicioVenta.calcularTotalVentas();
+        // Recopilar métricas principales de cada módulo
+        int totalClientes = servicioCliente.contarClientes();        // Total de clientes registrados
+        int totalPedidos = servicioPedido.contarPedidos();          // Total de pedidos realizados
+        int totalVentas = servicioVenta.contarVentas();             // Total de ventas completadas
+        BigDecimal totalVentasMonto = servicioVenta.calcularTotalVentas();  // Dinero total generado
         
+        // Enviar todas las métricas a la vista del dashboard
         modelo.addAttribute("totalClientes", totalClientes);
         modelo.addAttribute("totalPedidos", totalPedidos);
         modelo.addAttribute("totalVentas", totalVentas);
         modelo.addAttribute("totalVentasMonto", totalVentasMonto);
         modelo.addAttribute("titulo", "Dashboard de Gestión");
         
+        // Mostrar página del dashboard con todas las estadísticas
         return "gestion/dashboard";
     }
 
     // ==================== RUTAS DE GRÁFICOS ====================
 
+    // ==================== GRÁFICOS Y ANÁLISIS DE DATOS ====================
+    
     /**
      * Mostrar gráficos de ventas (barras, líneas, circulares)
+     * Procesa los datos para visualización en gráficos
+     * Ruta: GET /gestion/graficos/ventas
      */
     @GetMapping("/graficos/ventas")
     public String graficosVentas(Model modelo) {
         List<Venta> ventas = servicioVenta.obtenerTodasLasVentas();
         
-        // Calcular datos para gráficos
+        // Preparar estructuras de datos para los gráficos
+        // Map (diccionario) almacena pares clave-valor para agrupar datos
         java.util.Map<String, Integer> ventasPorProducto = new java.util.HashMap<>();
         java.util.Map<String, BigDecimal> ventasPorFecha = new java.util.HashMap<>();
         java.util.Map<String, BigDecimal> ventasPorVendedor = new java.util.HashMap<>();
         
-        // Contar ventas por producto
+        // Procesar cada venta y agrupar los datos para diferentes análisis
         for (Venta venta : ventas) {
+            // 1. Agrupar por producto: ¿Cuántas unidades se vendieron de cada producto?
+            // getOrDefault: si no existe la clave, usa el valor por defecto (0)
             ventasPorProducto.put(venta.getNombreProducto(), 
                 ventasPorProducto.getOrDefault(venta.getNombreProducto(), 0) + venta.getCantidadVendida());
             
-            // Sumar montos por fecha
+            // 2. Agrupar por fecha: ¿Cuánto se vendió cada día?
             String fecha = venta.getFechaVenta().toString();
             ventasPorFecha.put(fecha, 
                 ventasPorFecha.getOrDefault(fecha, BigDecimal.ZERO).add(venta.getMontoTotal()));
             
-            // Sumar montos por vendedor
+            // 3. Agrupar por vendedor: ¿Cuánto vendió cada vendedor?
             ventasPorVendedor.put(venta.getVendedor(), 
                 ventasPorVendedor.getOrDefault(venta.getVendedor(), BigDecimal.ZERO).add(venta.getMontoTotal()));
         }

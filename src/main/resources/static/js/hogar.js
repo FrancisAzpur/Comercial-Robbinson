@@ -72,45 +72,71 @@ const productosHogar = [
         descripcion: 'Extra absorbente'
     },
     
-    // Decoración - Plantas
+    // Cocina - Vajillas
     {
         id: 9,
-        nombre: 'Planta de Sala Sansevieria con maceta beige',
-        precio: 76.50,
-        categoria: 'decoracion',
-        imagen: '/img/planta1.jpg',
-        descripcion: 'Purifica el aire'
+        nombre: 'Juego de Vajilla Porcelana Combo 60 Piezas',
+        precio: 249.90,
+        categoria: 'cocina',
+        imagen: '/img/vajilla1.webp',
+        descripcion: 'Juego completo para 12 personas'
     },
     {
         id: 10,
-        nombre: 'Planta de Sala Sombra con maceta verde',
-        precio: 77.40,
-        categoria: 'decoracion',
-        imagen: '/img/planta2.jpg',
-        descripcion: 'Resistente y elegante'
+        nombre: 'Juego de Vajilla Porcelana 30 Piezas Paula',
+        precio: 199.90,
+        categoria: 'cocina',
+        imagen: '/img/vajilla2.webp',
+        descripcion: 'Diseño elegante Paula'
     },
     {
         id: 11,
-        nombre: 'Planta Monstera Artificial con maceta',
-        precio: 85.50,
-        categoria: 'decoracion',
-        imagen: '/img/planta3.avif',
-        descripcion: 'Sin mantenimiento'
+        nombre: 'Vajilla x16 Piezas Porcelana con Textura',
+        precio: 99.90,
+        categoria: 'cocina',
+        imagen: '/img/vajilla3.webp',
+        descripcion: 'Textura moderna'
     },
     {
         id: 12,
-        nombre: 'Planta Ficus Artificial con maceta',
-        precio: 79.80,
-        categoria: 'decoracion',
-        imagen: '/img/planta4.avif',
-        descripcion: 'Realista y duradera'
+        nombre: 'Set Vajilla Decal Rosa 16 Piezas',
+        precio: 49.90,
+        categoria: 'cocina',
+        imagen: '/img/vajilla4.jpg',
+        descripcion: 'Delicado diseño rosa'
     },
+    
+    // Decoración - Plantas
     {
         id: 13,
+        nombre: 'Planta Olivo Artificial 30×132 cm',
+        precio: 129.90,
+        categoria: 'decoracion',
+        imagen: '/img/planta1.webp',
+        descripcion: 'Planta artificial grande'
+    },
+    {
+        id: 14,
+        nombre: 'Planta Grande Eucalipto 120 cm',
+        precio: 99.90,
+        categoria: 'decoracion',
+        imagen: '/img/planta2.webp',
+        descripcion: 'Eucalipto decorativo'
+    },
+    {
+        id: 15,
+        nombre: 'Planta Ficus artificial 154 cm',
+        precio: 179.90,
+        categoria: 'decoracion',
+        imagen: '/img/planta3.avif',
+        descripcion: 'Ficus realista'
+    },
+    {
+        id: 16,
         nombre: 'Planta Sansevieria Artificial con maceta',
         precio: 83.70,
         categoria: 'decoracion',
-        imagen: '/img/planta5.jpg',
+        imagen: '/img/planta4.avif',
         descripcion: 'Perfecta para interiores'
     }
 ];
@@ -166,20 +192,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     // Configurar ordenamiento
-    const sortSelect = document.querySelector('select');
+    const sortSelect = document.querySelector('#sortSelect');
     if (sortSelect) {
         sortSelect.addEventListener('change', (e) => {
             let productosOrdenados = [...productosHogar];
             
             switch(e.target.value) {
-                case 'Menor precio':
+                case 'menor-precio':
                     productosOrdenados.sort((a, b) => a.precio - b.precio);
                     break;
-                case 'Mayor precio':
+                case 'mayor-precio':
                     productosOrdenados.sort((a, b) => b.precio - a.precio);
                     break;
                 default: // Relevancia
-                    productosOrdenados = productosHogar;
+                    productosOrdenados = [...productosHogar];
             }
             
             renderizarProductos(productosOrdenados);
