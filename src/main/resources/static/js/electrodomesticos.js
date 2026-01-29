@@ -2,7 +2,7 @@
 // CATÁLOGO DE ELECTRODOMÉSTICOS
 // ==========================================
 
-// Catálogo completo de productos
+// Catálogo completo de productos con JSON
 const productosCompletos = [
     // Refrigeración
     {
@@ -134,37 +134,32 @@ const productosCompletos = [
 ];
 
 // ==========================================
-// FILTRADO DE PRODUCTOS
+// FILTRADO DE PRODUCTOS POR CATEGORÍA
 // ==========================================
 
-let categoriaActual = 'all';
+let categoriaActual = 'todos';
 
 /**
  * Filtra productos por categoría
- * @param {string} categoria - La categoría a filtrar
  */
-function filtrarCategoria(categoria) {
+function filtrarPorCategoria(categoria) {
     categoriaActual = categoria;
     renderizarProductos();
-    
-    // Actualizar botones activos
-    document.querySelectorAll('.category-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    event.target.classList.add('active');
 }
 
 /**
- * Renderiza los productos en el DOM
+ * Renderiza los productos filtrados en el DOM
  */
 function renderizarProductos() {
     const container = document.getElementById('catalogo-productos');
-    const productosFiltrados = categoriaActual === 'all' 
+    
+    // Filtrar productos según categoría
+    const productosFiltrados = categoriaActual === 'todos' 
         ? productosCompletos 
         : productosCompletos.filter(p => p.categoria === categoriaActual);
 
     container.innerHTML = productosFiltrados.map((producto, index) => `
-        <div class="col-md-4 col-lg-3 product-item" data-category="${producto.categoria}" data-aos="fade-up" data-aos-delay="${index * 50}">
+        <div class="col-md-4 col-lg-3 product-item">
             <div class="card product-card h-100">
                 <div class="image-container">
                     <img src="${producto.imagen}" 
@@ -181,17 +176,12 @@ function renderizarProductos() {
                             data-nombre="${producto.nombre}" 
                             data-precio="${producto.precio}" 
                             data-imagen="${producto.imagen}">
-                        Añadir al carrito
+                        <i class="fas fa-cart-plus me-2"></i>AGREGAR
                     </button>
                 </div>
             </div>
         </div>
     `).join('');
-
-    // Re-inicializar AOS después de renderizar
-    if (typeof AOS !== 'undefined') {
-        AOS.refresh();
-    }
     
     // Re-vincular eventos de botones
     vincularEventosCarrito();
@@ -216,13 +206,20 @@ function vincularEventosCarrito() {
 }
 
 /**
- * Configura los botones de filtro
+ * Configura los botones de filtro de categoría
  */
 function configurarFiltros() {
-    document.querySelectorAll('.category-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const categoria = this.dataset.filter;
-            filtrarCategoria(categoria);
+    // Filtros de categoría
+    document.querySelectorAll('.category-btn').forEach(boton => {
+        boton.addEventListener('click', () => {
+            // Remover clase active de todos los botones
+            document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+            // Agregar clase active al botón clickeado
+            boton.classList.add('active');
+            
+            // Filtrar por categoría
+            const categoria = boton.dataset.filter;
+            filtrarPorCategoria(categoria);
         });
     });
 }
@@ -232,8 +229,8 @@ function configurarFiltros() {
 // ==========================================
 
 document.addEventListener('DOMContentLoaded', () => {
-    renderizarProductos();
     configurarFiltros();
+    renderizarProductos();
     actualizarContadorCarrito();
 });
 

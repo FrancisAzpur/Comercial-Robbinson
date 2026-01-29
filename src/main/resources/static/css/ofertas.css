@@ -1,17 +1,74 @@
-/* ofertas.css - Estilos específicos para página de ofertas */
+/* ==========================================
+   ESTILOS PARA PÁGINA DE OFERTAS
+   ========================================== */
 
-/* Banner de ofertas */
+:root {
+    --beige: #FDFBF7;
+    --dark-blue: #0d1b2a;
+    --medium-blue: #1b263b;
+    --light-blue: #415a77;
+    --accent-orange: #e07a5f;
+    --accent-orange-dark: #c95e4a;
+    --text-dark: #2d2d2d;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--beige) !important;
+    color: var(--text-dark);
+    overflow-x: hidden;
+}
+
+main, .container-fluid, section, aside {
+    background-color: var(--beige) !important;
+}
+
+.bg-light {
+    background-color: var(--beige) !important;
+}
+
+.bg-white {
+    background-color: var(--beige) !important;
+}
+
+/* ==========================================
+   NAVBAR
+   ========================================== */
+
+.navbar {
+    background: linear-gradient(90deg, var(--medium-blue), var(--dark-blue));
+    transition: all 0.4s ease;
+    z-index: 1000;
+}
+
+.navbar-brand {
+    color: white !important;
+    font-weight: 800;
+    font-size: 1.8rem;
+}
+
+.nav-link {
+    color: rgba(255, 255, 255, 0.85) !important;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-link:hover {
+    color: var(--accent-orange) !important;
+}
+
+/* ==========================================
+   BANNER OFERTAS
+   ========================================== */
+
 .banner-ofertas {
-    background: linear-gradient(135deg, 
-                rgba(52, 152, 219, 0.9) 0%, 
-                rgba(41, 128, 185, 0.9) 100%),
-                url('https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?ixlib=rb-4.0.3&auto=format&fit=crop&w=1770&q=80');
-    background-size: cover;
-    background-position: center;
-    border-radius: 15px;
+    background: linear-gradient(135deg, var(--dark-blue) 0%, var(--medium-blue) 50%, var(--light-blue) 100%);
+    border-radius: 20px;
     margin-top: 20px;
     position: relative;
     overflow: hidden;
+    padding: 60px 40px;
+    color: white;
 }
 
 .banner-ofertas::before {
@@ -21,110 +78,196 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="none"/><path d="M0,50 Q25,25 50,50 T100,50" stroke="white" stroke-width="1" fill="none" opacity="0.1"/></svg>');
-    opacity: 0.1;
+    background: radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    z-index: 1;
 }
+
+.banner-ofertas h1 {
+    position: relative;
+    z-index: 2;
+    font-size: 3rem;
+    font-weight: 800;
+    text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* ==========================================
+   COUNTDOWN
+   ========================================== */
 
 .countdown-card {
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
-    border: 2px solid rgba(231, 76, 60, 0.2);
+    border: 2px solid var(--accent-orange);
+    border-radius: 15px;
+    padding: 20px;
+    position: relative;
+    z-index: 2;
 }
 
-/* Filtros */
-.filtro-btn.active {
-    background-color: #3498db !important;
-    color: white !important;
-    border-color: #3498db !important;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
-}
+/* ==========================================
+   FILTROS
+   ========================================== */
 
-.filtro-btn:hover:not(.active) {
-    background-color: #f8f9fa;
-    transform: translateY(-1px);
-}
-
-/* Productos en oferta */
-.card-oferta {
+.filtro-btn {
+    background-color: white;
+    color: var(--text-dark);
+    border: 2px solid #e0e0e0;
+    padding: 8px 16px;
+    border-radius: 25px;
+    font-size: 0.95rem;
+    font-weight: 500;
     transition: all 0.3s ease;
-    border: 2px solid transparent;
+    cursor: pointer;
+}
+
+.filtro-btn:hover {
+    background-color: var(--accent-orange);
+    color: white;
+    border-color: var(--accent-orange);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(224, 122, 95, 0.3);
+}
+
+.filtro-btn.active {
+    background-color: var(--accent-orange);
+    color: white;
+    border-color: var(--accent-orange);
+    box-shadow: 0 4px 12px rgba(224, 122, 95, 0.4);
+}
+
+/* ==========================================
+   PRODUCTOS EN OFERTA
+   ========================================== */
+
+.card-oferta {
+    transition: all 0.5s ease;
+    border: none;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     height: 100%;
+    background: white;
 }
 
 .card-oferta:hover {
-    transform: translateY(-10px);
-    border-color: #3498db;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    transform: translateY(-15px);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
 }
 
 .oferta-badge {
     position: absolute;
     top: 15px;
     left: 15px;
-    background: linear-gradient(45deg, #e74c3c, #c0392b);
+    background: linear-gradient(45deg, var(--accent-orange), #ff9a80);
     color: white;
     font-weight: bold;
     padding: 8px 15px;
     border-radius: 30px;
     font-size: 0.9rem;
     z-index: 10;
-    box-shadow: 0 4px 8px rgba(231, 76, 60, 0.3);
+    box-shadow: 0 4px 12px rgba(224, 122, 95, 0.4);
+}
+
+.image-container {
+    width: 100%;
+    height: 280px;
+    overflow: hidden;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    position: relative;
+}
+
+.card-img-top {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform 0.6s ease;
+}
+
+.card-oferta:hover .card-img-top {
+    transform: scale(1.1);
 }
 
 .precio-anterior {
-    font-size: 1rem;
-    opacity: 0.7;
+    font-size: 0.95rem;
+    opacity: 0.6;
+    text-decoration: line-through;
+    margin-right: 10px;
 }
 
 .precio-oferta {
     font-size: 1.5rem;
     font-weight: bold;
-    color: #e74c3c;
+    color: var(--accent-orange);
 }
 
 .stock-bajo {
-    color: #e67e22;
+    color: #ff6b6b;
     font-weight: bold;
+    font-size: 0.9rem;
 }
 
-.btn-agregar-carrito {
+.btn-agregar {
+    background: linear-gradient(45deg, var(--accent-orange), #ff9a80);
+    border: none;
+    color: white;
+    font-weight: 700;
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
     transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(224, 122, 95, 0.3);
 }
 
-.btn-agregar-carrito:hover {
-    padding-right: 40px;
+.btn-agregar:hover {
+    background: linear-gradient(45deg, var(--accent-orange-dark), #e07a5f);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(224, 122, 95, 0.4);
+    color: white;
 }
 
-.btn-agregar-carrito:hover::after {
-    content: '→';
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
+.btn-agregar:active {
+    transform: translateY(0);
 }
 
-/* Combos */
+/* ==========================================
+   COMBOS
+   ========================================== */
+
 .combo-card {
-    transition: all 0.3s ease;
+    transition: all 0.4s ease;
+    border: none;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    background: white;
 }
 
 .combo-card:hover {
-    transform: scale(1.02);
+    transform: scale(1.03);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
 }
 
 .combo-card .card-header {
-    border-radius: 10px 10px 0 0 !important;
+    background: linear-gradient(45deg, var(--accent-orange), #ff9a80);
+    border: none;
+    color: white;
+    border-radius: 20px 20px 0 0 !important;
 }
 
-/* Newsletter */
+/* ==========================================
+   NEWSLETTER
+   ========================================== */
+
 .newsletter-ofertas {
-    background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
-    border-radius: 15px;
+    background: linear-gradient(135deg, var(--dark-blue), var(--medium-blue));
+    border-radius: 20px;
     overflow: hidden;
     position: relative;
+    padding: 60px 40px;
+    color: white;
 }
 
 .newsletter-ofertas::before {
@@ -134,10 +277,66 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="white" stroke-width="1" opacity="0.1"/></svg>');
+    background: radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
 }
 
-/* Animaciones para productos */
+.newsletter-ofertas h3 {
+    position: relative;
+    z-index: 2;
+}
+
+/* ==========================================
+   FOOTER
+   ========================================== */
+
+footer {
+    background: linear-gradient(to right, var(--dark-blue), var(--medium-blue));
+    color: white;
+    padding: 4rem 0 2rem;
+}
+
+footer h5 {
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+footer ul li {
+    margin-bottom: 0.5rem;
+}
+
+footer a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+footer a:hover {
+    color: var(--accent-orange);
+}
+
+.social-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    color: white;
+    text-decoration: none;
+    margin-right: 10px;
+    transition: all 0.3s;
+}
+
+.social-icon:hover {
+    background: var(--accent-orange);
+    transform: translateY(-3px);
+}
+
+/* ==========================================
+   ANIMACIONES
+   ========================================== */
+
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -153,11 +352,14 @@
     animation: fadeInUp 0.6s ease forwards;
 }
 
-/* Responsive */
+/* ==========================================
+   RESPONSIVE
+   ========================================== */
+
 @media (max-width: 768px) {
     .banner-ofertas {
         text-align: center;
-        padding: 30px 15px !important;
+        padding: 30px 20px !important;
     }
     
     .banner-ofertas h1 {
@@ -166,6 +368,8 @@
     
     .filtro-btn {
         margin-bottom: 5px;
+        font-size: 0.85rem;
+        padding: 6px 12px;
     }
     
     .combo-card .row {
@@ -175,5 +379,13 @@
     .combo-card img {
         height: 200px;
         object-fit: cover;
+    }
+    
+    .image-container {
+        height: 200px;
+    }
+    
+    .newsletter-ofertas {
+        padding: 30px 20px !important;
     }
 }

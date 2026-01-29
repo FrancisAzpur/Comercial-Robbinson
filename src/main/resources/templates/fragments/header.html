@@ -20,13 +20,17 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     
-    <!-- Custom CSS -->
-    <link th:href="@{/css/style.css}" rel="stylesheet">
-    <link th:href="@{/css/styles.css}" rel="stylesheet">
+    <!-- Estilos Globales Unificados -->
+    <link th:href="@{/css/global.css}" rel="stylesheet">
     
     <!-- CSS específicos por página -->
+    <link th:if="${titulo == 'Inicio'}" th:href="@{/css/index.css}" rel="stylesheet">
     <link th:if="${titulo == 'Electrodomésticos'}" th:href="@{/css/electrodomesticos.css}" rel="stylesheet">
     <link th:if="${titulo == 'Hogar'}" th:href="@{/css/hogar.css}" rel="stylesheet">
+    <link th:if="${titulo == 'Ofertas'}" th:href="@{/css/ofertas.css}" rel="stylesheet">
+    <link th:if="${titulo == 'Contacto'}" th:href="@{/css/contacto.css}" rel="stylesheet">
+    <link th:if="${titulo == 'Mi Carrito'}" th:href="@{/css/carrito.css}" rel="stylesheet">
+    <link th:if="${titulo == 'Panel de Operarios'}" th:href="@{/css/admin.css}" rel="stylesheet">
     <link th:if="${titulo == 'Contacto'}" th:href="@{/css/contacto.css}" rel="stylesheet">
 </head>
 <body>

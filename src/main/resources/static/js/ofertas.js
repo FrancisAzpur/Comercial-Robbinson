@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', function() {
             precioOferta: 999.99,
             descuento: 23,
             imagen: "https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-            categoria: "destacados",
             stock: 8,
             destacado: true
         },
@@ -23,7 +22,6 @@ document.addEventListener('DOMContentLoaded', function() {
             precioOferta: 699.99,
             descuento: 22,
             imagen: "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-            categoria: "rebajados",
             stock: 15,
             destacado: false
         },
@@ -35,7 +33,6 @@ document.addEventListener('DOMContentLoaded', function() {
             precioOferta: 899.99,
             descuento: 31,
             imagen: "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-            categoria: "rebajados",
             stock: 12,
             destacado: false
         },
@@ -47,7 +44,6 @@ document.addEventListener('DOMContentLoaded', function() {
             precioOferta: 699.99,
             descuento: 22,
             imagen: "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-            categoria: "rebajados",
             stock: 16,
             destacado: false
         },
@@ -115,8 +111,7 @@ function cargarProductos(productos) {
         col.className = 'col-md-4 col-lg-3';
         col.innerHTML = `
             <div class="card card-oferta h-100 producto-animado" 
-                 style="animation-delay: ${index * 0.1}s;"
-                 data-categoria="${producto.categoria}">
+                 style="animation-delay: ${index * 0.1}s;">
                 <div class="position-relative">
                     <span class="oferta-badge">-${producto.descuento}%</span>
                     <img src="${producto.imagen}" class="card-img-top" alt="${producto.nombre}" 
@@ -127,8 +122,8 @@ function cargarProductos(productos) {
                     <p class="card-text text-muted flex-grow-1">${producto.descripcion}</p>
                     <div class="mt-auto">
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <span class="precio-anterior text-decoration-line-through">$${producto.precioAnterior.toFixed(2)}</span>
-                            <span class="precio-oferta">$${producto.precioOferta.toFixed(2)}</span>
+                            <span class="precio-anterior text-decoration-line-through">S/ ${producto.precioAnterior.toLocaleString()}</span>
+                            <span class="precio-oferta">S/ ${producto.precioOferta.toLocaleString()}</span>
                         </div>
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <span class="stock ${producto.stock < 5 ? 'stock-bajo' : 'text-success'}">
@@ -152,21 +147,9 @@ function cargarProductos(productos) {
 }
 
 function configurarFiltros() {
-    const filtros = document.querySelectorAll('.filtro-btn');
     const selectOrden = document.getElementById('ordenar');
     
-    filtros.forEach(filtro => {
-        filtro.addEventListener('click', function() {
-            // Quitar active de todos
-            filtros.forEach(f => f.classList.remove('active'));
-            // Agregar active al clickeado
-            this.classList.add('active');
-            
-            // Aquí puedes implementar el filtrado real
-            const categoria = this.dataset.categoria;
-            console.log(`Filtrar por: ${categoria}`);
-        });
-    });
+    // Filtros de categoría eliminados - ya no se utilizan
     
     if (selectOrden) {
         selectOrden.addEventListener('change', function() {
