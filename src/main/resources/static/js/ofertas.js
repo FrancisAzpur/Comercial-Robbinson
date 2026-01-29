@@ -27,6 +27,30 @@ document.addEventListener('DOMContentLoaded', function() {
             stock: 15,
             destacado: false
         },
+        {
+            id: 2,
+            nombre: "Televisor Samsung QOLED 4K",
+            descripcion: "Televisor de 55 pulgadas con tecnología QLED y resolución 4K",
+            precioAnterior: 1299.99,
+            precioOferta: 899.99,
+            descuento: 31,
+            imagen: "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+            categoria: "rebajados",
+            stock: 12,
+            destacado: false
+        },
+        {
+            id: 2,
+            nombre: "Horno de Microondas Panasonic",
+            descripcion: "Horno de microondas de 25L con tecnología Inverter",
+            precioAnterior: 899.99,
+            precioOferta: 699.99,
+            descuento: 22,
+            imagen: "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+            categoria: "rebajados",
+            stock: 16,
+            destacado: false
+        },
         // ... (agrega más productos según necesites)
     ];
 
