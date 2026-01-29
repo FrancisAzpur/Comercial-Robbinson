@@ -52,7 +52,7 @@ const productosCompletos = [
         nombre: 'Smart TV 65" QLED',
         precio: 5999,
         categoria: 'tv',
-        imagen: '/img/Samsung QLED 65 OLED.jpg',
+        imagen: '/img/Samsung TV 65 OLED.jpg',
         descripcion: 'Quantum Dot, 120Hz'
     },
     {
