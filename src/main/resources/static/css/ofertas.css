@@ -1,0 +1,274 @@
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --accent-color: #e74c3c;
+    --success-color: #27ae60;
+    --warning-color: #f39c12;
+    --light-color: #ecf0f1;
+    --dark-color: #2c3e50;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(-100%);
+    }
+
+    to {
+        transform: translateX(0);
+    }
+}
+
+/* Estilos generales para las cards de productos */
+.card.hover-shadow {
+    transition: all 0.3s ease;
+    border: none;
+    overflow: hidden;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.card.hover-shadow:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+.card.hover-shadow:hover .card-img-top {
+    transform: scale(1.05);
+}
+
+.card-img-top {
+    transition: transform 0.3s ease;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+/* Badge de descuento */
+.badge.bg-danger {
+    font-size: 0.9rem;
+    padding: 0.5em 0.8em;
+    animation: pulse 2s infinite;
+}
+
+/* Estilos para los precios */
+.text-decoration-line-through {
+    font-size: 0.9rem;
+}
+
+/* Botones */
+.btn-explore {
+    background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-explore:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+    color: white;
+}
+
+.btn-outline-primary {
+    border-width: 2px;
+    font-weight: 500;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* Modal personalizado */
+.modal-content {
+    border-radius: 15px;
+    border: none;
+    animation: slideIn 0.3s ease-out;
+}
+
+.modal-header {
+    border-radius: 15px 15px 0 0;
+}
+
+/* Tabla del carrito */
+.table tbody tr {
+    transition: all 0.2s ease;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(52, 152, 219, 0.05);
+}
+
+/* Input group personalizado */
+.input-group.input-group-sm {
+    border-radius: 5px;
+}
+
+.input-group.input-group-sm .btn {
+    padding: 0.25rem 0.5rem;
+}
+
+.input-group.input-group-sm input {
+    border-color: #dee2e6;
+}
+
+/* Alertas personalizadas */
+.alert {
+    border: none;
+    border-radius: 10px;
+}
+
+.alert-info {
+    background-color: rgba(52, 152, 219, 0.1);
+    border-left: 4px solid var(--secondary-color);
+}
+
+.alert-success {
+    background-color: rgba(39, 174, 96, 0.1);
+    border-left: 4px solid var(--success-color);
+}
+
+.alert-warning {
+    background-color: rgba(243, 156, 18, 0.1);
+    border-left: 4px solid var(--warning-color);
+}
+
+/* Progress bar */
+.progress {
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #ecf0f1;
+}
+
+.progress-bar {
+    background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+}
+
+/* Tooltip personalizado */
+.tooltip-inner {
+    background-color: var(--primary-color);
+    border-radius: 5px;
+}
+
+.tooltip.bs-tooltip-top .tooltip-arrow::before {
+    border-top-color: var(--primary-color);
+}
+
+/* Estilos para el formulario de pago */
+.form-control:focus {
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+}
+
+.btn-check:checked+.btn-outline-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+/* Estilos para la confirmación */
+.card-header.bg-success {
+    background: linear-gradient(45deg, var(--success-color), #2ecc71) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .display-4 {
+        font-size: 2.5rem;
+    }
+
+    .hero-content {
+        text-align: center;
+    }
+
+    .card.hover-shadow {
+        margin-bottom: 20px;
+    }
+}
+
+/* Animación para nuevos productos */
+@keyframes highlight {
+    0% {
+        background-color: rgba(52, 152, 219, 0.1);
+    }
+
+    100% {
+        background-color: transparent;
+    }
+}
+
+.highlight-new {
+    animation: highlight 2s ease-out;
+}
+
+/* Estilos para los iconos */
+.bi {
+    vertical-align: middle;
+}
+
+.bi-cart3 {
+    font-size: 1.2rem;
+}
+
+/* Estilos para la navegación de progreso */
+.rounded-circle.bg-primary {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para las imágenes de productos */
+.img-fluid {
+    border-radius: 8px;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--secondary-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-color);
+}
+
+/* Estilos para los badges de categoría */
+.badge.bg-info {
+    background-color: var(--secondary-color) !important;
+}
+
+.badge.bg-success {
+    background-color: var(--success-color) !important;
+}

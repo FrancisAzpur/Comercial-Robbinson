@@ -2,6 +2,7 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="~{fragments/header :: head('Ofertas Especiales')}">
+    <title>Ofertas Especiales</title>
 </head>
 
 <body>
@@ -67,15 +68,15 @@
                                 </div>
 
                                 <!-- Nombre y Descripción -->
-                                <h5 class="card-title text-primary" th:text="${producto.nombre}"></h5>
+                                <h5 class="card-title text-primary" th:text="${producto.nombre}">Producto</h5>
                                 <p class="card-text text-muted small" th:text="${producto.descripcion}"></p>
 
                                 <!-- Precios -->
                                 <div class="mt-auto">
                                     <div class="d-flex align-items-center mb-2">
-                                        <h4 class="text-danger fw-bold mb-0"
-                                            th:text="'$' + ${#numbers.formatDecimal(producto.precio, 1, 2, 'COMMA')}">
-                                        </h4>
+                                        <span class="text-danger fw-bold mb-0" style="font-size: 1.3rem;">
+                                            <span th:text="'$' + ${#numbers.formatDecimal(producto.precio, 1, 2, 'COMMA')}"></span>
+                                        </span>
                                         <small class="text-muted text-decoration-line-through ms-2"
                                             th:if="${producto.tieneDescuento()}"
                                             th:text="'$' + ${#numbers.formatDecimal(producto.precioAnterior, 1, 2, 'COMMA')}">
@@ -235,6 +236,7 @@
                 carritoModal.addEventListener('show.bs.modal', actualizarCarrito);
             }
         });
+
         /*]]>*/
     </script>
 </body>
