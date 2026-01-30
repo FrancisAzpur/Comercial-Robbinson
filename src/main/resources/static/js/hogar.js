@@ -146,7 +146,7 @@ function renderizarProductos() {
                     <h6 class="card-title">${producto.nombre}</h6>
                     <p class="small text-muted mb-2">${producto.descripcion}</p>
                     <p class="fw-bold text-danger mb-3">S/ ${producto.precio.toFixed(2)}</p>
-                    <button class="btn btn-agregar w-100" onclick="agregarAlCarrito(${producto.id}, 'hogar')">
+                    <button class="btn btn-agregar w-100" onclick="addToCartHogar(${producto.id})">
                         <i class="fas fa-cart-plus me-2"></i>AGREGAR
                     </button>
                 </div>
@@ -217,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <h6 class="card-title">${producto.nombre}</h6>
                             <p class="small text-muted mb-2">${producto.descripcion}</p>
                             <p class="fw-bold text-danger mb-3">S/ ${producto.precio.toFixed(2)}</p>
-                            <button class="btn btn-agregar w-100" onclick="agregarAlCarrito(${producto.id}, 'hogar')">
+                            <button class="btn btn-agregar w-100" onclick="addToCartHogar(${producto.id})">
                                 <i class="fas fa-cart-plus me-2"></i>AGREGAR
                             </button>
                         </div>
@@ -232,12 +232,12 @@ document.addEventListener('DOMContentLoaded', () => {
 // FUNCI\u00d3N PARA AGREGAR AL CARRITO
 // ==========================================
 
-function agregarAlCarrito(productoId, tipo) {
+function agregarAlCarrito(productoId, tipo) { addToCartHogar(productoId); return; // delega a addToCartHogar (usa API central)
     const producto = productosHogar.find(p => p.id === productoId);
     if (!producto) return;
 
     // Obtener carrito del localStorage
-    let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+    let carrito = JSON.parse(localStorage.getItem('carritoRobinson')) || [];
     
     // Verificar si el producto ya existe en el carrito
     const productoExistente = carrito.find(item => item.id === productoId && item.tipo === tipo);
@@ -256,7 +256,7 @@ function agregarAlCarrito(productoId, tipo) {
     }
     
     // Guardar en localStorage
-    localStorage.setItem('carrito', JSON.stringify(carrito));
+    localStorage.setItem('carritoRobinson', JSON.stringify(carrito));
     
     // Actualizar contador del carrito
     actualizarContadorCarrito();
@@ -266,7 +266,7 @@ function agregarAlCarrito(productoId, tipo) {
 }
 
 function actualizarContadorCarrito() {
-    const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+    const carrito = JSON.parse(localStorage.getItem('carritoRobinson')) || [];
     const totalItems = carrito.reduce((sum, item) => sum + item.cantidad, 0);
     
     const badges = document.querySelectorAll('.cart-count');
@@ -290,3 +290,55 @@ function mostrarNotificacion(mensaje) {
 
 // Actualizar contador al cargar la p\u00e1gina
 document.addEventListener('DOMContentLoaded', actualizarContadorCarrito);
+// Función de compatibilidad para agregar desde la vista Hogar (usa la API central cuando esté disponible)
+function addToCartHogar(productoId) {
+    console.log('addToCartHogar invoked with', productoId);
+    // Asegurar tipo numérico por si viene como string desde el onclick
+    productoId = Number(productoId);
+
+    const producto = productosHogar.find(p => p.id === productoId);
+    if (!producto) { console.warn('Producto no encontrado en productosHogar:', productoId); return; }
+
+    const payload = {
+        id: producto.id,
+        nombre: producto.nombre,
+        precio: producto.precio,
+        imagen: producto.imagen,
+        tipo: 'hogar'
+    };
+
+    // Intentar delegar a la API central si está disponible
+    if (window && typeof window.agregarAlCarrito === 'function') {
+        try {
+            const resultado = window.agregarAlCarrito(payload);
+            console.log('window.agregarAlCarrito result:', resultado);
+            // Si la API no devolviera true/undefined, aún confirmamos que localStorage se actualizó
+            const stored = JSON.parse(localStorage.getItem('carritoRobinson') || '[]');
+            const existe = stored.findIndex(item => item.id === payload.id && item.tipo === payload.tipo) !== -1;
+            if (!existe) {
+                console.warn('La API central no guardó el producto, aplicando fallback local.');
+                // Fallback local
+                let carrito = stored;
+                const idx = carrito.findIndex(item => item.id === payload.id && item.tipo === payload.tipo);
+                if (idx !== -1) carrito[idx].cantidad += 1; else carrito.push({...payload, cantidad:1});
+                localStorage.setItem('carritoRobinson', JSON.stringify(carrito));
+                actualizarContadorCarrito();
+            }
+        } catch (e) {
+            console.error('Error ejecutando window.agregarAlCarrito:', e);
+            // Fallback local
+            let carrito = JSON.parse(localStorage.getItem('carritoRobinson') || '[]');
+            const idx = carrito.findIndex(item => item.id === payload.id && item.tipo === payload.tipo);
+            if (idx !== -1) carrito[idx].cantidad += 1; else carrito.push({...payload, cantidad:1});
+            localStorage.setItem('carritoRobinson', JSON.stringify(carrito));
+            actualizarContadorCarrito();
+        }
+    } else {
+        // Fallback mínimo
+        let carrito = JSON.parse(localStorage.getItem('carritoRobinson') || '[]');
+        const idx = carrito.findIndex(item => item.id === payload.id && item.tipo === payload.tipo);
+        if (idx !== -1) carrito[idx].cantidad += 1; else carrito.push({...payload, cantidad:1});
+        localStorage.setItem('carritoRobinson', JSON.stringify(carrito));
+        actualizarContadorCarrito();
+    }
+}

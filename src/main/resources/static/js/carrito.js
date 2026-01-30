@@ -28,9 +28,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Función para cargar el carrito desde localStorage
 function cargarCarrito() {
+    // Preferir la clave nueva
     const carritoGuardado = localStorage.getItem(CARRO_KEY);
     console.log('Cargando carrito, localStorage:', carritoGuardado);
-    
+
     if (carritoGuardado) {
         try {
             carrito = JSON.parse(carritoGuardado);
@@ -38,8 +39,25 @@ function cargarCarrito() {
             console.error('Error al cargar el carrito:', error);
             carrito = [];
         }
+    } else {
+        // Compatibilidad hacia atrás: migrar desde clave antigua 'carrito' si existe
+        const antiguo = localStorage.getItem('carrito');
+        if (antiguo) {
+            try {
+                carrito = JSON.parse(antiguo);
+                localStorage.setItem(CARRO_KEY, JSON.stringify(carrito));
+                localStorage.removeItem('carrito');
+                console.log('Carrito migrado desde clave antigua `carrito` a `carritoRobinson`.');
+            } catch (e) {
+                console.error('Error migrando carrito antiguo:', e);
+                carrito = [];
+            }
+        }
     }
+
     console.log('Carrito cargado:', carrito);
+    // Asegurar que el contador del navbar se actualice tras cargar
+    actualizarContadorCarrito();
 }
 
 // Función para guardar el carrito en localStorage

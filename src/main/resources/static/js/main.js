@@ -25,8 +25,26 @@ window.addEventListener('scroll', () => {
  * @returns {Array} Array de productos en el carrito
  */
 function getCarrito() {
-    const carrito = localStorage.getItem('carrito');
-    return carrito ? JSON.parse(carrito) : [];
+    // Priorizar la clave actual
+    const actual = localStorage.getItem('carritoRobinson');
+    if (actual) {
+        return JSON.parse(actual);
+    }
+
+    // Migrar desde la clave antigua 'carrito' si existe (compatibilidad hacia atrás)
+    const antiguo = localStorage.getItem('carrito');
+    if (antiguo) {
+        try {
+            const parsed = JSON.parse(antiguo);
+            localStorage.setItem('carritoRobinson', JSON.stringify(parsed));
+            localStorage.removeItem('carrito');
+            return parsed;
+        } catch (e) {
+            console.error('Error migrando carrito antiguo:', e);
+        }
+    }
+
+    return [];
 }
 
 /**
@@ -34,7 +52,7 @@ function getCarrito() {
  * @param {Array} carrito - Array de productos
  */
 function setCarrito(carrito) {
-    localStorage.setItem('carrito', JSON.stringify(carrito));
+    localStorage.setItem('carritoRobinson', JSON.stringify(carrito));
 }
 
 /**
@@ -42,16 +60,20 @@ function setCarrito(carrito) {
  * @param {Object} producto - Objeto con datos del producto
  */
 function agregarAlCarrito(producto) {
+    // Si la API central está disponible y no es esta misma función, delegar
+    if (window && typeof window.agregarAlCarrito === 'function' && window.agregarAlCarrito !== agregarAlCarrito) {
+        return window.agregarAlCarrito(producto);
+    }
+
+    // Fallback local (compatibilidad): manejar con la clave 'carritoRobinson'
     let carrito = getCarrito();
     
-    // Buscar si el producto ya existe en el carrito
-    const productoExistente = carrito.find(item => item.id === producto.id);
+    // Buscar si el producto ya existe en el carrito (considerar tipo si existe)
+    const productoExistente = carrito.find(item => item.id === producto.id && (producto.tipo ? item.tipo === producto.tipo : true));
     
     if (productoExistente) {
-        // Si existe, incrementar cantidad
         productoExistente.cantidad++;
     } else {
-        // Si no existe, agregar con cantidad 1
         carrito.push({
             ...producto,
             cantidad: 1
@@ -72,10 +94,12 @@ function actualizarContadorCarrito() {
     const carrito = getCarrito();
     const totalItems = carrito.reduce((total, item) => total + item.cantidad, 0);
     
-    const contadorElemento = document.querySelector('.cart-count');
-    if (contadorElemento) {
-        contadorElemento.textContent = totalItems;
-    }
+    // Actualizar todos los contadores en la página (puede haber varios badges)
+    const elementos = document.querySelectorAll('.cart-count');
+    elementos.forEach(el => {
+        el.textContent = totalItems;
+        el.style.display = totalItems > 0 ? 'inline-block' : 'none';
+    });
 }
 
 /**
@@ -101,9 +125,13 @@ function mostrarNotificacion(mensaje) {
 // EVENTO PARA BOTONES DE AÑADIR AL CARRITO
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
-    // Actualizar contador al cargar la página
-    actualizarContadorCarrito();
-    
+    // Preferir la función centralizada si existe
+    if (window.actualizarContadorCarrito) {
+        window.actualizarContadorCarrito();
+    } else {
+        actualizarContadorCarrito();
+    }
+
     // Agregar event listeners a todos los botones de "Añadir al carrito"
     const botonesAgregar = document.querySelectorAll('.btn-add-cart');
     
@@ -116,10 +144,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 id: parseInt(boton.dataset.id),
                 nombre: boton.dataset.nombre,
                 precio: parseFloat(boton.dataset.precio),
-                imagen: boton.dataset.imagen
+                imagen: boton.dataset.imagen,
+                tipo: boton.dataset.tipo || 'general'
             };
             
-            agregarAlCarrito(producto);
+            if (window.agregarAlCarrito) {
+                window.agregarAlCarrito(producto);
+            } else {
+                // Fallback: operación local mínima si la API central no está cargada
+                let carrito = JSON.parse(localStorage.getItem('carritoRobinson') || '[]');
+                const idx = carrito.findIndex(item => item.id === producto.id && item.tipo === producto.tipo);
+                if (idx !== -1) carrito[idx].cantidad += 1; else carrito.push({...producto, cantidad:1});
+                localStorage.setItem('carritoRobinson', JSON.stringify(carrito));
+                // Actualizar contador localmente
+                const elementos = document.querySelectorAll('.cart-count');
+                elementos.forEach(el => el.textContent = carrito.reduce((s,i)=>s+i.cantidad,0));
+            }
         });
     });
 });
@@ -132,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
  * Vacía completamente el carrito
  */
 function vaciarCarrito() {
-    localStorage.removeItem('carrito');
+    localStorage.removeItem('carritoRobinson');
     actualizarContadorCarrito();
 }
 

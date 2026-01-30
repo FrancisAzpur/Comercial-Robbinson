@@ -202,12 +202,13 @@ function agregarProductoAlCarrito(boton) {
         nombre: boton.dataset.nombre,
         precio: parseFloat(boton.dataset.precio),
         imagen: boton.dataset.imagen,
-        cantidad: 1
+        cantidad: 1,
+        tipo: 'ofertas'
     };
     
-    // Usar la función del carrito si existe
-    if (typeof agregarAlCarrito === 'function') {
-        agregarAlCarrito(producto);
+    // Usar la función del carrito central si existe
+    if (window && typeof window.agregarAlCarrito === 'function') {
+        window.agregarAlCarrito(producto);
         mostrarNotificacionCarrito(producto.nombre);
     } else {
         // Fallback a localStorage
@@ -239,9 +240,9 @@ function agregarComboAlCarrito(boton) {
         };
     }
     
-    // Usar la función del carrito si existe
-    if (typeof agregarAlCarrito === 'function') {
-        agregarAlCarrito(combo);
+    // Usar la función del carrito central si existe
+    if (window && typeof window.agregarAlCarrito === 'function') {
+        window.agregarAlCarrito(combo);
         mostrarNotificacionCarrito(combo.nombre);
     } else {
         // Fallback a localStorage

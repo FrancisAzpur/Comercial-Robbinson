@@ -198,9 +198,18 @@ function vincularEventosCarrito() {
                 id: parseInt(boton.dataset.id),
                 nombre: boton.dataset.nombre,
                 precio: parseFloat(boton.dataset.precio),
-                imagen: boton.dataset.imagen
+                imagen: boton.dataset.imagen,
+                tipo: 'electrodomesticos'
             };
-            agregarAlCarrito(producto);
+            if (window.agregarAlCarrito) {
+                window.agregarAlCarrito(producto);
+            } else {
+                // Fallback mínimo
+                let carrito = JSON.parse(localStorage.getItem('carritoRobinson') || '[]');
+                const idx = carrito.findIndex(item => item.id === producto.id && item.tipo === producto.tipo);
+                if (idx !== -1) carrito[idx].cantidad += 1; else carrito.push({...producto, cantidad:1});
+                localStorage.setItem('carritoRobinson', JSON.stringify(carrito));
+            }
         });
     });
 }

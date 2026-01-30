@@ -351,7 +351,7 @@
                 carrito.splice(index, 1);
             }
 
-            localStorage.setItem('carrito', JSON.stringify(carrito));
+            localStorage.setItem('carritoRobinson', JSON.stringify(carrito));
             cargarCarrito();
         }
 
@@ -360,7 +360,7 @@
             if (confirm('¿Deseas eliminar este producto del carrito?')) {
                 let carrito = JSON.parse(localStorage.getItem('carritoRobinson')) || [];
                 carrito.splice(index, 1);
-                localStorage.setItem('carrito', JSON.stringify(carrito));
+                localStorage.setItem('carritoRobinson', JSON.stringify(carrito));
                 cargarCarrito();
             }
         }
