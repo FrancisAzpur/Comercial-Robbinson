@@ -1,74 +1,59 @@
-// ==========================================
-// CATÁLOGO DE PRODUCTOS HOGAR
+﻿// ==========================================
+// CAT\u00c1LOGO DE PRODUCTOS HOGAR (SIN CATEGOR\u00cdAS)
 // ==========================================
 
-// Catálogo completo de productos del hogar
+// Cat\u00e1logo completo de productos del hogar
 const productosHogar = [
-    // Menaje - Sábanas
+    // Menaje - S\u00e1banas
     {
         id: 1,
-        nombre: 'Juego de sábanas 200 hilos | 1 plaza',
-        precio: 89,
-        categoria: 'menaje',
-        imagen: '/img/sabanas1.webp',
-        descripcion: 'Sábanas de algodón suave'
+        nombre: 'Juego de s\u00e1banas 200 hilos | 1 plaza',
+        precio: 89,        categoria: 'menaje',        imagen: '/img/sabanas1.webp',
+        descripcion: 'S\u00e1banas de algod\u00f3n suave'
     },
     {
         id: 2,
-        nombre: 'Juego de sábanas 200 hilos | 2 plazas',
-        precio: 120,
-        categoria: 'menaje',
-        imagen: '/img/sabana2.jpg',
+        nombre: 'Juego de s\u00e1banas 200 hilos | 2 plazas',
+        precio: 120,        categoria: 'menaje',        imagen: '/img/sabana2.jpg',
         descripcion: 'Ideal para cama matrimonial'
     },
     {
         id: 3,
-        nombre: 'Edredón reversible cama matrimonial',
-        precio: 200,
-        categoria: 'menaje',
-        imagen: '/img/sabanas3.webp',
-        descripcion: 'Diseño elegante y moderno'
+        nombre: 'Edred\u00f3n reversible cama matrimonial',
+        precio: 200,        categoria: 'menaje',        imagen: '/img/sabanas3.webp',
+        descripcion: 'Dise\u00f1o elegante y moderno'
     },
     {
         id: 4,
         nombre: 'Almohada hotelera premium (unidad)',
-        precio: 60,
-        categoria: 'menaje',
-        imagen: '/img/almohada.avif',
-        descripcion: 'Máximo confort'
+        precio: 60,        categoria: 'menaje',        imagen: '/img/almohada.avif',
+        descripcion: 'M\u00e1ximo confort'
     },
     
     // Menaje - Toallas
     {
         id: 5,
-        nombre: 'Juego de toallas 4 piezas algodón',
-        precio: 140,
-        categoria: 'menaje',
-        imagen: '/img/toallas1.webp',
+        nombre: 'Juego de toallas 4 piezas algod\u00f3n',
+        precio: 140,        categoria: 'menaje',        imagen: '/img/toallas1.webp',
         descripcion: 'Suaves y absorbentes'
     },
     {
         id: 6,
-        nombre: 'Set x4 Toallas Mano/Baño Roberta Allen Lollipop',
-        precio: 80,
-        categoria: 'menaje',
-        imagen: '/img/toallas2.avif',
-        descripcion: 'Diseño exclusivo'
+        nombre: 'Set x4 Toallas Mano/Ba\u00f1o Roberta Allen Lollipop',
+        precio: 80,        categoria: 'menaje',        imagen: '/img/toallas2.avif',
+        descripcion: 'Dise\u00f1o exclusivo'
     },
     {
         id: 7,
-        nombre: 'Toalla Clásica Baño',
+        nombre: 'Toalla Cl\u00e1sica Ba\u00f1o',
         precio: 75,
-        categoria: 'menaje',
         imagen: '/img/toallas3.avif',
-        descripcion: 'Algodón 100%'
+        descripcion: 'Algod\u00f3n 100%'
     },
     {
         id: 8,
-        nombre: 'Toalla Premium Baño',
-        precio: 99,
-        categoria: 'menaje',
-        imagen: '/img/toallas4.avif',
+        nombre: 'Toalla Premium Ba\u00f1o',
+        precio: 99,        categoria: 'menaje',        imagen: '/img/toallas4.avif',
         descripcion: 'Extra absorbente'
     },
     
@@ -84,10 +69,8 @@ const productosHogar = [
     {
         id: 10,
         nombre: 'Juego de Vajilla Porcelana 30 Piezas Paula',
-        precio: 199.90,
-        categoria: 'cocina',
-        imagen: '/img/vajilla2.webp',
-        descripcion: 'Diseño elegante Paula'
+        precio: 199.90,        categoria: 'cocina',        imagen: '/img/vajilla2.webp',
+        descripcion: 'Dise\u00f1o elegante Paula'
     },
     {
         id: 11,
@@ -100,19 +83,15 @@ const productosHogar = [
     {
         id: 12,
         nombre: 'Set Vajilla Decal Rosa 16 Piezas',
-        precio: 49.90,
-        categoria: 'cocina',
-        imagen: '/img/vajilla4.jpg',
-        descripcion: 'Delicado diseño rosa'
+        precio: 49.90,        categoria: 'cocina',        imagen: '/img/vajilla4.jpg',
+        descripcion: 'Delicado dise\u00f1o rosa'
     },
     
-    // Decoración - Plantas
+    // Decoraci\u00f3n - Plantas
     {
         id: 13,
-        nombre: 'Planta Olivo Artificial 30×132 cm',
-        precio: 129.90,
-        categoria: 'decoracion',
-        imagen: '/img/planta1.webp',
+        nombre: 'Planta Olivo Artificial 30\u00d7132 cm',
+        precio: 129.90,        categoria: 'decoracion',        imagen: '/img/planta1.webp',
         descripcion: 'Planta artificial grande'
     },
     {
@@ -142,16 +121,23 @@ const productosHogar = [
 ];
 
 // ==========================================
-// FUNCIONES DE RENDERIZADO
+// FUNCIONES DE RENDERIZADO Y FILTRADO
 // ==========================================
 
-// Renderizar productos
-function renderizarProductos(productosFiltrados) {
+let categoriaActual = 'todos';
+
+// Renderizar productos según filtro de categoría
+function renderizarProductos() {
     const catalogo = document.querySelector('.row.g-4');
     if (!catalogo) return;
 
+    // Filtrar productos según categoría
+    const productosFiltrados = categoriaActual === 'todos' 
+        ? productosHogar 
+        : productosHogar.filter(p => p.categoria === categoriaActual);
+
     catalogo.innerHTML = productosFiltrados.map(producto => `
-        <div class="col-sm-6 col-md-4 col-lg-3 product-item" data-category="${producto.categoria}">
+        <div class="col-sm-6 col-md-4 col-lg-3 product-item">
             <div class="card product-card h-100">
                 <div class="image-container">
                     <img src="${producto.imagen}" class="card-img-top" alt="${producto.nombre}">
@@ -169,27 +155,32 @@ function renderizarProductos(productosFiltrados) {
     `).join('');
 }
 
-// Inicializar catálogo al cargar la página
-document.addEventListener('DOMContentLoaded', () => {
-    renderizarProductos(productosHogar);
-    
-    // Configurar filtros de categoría
-    const categoryButtons = document.querySelectorAll('.category-btn');
-    categoryButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            // Actualizar botón activo
-            categoryButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
+// Filtrar por categoría
+function filtrarPorCategoria(categoria) {
+    categoriaActual = categoria;
+    renderizarProductos();
+}
+
+// Configurar filtros de categoría
+function configurarFiltros() {
+    document.querySelectorAll('.category-btn').forEach(boton => {
+        boton.addEventListener('click', () => {
+            // Remover clase active de todos los botones
+            document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+            // Agregar clase active al botón clickeado
+            boton.classList.add('active');
             
-            // Filtrar productos
-            const filter = button.dataset.filter;
-            const productosFiltrados = filter === 'all' 
-                ? productosHogar 
-                : productosHogar.filter(p => p.categoria === filter);
-            
-            renderizarProductos(productosFiltrados);
+            // Filtrar por categoría
+            const categoria = boton.dataset.filter;
+            filtrarPorCategoria(categoria);
         });
     });
+}
+
+// Inicializar catálogo al cargar la página
+document.addEventListener('DOMContentLoaded', () => {
+    configurarFiltros();
+    renderizarProductos();
     
     // Configurar ordenamiento
     const sortSelect = document.querySelector('#sortSelect');
@@ -208,13 +199,37 @@ document.addEventListener('DOMContentLoaded', () => {
                     productosOrdenados = [...productosHogar];
             }
             
-            renderizarProductos(productosOrdenados);
+            // Aplicar ordenamiento sobre los productos filtrados
+            if (categoriaActual !== 'todos') {
+                productosOrdenados = productosOrdenados.filter(p => p.categoria === categoriaActual);
+            }
+            
+            const catalogo = document.querySelector('.row.g-4');
+            if (!catalogo) return;
+            
+            catalogo.innerHTML = productosOrdenados.map(producto => `
+                <div class="col-sm-6 col-md-4 col-lg-3 product-item">
+                    <div class="card product-card h-100">
+                        <div class="image-container">
+                            <img src="${producto.imagen}" class="card-img-top" alt="${producto.nombre}">
+                        </div>
+                        <div class="card-body">
+                            <h6 class="card-title">${producto.nombre}</h6>
+                            <p class="small text-muted mb-2">${producto.descripcion}</p>
+                            <p class="fw-bold text-danger mb-3">S/ ${producto.precio.toFixed(2)}</p>
+                            <button class="btn btn-agregar w-100" onclick="agregarAlCarrito(${producto.id}, 'hogar')">
+                                <i class="fas fa-cart-plus me-2"></i>AGREGAR
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
         });
     }
 });
 
 // ==========================================
-// FUNCIÓN PARA AGREGAR AL CARRITO
+// FUNCI\u00d3N PARA AGREGAR AL CARRITO
 // ==========================================
 
 function agregarAlCarrito(productoId, tipo) {
@@ -246,7 +261,7 @@ function agregarAlCarrito(productoId, tipo) {
     // Actualizar contador del carrito
     actualizarContadorCarrito();
     
-    // Mostrar notificación
+    // Mostrar notificaci\u00f3n
     mostrarNotificacion('Producto agregado al carrito');
 }
 
@@ -261,7 +276,7 @@ function actualizarContadorCarrito() {
 }
 
 function mostrarNotificacion(mensaje) {
-    // Crear notificación temporal
+    // Crear notificaci\u00f3n temporal
     const notif = document.createElement('div');
     notif.className = 'alert alert-success position-fixed top-0 start-50 translate-middle-x mt-3';
     notif.style.zIndex = '9999';
@@ -273,5 +288,5 @@ function mostrarNotificacion(mensaje) {
     }, 2000);
 }
 
-// Actualizar contador al cargar la página
+// Actualizar contador al cargar la p\u00e1gina
 document.addEventListener('DOMContentLoaded', actualizarContadorCarrito);

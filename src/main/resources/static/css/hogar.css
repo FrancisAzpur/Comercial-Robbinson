@@ -14,9 +14,21 @@
 
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: var(--beige);
+    background-color: var(--beige) !important;
     color: var(--text-dark);
     overflow-x: hidden;
+}
+
+main, .container-fluid, section, aside {
+    background-color: var(--beige) !important;
+}
+
+.bg-light {
+    background-color: var(--beige) !important;
+}
+
+.bg-white {
+    background-color: var(--beige) !important;
 }
 
 /* ==========================================
@@ -139,36 +151,37 @@ body {
    ========================================== */
 
 .category-list {
-    margin: 0;
-    padding: 0;
-}
-
-.category-list li {
-    margin-bottom: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 30px;
 }
 
 .category-btn {
-    background: none;
-    border: none;
-    padding: 8px 12px;
+    background-color: white;
     color: var(--text-dark);
-    cursor: pointer;
+    border: 2px solid #e0e0e0;
+    padding: 8px 16px;
+    border-radius: 25px;
+    font-size: 0.95rem;
     font-weight: 500;
-    text-align: left;
-    width: 100%;
-    border-radius: 8px;
     transition: all 0.3s ease;
+    cursor: pointer;
 }
 
 .category-btn:hover {
-    color: var(--accent-orange);
-    background-color: rgba(224, 122, 95, 0.1);
+    background-color: var(--accent-orange);
+    color: white;
+    border-color: var(--accent-orange);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(224, 122, 95, 0.3);
 }
 
 .category-btn.active {
-    color: var(--accent-orange);
-    background-color: rgba(224, 122, 95, 0.15);
-    font-weight: 600;
+    background-color: var(--accent-orange);
+    color: white;
+    border-color: var(--accent-orange);
+    box-shadow: 0 4px 12px rgba(224, 122, 95, 0.4);
 }
 
 /* ==========================================

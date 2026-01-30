@@ -9,8 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
-import com.Robbinson.ComRobinson.modelo.Categoria;
 import com.Robbinson.ComRobinson.modelo.Producto;
 
 /**
@@ -35,9 +35,6 @@ public class HomeController {
     public String home(Model model) {
         // Pasar título de la página
         model.addAttribute("titulo", "Inicio");
-        
-        // Pasar categorías para mostrar en la página
-        model.addAttribute("categorias", obtenerCategorias());
         
         // Pasar productos destacados (simulados, para demostración)
         model.addAttribute("productosDestacados", obtenerProductosDestacados());
@@ -66,8 +63,6 @@ public class HomeController {
     @GetMapping("/hogar")
     public String hogar(Model model) {
         model.addAttribute("titulo", "Hogar");
-        // Nota: productos se pasan pero no se usan, el JS carga los productos
-        model.addAttribute("productos", obtenerProductosPorCategoria("Hogar"));
         return "hogar";  // templates/hogar.html
     }
 
@@ -95,18 +90,6 @@ public class HomeController {
     }
 
     /**
-     * Página de Categorías
-     * Ruta: GET /categorias
-     * Muestra todas las categorías de productos disponibles
-     */
-    @GetMapping("/categorias")
-    public String categorias(Model model) {
-        model.addAttribute("titulo", "Categorías");
-        model.addAttribute("categorias", obtenerCategorias());
-        return "categorias";  // templates/categorias.html
-    }
-
-    /**
      * Detalle de producto
      */
     @GetMapping("/producto/{id}")
@@ -117,28 +100,39 @@ public class HomeController {
         return "detalle-producto";
     }
 
+
+    /**
+     * Página de Inicio de Sesión
+     * Ruta: GET /login
+     * Permite a los usuarios ingresar a su cuenta
+     */
+    @GetMapping("/login")
+    public String login(Model model) {
+        model.addAttribute("titulo", "Iniciar Sesión");
+        return "login";
+    }
+    
+    @PostMapping("/login")
+    public String procesarLogin() {
+        return "redirect:/";
+    }
+
+    /**
+     * Página de Registro de Usuario
+     * Ruta: GET /registro
+     * Permite crear una nueva cuenta
+     */
+     @GetMapping("/registro")
+     public String registro(Model model) {
+        model.addAttribute("titulo", "Registro");
+        return "registro";  // templates/registro.html
+     }
+
     // ==================== MÉTODOS AUXILIARES ====================
     // NOTA: Estos métodos simulan una base de datos.
     // Los datos están hardcodeados en el código (no en BD real)
     // En producción, estos datos vendrían de un repositorio con JPA/Hibernate
     
-    /**
-     * Obtiene las categorías de productos
-     * @return Lista de categorías con nombre, descripción, icono e imagen
-     */
-    private List<Categoria> obtenerCategorias() {
-        List<Categoria> categorias = new ArrayList<>();
-        categorias.add(new Categoria(1L, "Electrodomésticos", "Todo para tu cocina y hogar", 
-                "fa-blender", "SmartTv.jpeg", 25));
-        categorias.add(new Categoria(2L, "Hogar", "Decoración y confort", 
-                "fa-couch", "Moderno.jpg", 30));
-        categorias.add(new Categoria(3L, "Refrigeración", "Refrigeradoras y congeladores", 
-                "fa-snowflake", "Refri1.jpg", 15));
-        categorias.add(new Categoria(4L, "Lavado", "Lavadoras y secadoras", 
-                "fa-soap", "Lavadora1.jpg", 12));
-        return categorias;
-    }
-
     /**
      * Obtiene todos los productos disponibles (SIMULADO)
      * 
@@ -163,80 +157,80 @@ public class HomeController {
         // REFRIGERACIÓN (2)
         productos.add(new Producto(1L, "Refrigerador 420L", 
                 "Refrigerador No Frost con eficiencia energética A++. Tecnología Inverter.",
-                new BigDecimal("2899.00"), "refrigerador.webp", "Electrodomésticos", true, 
+                new BigDecimal("2899.00"), "refrigerador.webp", true, 
                 false, null, 8));
         
         productos.add(new Producto(4L, "Refrigerador 690L Samsung", 
                 "Dispensador de agua y hielo. Capacidad 690L ideal para familias grandes.",
-                new BigDecimal("5599.00"), "Refrigueradora_Samsung_690L.jpg", "Electrodomésticos", true, 
+                new BigDecimal("5599.00"), "Refrigueradora_Samsung_690L.jpg", true, 
                 true, new BigDecimal("6299.00"), 4));
 
         // TV (5)
         productos.add(new Producto(5L, "Televisor SAMSUNG QLED 75\"", 
                 "UHD 4K Smart TV QN75Q60DAGXPE. Quantum Dot para colores vibrantes.",
-                new BigDecimal("1899.00"), "Televisor SAMSUNG QLED  UHD 75 4K.jpg", "Electrodomésticos", true, 
+                new BigDecimal("1899.00"), "Televisor SAMSUNG QLED  UHD 75 4K.jpg", true, 
                 true, new BigDecimal("2399.00"), 6));
         
         productos.add(new Producto(6L, "Televisor LG LED 43\" HD", 
                 "Smart TV Modelo 43LM6300PLA. Conectividad WiFi y apps inteligentes.",
-                new BigDecimal("2999.00"), "Televisor LG LED 43.jpg", "Electrodomésticos", true, 
+                new BigDecimal("2999.00"), "Televisor LG LED 43.jpg", true, 
                 false, null, 10));
         
         productos.add(new Producto(3L, "Smart TV OLED 55\"", 
                 "Televisor OLED 4K UHD con HDR. Negros perfectos y colores infinitos.",
-                new BigDecimal("4499.00"), "tv_oled_55.avif", "Electrodomésticos", true, 
+                new BigDecimal("4499.00"), "tv_oled_55.avif", true, 
                 true, new BigDecimal("5299.00"), 5));
         
         productos.add(new Producto(8L, "Smart TV 65\" QLED Samsung", 
                 "Quantum Dot, 120Hz. Ideal para gaming y deportes. Panel OLED premium.",
-                new BigDecimal("5999.00"), "Samsung TV 65 OLED.jpg", "Electrodomésticos", true, 
+                new BigDecimal("5999.00"), "Samsung TV 65 OLED.jpg", true, 
                 true, new BigDecimal("7499.00"), 3));
         
         productos.add(new Producto(9L, "Soundbar 5.1 Dolby Atmos", 
                 "Sistema de audio envolvente. Subwoofer inalámbrico incluido.",
-                new BigDecimal("999.00"), "Soundbar Dolby Atmos.jpg", "Electrodomésticos", false, 
+                new BigDecimal("999.00"), "Soundbar Dolby Atmos.jpg", false, 
                 false, null, 12));
 
         // LAVADO (2)
         productos.add(new Producto(2L, "Lavadora Secadora 10kg", 
                 "Lavadora y secadora en uno. Tecnología Inverter silenciosa y eficiente.",
-                new BigDecimal("1799.00"), "lavadora_inverter.webp", "Electrodomésticos", true, 
+                new BigDecimal("1799.00"), "lavadora_inverter.webp", true, 
                 true, new BigDecimal("2199.00"), 7));
         
         productos.add(new Producto(7L, "Secadora de Ropa 10kg", 
                 "Secadora con sensor de humedad. Cuida tus prendas con tecnología inteligente.",
-                new BigDecimal("1499.00"), "Secadora de ropa 10kg.jpg", "Electrodomésticos", false, 
+                new BigDecimal("1499.00"), "Secadora de ropa 10kg.jpg", false, 
                 false, null, 9));
 
         // COCINA ELECTRODOMÉSTICOS (6)
         productos.add(new Producto(10L, "Cocina a Gas 6 Hornillas Indurama", 
                 "Acero inoxidable resistente. 6 quemadores para cocinar en grande.",
-                new BigDecimal("1299.00"), "Cocina a Gas 6 Hornillas Indurama.jpg", "Electrodomésticos", true, 
+                new BigDecimal("1299.00"), "Cocina a Gas 6 Hornillas Indurama.jpg", true, 
                 false, null, 11));
         
         productos.add(new Producto(11L, "Horno Microondas 28L", 
                 "Fácil modo de uso. 28 litros de capacidad con múltiples funciones.",
-                new BigDecimal("499.00"), "Horno Microondas 28L.jpg", "Electrodomésticos", false, 
+                new BigDecimal("499.00"), "Horno Microondas 28L.jpg", false, 
                 false, null, 15));
         
         productos.add(new Producto(12L, "Licuadora Industrial 2L Jhumy", 
                 "1200W de potencia. Perfecta para batidos y preparaciones profesionales.",
-                new BigDecimal("349.00"), "Licuadora Industrial 2L Jhumy.jpg", "Electrodomésticos", false, 
+                new BigDecimal("349.00"), "Licuadora Industrial 2L Jhumy.jpg", false, 
                 false, null, 20));
         
         productos.add(new Producto(13L, "Campana Extractora 90cm Sole", 
                 "3 velocidades de extracción. Diseño moderno en acero inoxidable.",
-                new BigDecimal("799.00"), "Campana Extractora 90cm Sole.jpg", "Electrodomésticos", false, 
+                new BigDecimal("799.00"), "Campana Extractora 90cm Sole.jpg", false, 
                 false, null, 8));
         
         productos.add(new Producto(14L, "Horno Eléctrico 60L", 
                 "Empotrable con sistema de convección. 60L para preparaciones grandes.",
-                new BigDecimal("899.00"), "Horno Eléctrico 60L.jpg", "Electrodomésticos", false, 
+                new BigDecimal("899.00"), "Horno Eléctrico 60L.jpg", false, 
                 false, null, 6));
         
         productos.add(new Producto(15L, "Lavavajillas 14 Servicios", 
                 "Lavavajillas de alta eficiencia. Capacidad para 14 servicios completos.",
-                new BigDecimal("1999.00"), "lavavajillas.jpg", "Electrodomésticos", true, 
+                new BigDecimal("1999.00"), "lavavajillas.jpg", true, 
                 true, new BigDecimal("2499.00"), 5));
 
         // ========== HOGAR (16 productos) ==========
@@ -244,85 +238,85 @@ public class HomeController {
         // MENAJE - Sábanas (4)
         productos.add(new Producto(17L, "Juego de sábanas 200 hilos | 1 plaza", 
                 "Sábanas de algodón suave. Perfectas para descanso individual.",
-                new BigDecimal("89.00"), "sabanas1.webp", "Hogar", false, 
+                new BigDecimal("89.00"), "sabanas1.webp", false, 
                 false, null, 15));
         
         productos.add(new Producto(18L, "Juego de sábanas 200 hilos | 2 plazas", 
                 "Ideal para cama matrimonial. 200 hilos de algodón premium.",
-                new BigDecimal("120.00"), "sabana2.jpg", "Hogar", true, 
+                new BigDecimal("120.00"), "sabana2.jpg", true, 
                 false, null, 12));
         
         productos.add(new Producto(19L, "Edredón reversible cama matrimonial", 
                 "Diseño elegante y moderno. Reversible con dos acabados diferentes.",
-                new BigDecimal("200.00"), "sabanas3.webp", "Hogar", true, 
+                new BigDecimal("200.00"), "sabanas3.webp", true, 
                 false, null, 8));
         
         productos.add(new Producto(20L, "Almohada hotelera premium (unidad)", 
                 "Máximo confort. Relleno especial para soporte cervical.",
-                new BigDecimal("60.00"), "almohada.avif", "Hogar", false, 
+                new BigDecimal("60.00"), "almohada.avif", false, 
                 false, null, 20));
 
         // MENAJE - Toallas (4)
         productos.add(new Producto(21L, "Juego de toallas 4 piezas algodón", 
                 "Suaves y absorbentes. Set completo para baño.",
-                new BigDecimal("140.00"), "toallas1.webp", "Hogar", true, 
+                new BigDecimal("140.00"), "toallas1.webp", true, 
                 false, null, 10));
         
         productos.add(new Producto(22L, "Set x4 Toallas Mano/Baño Roberta Allen Lollipop", 
                 "Diseño exclusivo. Marca Roberta Allen con estilo moderno.",
-                new BigDecimal("80.00"), "toallas2.avif", "Hogar", false, 
+                new BigDecimal("80.00"), "toallas2.avif", false, 
                 false, null, 14));
         
         productos.add(new Producto(23L, "Toalla Clásica Baño", 
                 "Algodón 100%. Diseño clásico y atemporal.",
-                new BigDecimal("75.00"), "toallas3.avif", "Hogar", false, 
+                new BigDecimal("75.00"), "toallas3.avif", false, 
                 false, null, 18));
         
         productos.add(new Producto(24L, "Toalla Premium Baño", 
                 "Extra absorbente. Calidad premium para uso diario.",
-                new BigDecimal("99.00"), "toallas4.avif", "Hogar", true, 
+                new BigDecimal("99.00"), "toallas4.avif", true, 
                 false, null, 11));
 
         // COCINA HOGAR - Vajillas (4)
         productos.add(new Producto(25L, "Juego de Vajilla Porcelana Combo 60 Piezas", 
                 "Juego completo para 12 personas. Porcelana de alta calidad.",
-                new BigDecimal("249.90"), "vajilla1.webp", "Hogar", true, 
+                new BigDecimal("249.90"), "vajilla1.webp", true, 
                 false, null, 6));
         
         productos.add(new Producto(26L, "Juego de Vajilla Porcelana 30 Piezas Paula", 
                 "Diseño elegante Paula. Set de 30 piezas para 6 personas.",
-                new BigDecimal("199.90"), "vajilla2.webp", "Hogar", true, 
+                new BigDecimal("199.90"), "vajilla2.webp", true, 
                 false, null, 8));
         
         productos.add(new Producto(27L, "Vajilla x16 Piezas Porcelana con Textura", 
                 "Textura moderna. Set compacto de 16 piezas.",
-                new BigDecimal("99.90"), "vajilla3.webp", "Hogar", false, 
+                new BigDecimal("99.90"), "vajilla3.webp", false, 
                 false, null, 12));
         
         productos.add(new Producto(28L, "Set Vajilla Decal Rosa 16 Piezas", 
                 "Delicado diseño rosa. Perfecto para decoración moderna.",
-                new BigDecimal("49.90"), "vajilla4.jpg", "Hogar", false, 
+                new BigDecimal("49.90"), "vajilla4.jpg", false, 
                 false, null, 15));
 
         // DECORACIÓN - Plantas (4)
         productos.add(new Producto(29L, "Planta Olivo Artificial 30×132 cm", 
                 "Planta artificial grande. Diseño realista sin mantenimiento.",
-                new BigDecimal("129.90"), "planta1.webp", "Hogar", false, 
+                new BigDecimal("129.90"), "planta1.webp", false, 
                 false, null, 7));
         
         productos.add(new Producto(30L, "Planta Grande Eucalipto 120 cm", 
                 "Eucalipto artificial de 120cm. Ideal para espacios amplios.",
-                new BigDecimal("99.90"), "planta2.webp", "Hogar", false, 
+                new BigDecimal("99.90"), "planta2.webp", false, 
                 false, null, 9));
         
         productos.add(new Producto(31L, "Planta Ficus artificial 154 cm", 
                 "Ficus realista de gran tamaño. 154cm de altura.",
-                new BigDecimal("179.90"), "planta3.avif", "Hogar", true, 
+                new BigDecimal("179.90"), "planta3.avif", true, 
                 false, null, 5));
         
         productos.add(new Producto(32L, "Planta Sansevieria Artificial con maceta", 
                 "Perfecta para interiores. Incluye maceta decorativa.",
-                new BigDecimal("83.70"), "planta4.avif", "Hogar", false, 
+                new BigDecimal("83.70"), "planta4.avif", false, 
                 false, null, 13));
 
         return productos;
@@ -337,16 +331,6 @@ public class HomeController {
                 .filter(Producto::isDestacado)       // Filtrar solo destacados
                 .limit(6)                            // Limitar a 6 productos
                 .collect(Collectors.toList());       // Convertir de vuelta a lista
-    }
-
-    /**
-     * Obtiene productos de una categoría específica
-     * @param categoria Nombre de la categoría ("Hogar", "Electrodomésticos", etc.)
-     */
-    private List<Producto> obtenerProductosPorCategoria(String categoria) {
-        return obtenerTodosLosProductos().stream()
-                .filter(p -> p.getCategoria().equals(categoria))  // Filtrar por categoría
-                .collect(Collectors.toList());
     }
 
     /**

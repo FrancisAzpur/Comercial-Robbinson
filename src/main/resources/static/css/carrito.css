@@ -1,0 +1,33 @@
+/* ==========================================
+   ESTILOS PARA PÁGINA DE CARRITO
+   ========================================== */
+
+/* ==========================================
+   NAVBAR - Fondo azul oscuro con gradiente
+   ========================================== */
+.navbar {
+    background: linear-gradient(90deg, var(--medium-blue), var(--dark-blue));
+}
+
+.navbar-brand {
+    color: white !important;
+}
+
+.nav-link {
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.nav-link:hover {
+    color: var(--accent-orange) !important;
+}
+
+/* ==========================================
+   ESTILOS ESPECÍFICOS DEL CARRITO
+   ========================================== */
+body {
+    background-color: var(--beige) !important;
+}
+
+main, .container-fluid, section {
+    background-color: var(--beige) !important;
+}

@@ -12,7 +12,6 @@ public class Producto {
     private String descripcion;
     private BigDecimal precio;
     private String imagen;
-    private String categoria;
     private boolean destacado;
     private boolean enOferta;
     private BigDecimal precioAnterior;
@@ -24,14 +23,13 @@ public class Producto {
 
     // Constructor completo
     public Producto(Long id, String nombre, String descripcion, BigDecimal precio, 
-                   String imagen, String categoria, boolean destacado, 
+                   String imagen, boolean destacado, 
                    boolean enOferta, BigDecimal precioAnterior, int stock) {
         this.id = id;
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.precio = precio;
         this.imagen = imagen;
-        this.categoria = categoria;
         this.destacado = destacado;
         this.enOferta = enOferta;
         this.precioAnterior = precioAnterior;
@@ -77,14 +75,6 @@ public class Producto {
 
     public void setImagen(String imagen) {
         this.imagen = imagen;
-    }
-
-    public String getCategoria() {
-        return categoria;
-    }
-
-    public void setCategoria(String categoria) {
-        this.categoria = categoria;
     }
 
     public boolean isDestacado() {
