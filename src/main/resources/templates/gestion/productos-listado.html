@@ -3,12 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${titulo}">Clientes</title>
-    <!-- Bootstrap 5 CSS -->
+    <title th:text="${titulo}">Productos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome para iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -29,11 +26,9 @@
         .navbar-brand {
             font-weight: 800;
             color: white !important;
-            font-size: 1.5rem;
         }
         .nav-link {
             color: rgba(255, 255, 255, 0.85) !important;
-            font-weight: 500;
         }
         .nav-link:hover {
             color: var(--accent-orange) !important;
@@ -50,10 +45,21 @@
         }
         .badge-activo { background-color: #28a745; }
         .badge-inactivo { background-color: #dc3545; }
+        .badge-stock-bajo { background-color: #ffc107; color: #000; }
+        .stock-bajo {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .producto-img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
-    <!-- Navbar con navegación -->
+    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="/">
@@ -70,7 +76,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="/gestion/clientes">
+                        <a class="nav-link" href="/gestion/clientes">
                             <i class="fas fa-users me-1"></i>Clientes
                         </a>
                     </li>
@@ -80,13 +86,8 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/gestion/productos">
+                        <a class="nav-link active" href="/gestion/productos">
                             <i class="fas fa-boxes me-1"></i>Productos
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">
-                            <i class="fas fa-home me-1"></i>Inicio
                         </a>
                     </li>
                 </ul>
@@ -98,13 +99,13 @@
         <div class="row mb-4">
             <div class="col-md-6">
                 <h1 class="fw-bold" style="color: #8d5524;">
-                    <i class="fas fa-users me-2"></i>Gestión de Clientes
+                    <i class="fas fa-boxes me-2"></i>Gestión de Productos
                 </h1>
-                <p class="text-muted">Administra todos los clientes registrados en el sistema</p>
+                <p class="text-muted">Administra el catálogo de productos</p>
             </div>
             <div class="col-md-6 text-end">
-                <a href="/gestion/clientes/nuevo" class="btn btn-primary btn-lg">
-                    <i class="fas fa-user-plus me-2"></i>Nuevo Cliente
+                <a href="/gestion/productos/nuevo" class="btn btn-primary btn-lg">
+                    <i class="fas fa-plus me-2"></i>Nuevo Producto
                 </a>
             </div>
         </div>
@@ -112,8 +113,8 @@
         <!-- Formulario de búsqueda -->
         <div class="row mb-4">
             <div class="col-md-12">
-                <form class="input-group input-group-lg" method="get" action="/gestion/clientes/buscar">
-                    <input type="text" name="nombre" class="form-control" placeholder="Buscar cliente por nombre..." required>
+                <form class="input-group input-group-lg" method="get" action="/gestion/productos/buscar">
+                    <input type="text" name="nombre" class="form-control" placeholder="Buscar producto por nombre..." required>
                     <button class="btn btn-primary" type="submit">
                         <i class="fas fa-search me-1"></i>Buscar
                     </button>
@@ -121,59 +122,72 @@
             </div>
         </div>
 
-        <!-- Tabla de clientes -->
+        <!-- Tabla de productos -->
         <div class="row">
             <div class="col-md-12">
                 <div class="card shadow-sm">
                     <div class="card-header bg-dark text-white">
                         <h5 class="mb-0">
-                            <i class="fas fa-list me-2"></i>Listado de Clientes
-                            <span class="badge bg-info float-end" th:text="'Total: ' + ${#lists.size(clientes)}"></span>
+                            <i class="fas fa-list me-2"></i>Listado de Productos
+                            <span class="badge bg-info float-end" th:text="'Total: ' + ${#lists.size(productos)}"></span>
                         </h5>
                     </div>
                     <div class="card-body p-0">
-                        <!-- Mensaje cuando no hay clientes -->
-                        <div th:if="${clientes.isEmpty()}" class="alert alert-warning m-3">
-                            <i class="fas fa-info-circle me-2"></i>No hay clientes registrados
+                        <div th:if="${productos.isEmpty()}" class="alert alert-warning m-3">
+                            <i class="fas fa-info-circle me-2"></i>No hay productos registrados
                         </div>
                         
-                        <!-- Tabla con datos de la base de datos -->
-                        <table class="table table-hover mb-0" th:unless="${clientes.isEmpty()}">
+                        <table class="table table-hover mb-0" th:unless="${productos.isEmpty()}">
                             <thead class="table-light">
                                 <tr>
-                                    <th>ID</th>
-                                    <th>Nombre Completo</th>
-                                    <th>Correo Electrónico</th>
-                                    <th>Teléfono</th>
-                                    <th>Documento</th>
+                                    <th>Código</th>
+                                    <th>Imagen</th>
+                                    <th>Nombre</th>
+                                    <th>P. Compra</th>
+                                    <th>P. Venta</th>
+                                    <th>Stock</th>
+                                    <th>Etiqueta</th>
                                     <th>Estado</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Itera sobre cada cliente de la BD -->
-                                <tr th:each="cliente : ${clientes}">
-                                    <td><strong th:text="${cliente.idCliente}"></strong></td>
-                                    <td th:text="${cliente.nombreCompleto}"></td>
-                                    <td th:text="${cliente.correoElectronico}"></td>
-                                    <td th:text="${cliente.telefono} ?: 'Sin teléfono'"></td>
+                                <tr th:each="producto : ${productos}">
+                                    <td><strong th:text="${producto.codigoProducto}"></strong></td>
                                     <td>
-                                        <span th:text="${cliente.tipoDocumento}"></span>: 
-                                        <span th:text="${cliente.documentoIdentidad} ?: 'N/A'"></span>
+                                        <img th:if="${producto.imagenPrincipal}" 
+                                             th:src="${producto.imagenPrincipal}" 
+                                             alt="Producto" class="producto-img">
+                                        <span th:unless="${producto.imagenPrincipal}" class="text-muted">
+                                            <i class="fas fa-image"></i>
+                                        </span>
+                                    </td>
+                                    <td th:text="${producto.nombreProducto}"></td>
+                                    <td>S/. <span th:text="${#numbers.formatDecimal(producto.precioCompra, 1, 2, true)}"></span></td>
+                                    <td>S/. <span th:text="${#numbers.formatDecimal(producto.precioVenta, 1, 2, true)}"></span></td>
+                                    <td>
+                                        <span th:if="${producto.stockActual <= producto.stockMinimo}" class="stock-bajo">
+                                            <i class="fas fa-exclamation-triangle"></i> 
+                                            <span th:text="${producto.stockActual}"></span>
+                                        </span>
+                                        <span th:unless="${producto.stockActual <= producto.stockMinimo}" th:text="${producto.stockActual}"></span>
                                     </td>
                                     <td>
-                                        <span th:if="${cliente.activo}" class="badge badge-activo">Activo</span>
-                                        <span th:unless="${cliente.activo}" class="badge badge-inactivo">Inactivo</span>
+                                        <span th:if="${producto.etiqueta}" class="badge bg-info" th:text="${producto.etiqueta}"></span>
                                     </td>
                                     <td>
-                                        <a class="btn btn-sm btn-info" th:href="@{/gestion/clientes/{id}(id=${cliente.idCliente})}">
+                                        <span th:if="${producto.activo}" class="badge badge-activo">Activo</span>
+                                        <span th:unless="${producto.activo}" class="badge badge-inactivo">Inactivo</span>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-sm btn-info" th:href="@{/gestion/productos/{id}(id=${producto.idProducto})}">
                                             <i class="fas fa-eye"></i>
                                         </a>
-                                        <a class="btn btn-sm btn-warning" th:href="@{/gestion/clientes/{id}/editar(id=${cliente.idCliente})}">
+                                        <a class="btn btn-sm btn-warning" th:href="@{/gestion/productos/{id}/editar(id=${producto.idProducto})}">
                                             <i class="fas fa-edit"></i>
                                         </a>
-                                        <a class="btn btn-sm btn-danger" th:href="@{/gestion/clientes/{id}/eliminar(id=${cliente.idCliente})}" 
-                                           onclick="return confirm('¿Estás seguro de eliminar este cliente?')">
+                                        <a class="btn btn-sm btn-danger" th:href="@{/gestion/productos/{id}/eliminar(id=${producto.idProducto})}"
+                                           onclick="return confirm('¿Eliminar este producto?')">
                                             <i class="fas fa-trash"></i>
                                         </a>
                                     </td>
@@ -186,7 +200,6 @@
         </div>
     </div>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

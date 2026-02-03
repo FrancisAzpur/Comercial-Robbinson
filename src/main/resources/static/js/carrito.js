@@ -1,11 +1,25 @@
 // carrito.js - VERSIÓN CORREGIDA
 // Funcionalidades del carrito de compras
+// ==============================================================================
+// NOTA: Este archivo actualmente usa localStorage para almacenar el carrito.
+// TODO: En futuras versiones, conectar con la base de datos usando fetch API
+// para sincronizar el carrito con el backend (controlador CarritoController).
+// ==============================================================================
 
 // Variable global para el carrito
 let carrito = [];
 
 // Constante para la clave del localStorage (DEBE SER LA MISMA)
 const CARRO_KEY = 'carritoRobinson';
+
+// ==============================================================================
+// SECCIÓN: ALMACENAMIENTO EN LOCALSTORAGE (Comentado para referencia)
+// En el futuro, estas funciones deben conectar con endpoints REST del backend:
+// - POST /api/carrito/agregar - Agregar producto
+// - GET /api/carrito - Obtener carrito
+// - DELETE /api/carrito/{id} - Eliminar producto
+// - PUT /api/carrito/{id} - Actualizar cantidad
+// ==============================================================================
 
 // Inicializar carrito al cargar la página
 document.addEventListener('DOMContentLoaded', function() {
@@ -27,7 +41,9 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Función para cargar el carrito desde localStorage
+// TODO: Cambiar a fetch('/api/carrito') cuando se implemente el backend
 function cargarCarrito() {
+    // ========== INICIO: CÓDIGO LOCALSTORAGE (mantener comentado para referencia) ==========
     // Preferir la clave nueva
     const carritoGuardado = localStorage.getItem(CARRO_KEY);
     console.log('Cargando carrito, localStorage:', carritoGuardado);
@@ -54,6 +70,7 @@ function cargarCarrito() {
             }
         }
     }
+    // ========== FIN: CÓDIGO LOCALSTORAGE ==========
 
     console.log('Carrito cargado:', carrito);
     // Asegurar que el contador del navbar se actualice tras cargar
@@ -61,9 +78,12 @@ function cargarCarrito() {
 }
 
 // Función para guardar el carrito en localStorage
+// TODO: Cambiar a fetch('/api/carrito', { method: 'POST', body: JSON.stringify(carrito) })
 function guardarCarrito() {
+    // ========== INICIO: CÓDIGO LOCALSTORAGE (mantener comentado para referencia) ==========
     localStorage.setItem(CARRO_KEY, JSON.stringify(carrito));
     console.log('Carrito guardado:', carrito);
+    // ========== FIN: CÓDIGO LOCALSTORAGE ==========
 }
 
 // Función para agregar un producto al carrito

@@ -80,69 +80,86 @@
                 </h1>
 
                 <div class="form-section">
-                    <!-- th:action genera la URL POST correcta según si es nuevo o actualizar -->
-                    <!-- th:object vincula el objeto pedido del modelo al formulario -->
-                    <form th:action="${pedido.id != null ? '/gestion/pedidos/' + pedido.id + '/actualizar' : '/gestion/pedidos/guardar'}" 
+                    <form th:action="${pedido.idPedido != null ? '/gestion/pedidos/' + pedido.idPedido + '/actualizar' : '/gestion/pedidos/guardar'}" 
                           method="POST" th:object="${pedido}">
                         
                         <div class="row">
-                            <!-- Número de Orden: Campo de texto para referencia del pedido -->
+                            <!-- Número de Pedido -->
                             <div class="col-md-6 mb-3">
-                                <label for="numeroOrden" class="form-label">Número de Orden <span class="text-danger">*</span></label>
-                                <!-- th:field vincula el campo al atributo numeroOrden del pedido -->
-                                <input type="text" class="form-control" id="numeroOrden" th:field="*{numeroOrden}" 
-                                       placeholder="Ej: ORD-001" required>
+                                <label for="numeroPedido" class="form-label">Número de Pedido</label>
+                                <input type="text" class="form-control" id="numeroPedido" th:field="*{numeroPedido}" 
+                                       placeholder="Se genera automáticamente">
+                                <small class="text-muted">Deja vacío para generar automáticamente</small>
                             </div>
 
-                            <!-- ID del Cliente -->
+                            <!-- Cliente -->
                             <div class="col-md-6 mb-3">
-                                <label for="clienteId" class="form-label">ID Cliente <span class="text-danger">*</span></label>
-                                <input type="number" class="form-control" id="clienteId" th:field="*{clienteId}" required>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <!-- Total del Pedido en Soles -->
-                            <div class="col-md-6 mb-3">
-                                <label for="totalMoneda" class="form-label">Total (S/.) <span class="text-danger">*</span></label>
-                                <input type="number" class="form-control" id="totalMoneda" th:field="*{totalMoneda}" 
-                                       step="0.01" placeholder="0.00" required>
-                            </div>
-
-                            <!-- Estado del Pedido -->
-                            <div class="col-md-6 mb-3">
-                                <label for="estado" class="form-label">Estado <span class="text-danger">*</span></label>
-                                <!-- select con options para seleccionar el estado -->
-                                <select class="form-select" id="estado" th:field="*{estado}" required>
-                                    <option value="">Seleccionar estado...</option>
-                                    <option value="Pendiente">Pendiente</option>
-                                    <option value="Procesando">Procesando</option>
-                                    <option value="Enviado">Enviado</option>
-                                    <option value="Entregado">Entregado</option>
+                                <label for="cliente" class="form-label">Cliente <span class="text-danger">*</span></label>
+                                <select class="form-select" id="cliente" th:field="*{cliente}" required>
+                                    <option value="">Seleccionar cliente...</option>
+                                    <option th:each="cli : ${clientes}" 
+                                            th:value="${cli.idCliente}" 
+                                            th:text="${cli.nombreCompleto}">Cliente</option>
                                 </select>
                             </div>
                         </div>
 
                         <div class="row">
+                            <!-- Subtotal -->
+                            <div class="col-md-4 mb-3">
+                                <label for="subtotal" class="form-label">Subtotal (S/.) <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="subtotal" th:field="*{subtotal}" 
+                                       step="0.01" placeholder="0.00" required>
+                            </div>
+
+                            <!-- Costo Envío -->
+                            <div class="col-md-4 mb-3">
+                                <label for="costoEnvio" class="form-label">Costo Envío (S/.)</label>
+                                <input type="number" class="form-control" id="costoEnvio" th:field="*{costoEnvio}" 
+                                       step="0.01" placeholder="0.00">
+                            </div>
+
+                            <!-- Total -->
+                            <div class="col-md-4 mb-3">
+                                <label for="total" class="form-label">Total (S/.)</label>
+                                <input type="number" class="form-control" id="total" th:field="*{total}" 
+                                       step="0.01" placeholder="Se calcula automáticamente" readonly>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- Estado del Pedido -->
+                            <div class="col-md-6 mb-3">
+                                <label for="estado" class="form-label">Estado <span class="text-danger">*</span></label>
+                                <select class="form-select" id="estado" th:field="*{estado}" required>
+                                    <option value="PENDIENTE">Pendiente</option>
+                                    <option value="PAGADO">Pagado</option>
+                                    <option value="PROCESANDO">Procesando</option>
+                                    <option value="ENVIADO">Enviado</option>
+                                    <option value="ENTREGADO">Entregado</option>
+                                    <option value="CANCELADO">Cancelado</option>
+                                </select>
+                            </div>
+
                             <!-- Método de Pago -->
                             <div class="col-md-6 mb-3">
                                 <label for="metodoPago" class="form-label">Método de Pago <span class="text-danger">*</span></label>
                                 <select class="form-select" id="metodoPago" th:field="*{metodoPago}" required>
-                                    <option value="">Seleccionar...</option>
-                                    <option value="Efectivo">Efectivo</option>
-                                    <option value="Tarjeta">Tarjeta de Crédito</option>
-                                    <option value="Transferencia">Transferencia Bancaria</option>
-                                    <option value="Cheque">Cheque</option>
+                                    <option value="EFECTIVO">Efectivo</option>
+                                    <option value="TARJETA_CREDITO">Tarjeta de Crédito</option>
+                                    <option value="TARJETA_DEBITO">Tarjeta de Débito</option>
+                                    <option value="TRANSFERENCIA">Transferencia</option>
+                                    <option value="YAPE">Yape</option>
+                                    <option value="PLIN">Plin</option>
                                 </select>
                             </div>
                         </div>
 
-                        <!-- Descripción de Productos -->
+                        <!-- Observaciones -->
                         <div class="mb-3">
-                            <label for="descripcionProductos" class="form-label">Descripción de Productos <span class="text-danger">*</span></label>
-                            <!-- textarea para ingresar múltiples líneas -->
-                            <textarea class="form-control" id="descripcionProductos" th:field="*{descripcionProductos}" 
-                                      rows="4" placeholder="Describe los productos incluidos en el pedido..." required></textarea>
+                            <label for="observaciones" class="form-label">Observaciones</label>
+                            <textarea class="form-control" id="observaciones" th:field="*{observaciones}" 
+                                      rows="3" placeholder="Notas adicionales del pedido..."></textarea>
                         </div>
 
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
@@ -151,8 +168,7 @@
                             </a>
                             <button type="submit" class="btn btn-primary btn-lg">
                                 <i class="fas fa-save me-2"></i>
-                                <!-- Mostrar texto dinámico según si es nuevo o actualizar -->
-                                <span th:text="${pedido.id != null ? 'Actualizar' : 'Guardar'}"></span>
+                                <span th:text="${pedido.idPedido != null ? 'Actualizar' : 'Guardar'}"></span>
                             </button>
                         </div>
                     </form>
@@ -162,5 +178,18 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Calcular total automáticamente
+        document.getElementById('subtotal').addEventListener('input', calcularTotal);
+        document.getElementById('costoEnvio').addEventListener('input', calcularTotal);
+        
+        function calcularTotal() {
+            const subtotal = parseFloat(document.getElementById('subtotal').value) || 0;
+            const costoEnvio = parseFloat(document.getElementById('costoEnvio').value) || 0;
+            const impuesto = subtotal * 0.18; // 18% IGV
+            const total = subtotal + impuesto + costoEnvio;
+            document.getElementById('total').value = total.toFixed(2);
+        }
+    </script>
 </body>
 </html>

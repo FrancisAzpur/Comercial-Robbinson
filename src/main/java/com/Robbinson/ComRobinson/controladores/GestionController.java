@@ -325,6 +325,35 @@ public class GestionController {
         return "gestion/productos-listado";
     }
 
+    // ==================== RUTAS DE VENTAS (Pedidos Entregados) ====================
+
+    /**
+     * Mostrar página de ventas (pedidos completados/entregados)
+     * Las ventas son pedidos que han sido entregados exitosamente
+     */
+    @GetMapping("/ventas")
+    public String listarVentas(Model modelo) {
+        // Obtener pedidos con estado ENTREGADO (considerados como ventas completadas)
+        List<Pedido> ventasEntregados = pedidoService.obtenerPedidosPorEstado("ENTREGADO");
+        
+        // Calcular estadísticas
+        int totalVentas = ventasEntregados.size();
+        BigDecimal totalVentasMonto = ventasEntregados.stream()
+                .map(Pedido::getTotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal promedio = totalVentas > 0 
+                ? totalVentasMonto.divide(BigDecimal.valueOf(totalVentas), 2, java.math.RoundingMode.HALF_UP)
+                : BigDecimal.ZERO;
+        
+        modelo.addAttribute("ventas", ventasEntregados);
+        modelo.addAttribute("totalVentas", totalVentas);
+        modelo.addAttribute("totalVentasMonto", totalVentasMonto);
+        modelo.addAttribute("promedio", promedio);
+        modelo.addAttribute("titulo", "Ventas Completadas");
+        
+        return "gestion/ventas-listado";
+    }
+
     // ==================== DASHBOARD ====================
 
     /**
@@ -336,9 +365,18 @@ public class GestionController {
         long totalPedidos = pedidoService.contarPedidos();
         long totalProductos = productoService.contarProductosActivos();
         
+        // Calcular ventas (pedidos entregados)
+        List<Pedido> ventasEntregados = pedidoService.obtenerPedidosPorEstado("ENTREGADO");
+        long totalVentas = ventasEntregados.size();
+        BigDecimal totalVentasMonto = ventasEntregados.stream()
+                .map(Pedido::getTotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        
         modelo.addAttribute("totalClientes", totalClientes);
         modelo.addAttribute("totalPedidos", totalPedidos);
         modelo.addAttribute("totalProductos", totalProductos);
+        modelo.addAttribute("totalVentas", totalVentas);
+        modelo.addAttribute("totalVentasMonto", totalVentasMonto);
         modelo.addAttribute("titulo", "Dashboard de Gestión");
         
         return "gestion/dashboard";

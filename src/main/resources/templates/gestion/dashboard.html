@@ -153,26 +153,14 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/gestion/ventas">
-                            <i class="fas fa-cash-register me-1"></i>Ventas
+                        <a class="nav-link" href="/gestion/productos">
+                            <i class="fas fa-boxes me-1"></i>Productos
                         </a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="graficosDropdown" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-chart-bar me-1"></i>Gráficos
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="fas fa-home me-1"></i>Inicio
                         </a>
-                        <ul class="dropdown-menu" aria-labelledby="graficosDropdown">
-                            <li>
-                                <a class="dropdown-item" href="/gestion/graficos/ventas">
-                                    <i class="fas fa-chart-line me-2"></i>Análisis de Ventas
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="/gestion/graficos/pedidos">
-                                    <i class="fas fa-chart-pie me-2"></i>Análisis de Pedidos
-                                </a>
-                            </li>
-                        </ul>
                     </li>
                 </ul>
             </div>
@@ -191,15 +179,13 @@
 
     <!-- Contenido principal -->
     <div class="container-fluid px-4 pb-5">
-        <!-- Estadísticas principales -->
-        <!-- Tarjetas de resumen con los totales de clientes, pedidos y ventas -->
+        <!-- Estadísticas principales (datos de la BD) -->
         <div class="row mb-5">
             <div class="col-md-3 mb-4">
                 <div class="stat-card">
                     <div class="stat-icon">
                         <i class="fas fa-users"></i>
                     </div>
-                    <!-- th:text muestra el total de clientes del modelo -->
                     <div class="stat-number" th:text="${totalClientes}">0</div>
                     <div class="stat-label">Clientes Registrados</div>
                 </div>
@@ -210,7 +196,6 @@
                     <div class="stat-icon">
                         <i class="fas fa-shopping-cart"></i>
                     </div>
-                    <!-- th:text muestra el total de pedidos -->
                     <div class="stat-number" th:text="${totalPedidos}">0</div>
                     <div class="stat-label">Pedidos Totales</div>
                 </div>
@@ -219,24 +204,21 @@
             <div class="col-md-3 mb-4">
                 <div class="stat-card">
                     <div class="stat-icon">
-                        <i class="fas fa-cash-register"></i>
+                        <i class="fas fa-boxes"></i>
                     </div>
-                    <!-- th:text muestra el total de ventas realizadas -->
-                    <div class="stat-number" th:text="${totalVentas}">0</div>
-                    <div class="stat-label">Ventas Realizadas</div>
+                    <div class="stat-number" th:text="${totalProductos}">0</div>
+                    <div class="stat-label">Productos Activos</div>
                 </div>
             </div>
 
             <div class="col-md-3 mb-4">
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-money-bill-wave"></i>
+                <div class="stat-card" style="border-left-color: #28a745;">
+                    <div class="stat-icon" style="color: #28a745;">
+                        <i class="fas fa-cash-register"></i>
                     </div>
-                    <!-- #numbers.formatDecimal formatea el monto total con 2 decimales -->
-                    <div class="stat-number">
-                        S/. <span th:text="${#numbers.formatDecimal(totalVentasMonto, 1, 2, true)}">0.00</span>
-                    </div>
-                    <div class="stat-label">Total de Ingresos</div>
+                    <div class="stat-number" th:text="${totalVentas}">0</div>
+                    <div class="stat-label">Ventas Completadas</div>
+                    <small class="text-success" th:text="'S/. ' + ${#numbers.formatDecimal(totalVentasMonto, 1, 2, true)}">S/. 0.00</small>
                 </div>
             </div>
         </div>
@@ -244,10 +226,9 @@
         <!-- Sección de Acciones Rápidas -->
         <div class="mb-5">
             <h2 class="section-title">
-                <i class="fas fa-lightning-bolt me-2"></i>Acciones Rápidas
+                <i class="fas fa-bolt me-2"></i>Acciones Rápidas
             </h2>
 
-            <!-- Grid de tarjetas de acceso rápido a funcionalidades -->
             <div class="row">
                 <!-- Nuevo Cliente -->
                 <div class="col-md-6 col-lg-3 mb-4">
@@ -271,25 +252,25 @@
                     </a>
                 </div>
 
-                <!-- Nueva Venta -->
+                <!-- Nuevo Producto -->
                 <div class="col-md-6 col-lg-3 mb-4">
-                    <a href="/gestion/ventas/nuevo" class="action-card">
+                    <a href="/gestion/productos/nuevo" class="action-card">
                         <div class="action-icon">
-                            <i class="fas fa-shopping-bag"></i>
+                            <i class="fas fa-box"></i>
                         </div>
-                        <div class="action-title">Nueva Venta</div>
-                        <small class="text-muted">Registrar una venta</small>
+                        <div class="action-title">Nuevo Producto</div>
+                        <small class="text-muted">Agregar al catálogo</small>
                     </a>
                 </div>
 
-                <!-- Ver Gráficos -->
+                <!-- Ver Catálogo -->
                 <div class="col-md-6 col-lg-3 mb-4">
-                    <a href="/gestion/graficos/ventas" class="action-card">
+                    <a href="/gestion/productos" class="action-card">
                         <div class="action-icon">
-                            <i class="fas fa-chart-area"></i>
+                            <i class="fas fa-list-alt"></i>
                         </div>
-                        <div class="action-title">Ver Gráficos</div>
-                        <small class="text-muted">Análisis visual</small>
+                        <div class="action-title">Ver Catálogo</div>
+                        <small class="text-muted">Todos los productos</small>
                     </a>
                 </div>
             </div>
@@ -303,7 +284,7 @@
 
             <div class="row">
                 <!-- Gestor de Clientes -->
-                <div class="col-md-4 mb-4">
+                <div class="col-md-6 col-lg-3 mb-4">
                     <a href="/gestion/clientes" class="action-card">
                         <div class="action-icon">
                             <i class="fas fa-address-book"></i>
@@ -314,7 +295,7 @@
                 </div>
 
                 <!-- Gestor de Pedidos -->
-                <div class="col-md-4 mb-4">
+                <div class="col-md-6 col-lg-3 mb-4">
                     <a href="/gestion/pedidos" class="action-card">
                         <div class="action-icon">
                             <i class="fas fa-tasks"></i>
@@ -324,45 +305,25 @@
                     </a>
                 </div>
 
+                <!-- Gestor de Productos -->
+                <div class="col-md-6 col-lg-3 mb-4">
+                    <a href="/gestion/productos" class="action-card">
+                        <div class="action-icon">
+                            <i class="fas fa-warehouse"></i>
+                        </div>
+                        <div class="action-title">Gestionar Productos</div>
+                        <small class="text-muted">Inventario y catálogo</small>
+                    </a>
+                </div>
+
                 <!-- Gestor de Ventas -->
-                <div class="col-md-4 mb-4">
-                    <a href="/gestion/ventas" class="action-card">
-                        <div class="action-icon">
-                            <i class="fas fa-receipt"></i>
+                <div class="col-md-6 col-lg-3 mb-4">
+                    <a href="/gestion/ventas" class="action-card" style="border-left: 3px solid #28a745;">
+                        <div class="action-icon" style="color: #28a745;">
+                            <i class="fas fa-cash-register"></i>
                         </div>
-                        <div class="action-title">Gestionar Ventas</div>
-                        <small class="text-muted">Registros de venta y búsquedas</small>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Sección de Reportes -->
-        <div class="mb-5">
-            <h2 class="section-title">
-                <i class="fas fa-file-chart-line me-2"></i>Reportes y Análisis
-            </h2>
-
-            <div class="row">
-                <!-- Gráficos de Ventas -->
-                <div class="col-md-6 mb-4">
-                    <a href="/gestion/graficos/ventas" class="action-card">
-                        <div class="action-icon">
-                            <i class="fas fa-chart-pie"></i>
-                        </div>
-                        <div class="action-title">Análisis de Ventas</div>
-                        <small class="text-muted">Gráficos: barras, líneas y circulares</small>
-                    </a>
-                </div>
-
-                <!-- Gráficos de Pedidos -->
-                <div class="col-md-6 mb-4">
-                    <a href="/gestion/graficos/pedidos" class="action-card">
-                        <div class="action-icon">
-                            <i class="fas fa-chart-bar"></i>
-                        </div>
-                        <div class="action-title">Análisis de Pedidos</div>
-                        <small class="text-muted">Estados, tendencias y métodos de pago</small>
+                        <div class="action-title">Ver Ventas</div>
+                        <small class="text-muted">Pedidos completados</small>
                     </a>
                 </div>
             </div>

@@ -204,11 +204,14 @@ function vincularEventosCarrito() {
             if (window.agregarAlCarrito) {
                 window.agregarAlCarrito(producto);
             } else {
-                // Fallback mínimo
+                // ========== INICIO: FALLBACK LOCALSTORAGE (mantener comentado para referencia) ==========
+                // TODO: Cuando se implemente el backend, este fallback debería usar:
+                // fetch('/api/carrito/agregar', { method: 'POST', body: JSON.stringify(producto) })
                 let carrito = JSON.parse(localStorage.getItem('carritoRobinson') || '[]');
                 const idx = carrito.findIndex(item => item.id === producto.id && item.tipo === producto.tipo);
                 if (idx !== -1) carrito[idx].cantidad += 1; else carrito.push({...producto, cantidad:1});
                 localStorage.setItem('carritoRobinson', JSON.stringify(carrito));
+                // ========== FIN: FALLBACK LOCALSTORAGE ==========
             }
         });
     });

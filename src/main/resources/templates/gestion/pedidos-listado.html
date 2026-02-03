@@ -40,19 +40,12 @@
         .btn-primary:hover {
             background-color: #c95e4a;
         }
-        .badge-pendiente {
-            background-color: #ffc107;
-            color: #000;
-        }
-        .badge-procesando {
-            background-color: #17a2b8;
-        }
-        .badge-enviado {
-            background-color: #6f42c1;
-        }
-        .badge-entregado {
-            background-color: #28a745;
-        }
+        .badge-PENDIENTE { background-color: #ffc107; color: #000; }
+        .badge-PAGADO { background-color: #28a745; }
+        .badge-PROCESANDO { background-color: #17a2b8; }
+        .badge-ENVIADO { background-color: #6f42c1; }
+        .badge-ENTREGADO { background-color: #28a745; }
+        .badge-CANCELADO { background-color: #dc3545; }
         .stats-card {
             border-radius: 10px;
             padding: 1.5rem;
@@ -90,8 +83,8 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/gestion/ventas">
-                            <i class="fas fa-cash-register me-1"></i>Ventas
+                        <a class="nav-link" href="/gestion/productos">
+                            <i class="fas fa-boxes me-1"></i>Productos
                         </a>
                     </li>
                 </ul>
@@ -118,25 +111,25 @@
             <div class="col-md-3">
                 <div class="stats-card" style="background-color: #ffc107;">
                     <h3 th:text="${totalPendiente}">0</h3>
-                    <p>Pendientes</p>
+                    <p class="mb-0">Pendientes</p>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="stats-card" style="background-color: #17a2b8;">
                     <h3 th:text="${totalProcesando}">0</h3>
-                    <p>Procesando</p>
+                    <p class="mb-0">Procesando</p>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="stats-card" style="background-color: #6f42c1;">
                     <h3 th:text="${totalEnviado}">0</h3>
-                    <p>Enviados</p>
+                    <p class="mb-0">Enviados</p>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="stats-card" style="background-color: #28a745;">
                     <h3 th:text="${totalEntregado}">0</h3>
-                    <p>Entregados</p>
+                    <p class="mb-0">Entregados</p>
                 </div>
             </div>
         </div>
@@ -147,23 +140,21 @@
                 <div class="card shadow-sm">
                     <div class="card-header bg-dark text-white">
                         <h5 class="mb-0">
-                            <!-- th:text muestra el total de pedidos -->
                             <i class="fas fa-list me-2"></i>Listado de Pedidos
                             <span class="badge bg-info float-end" th:text="'Total: ' + ${#lists.size(pedidos)}"></span>
                         </h5>
                     </div>
                     <div class="card-body p-0">
-                        <!-- th:unless verifica si la lista NO está vacía (opuesto a th:if) -->
                         <div th:if="${pedidos.isEmpty()}" class="alert alert-warning m-3">
                             <i class="fas fa-info-circle me-2"></i>No hay pedidos registrados
                         </div>
 
-                        <!-- th:each itera sobre la lista de pedidos -->
                         <table class="table table-hover mb-0" th:unless="${pedidos.isEmpty()}">
                             <thead class="table-light">
                                 <tr>
-                                    <th>Número Orden</th>
-                                    <th>Cliente ID</th>
+                                    <th>Nº Pedido</th>
+                                    <th>Cliente</th>
+                                    <th>Fecha</th>
                                     <th>Total (S/.)</th>
                                     <th>Estado</th>
                                     <th>Método Pago</th>
@@ -171,30 +162,26 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- th:each: itera cada pedido de la lista pedidos -->
                                 <tr th:each="pedido : ${pedidos}">
-                                    <!-- th:text: muestra el valor del atributo del pedido -->
-                                    <td><strong th:text="${pedido.numeroOrden}"></strong></td>
-                                    <td th:text="${pedido.clienteId}"></td>
-                                    <!-- th:text con formato de número: muestra el precio en soles -->
-                                    <td th:text="${#numbers.formatDecimal(pedido.totalMoneda, 1, 2, true)}"></td>
+                                    <td><strong th:text="${pedido.numeroPedido}"></strong></td>
+                                    <td th:text="${pedido.cliente != null ? pedido.cliente.nombreCompleto : 'Sin cliente'}"></td>
+                                    <td th:text="${#temporals.format(pedido.fechaPedido, 'dd/MM/yyyy')}"></td>
+                                    <td th:text="${#numbers.formatDecimal(pedido.total, 1, 2, true)}"></td>
                                     <td>
-                                        <!-- th:classappend añade clases CSS dinámicamente según el valor -->
-                                        <span th:classappend="'badge badge-' + ${pedido.estado.toLowerCase()}" 
+                                        <span th:class="'badge badge-' + ${pedido.estado}" 
                                               th:text="${pedido.estado}"></span>
                                     </td>
                                     <td th:text="${pedido.metodoPago}"></td>
                                     <td>
-                                        <!-- th:href genera URLs dinámicas con parámetros -->
-                                        <a class="btn btn-sm btn-info" th:href="@{/gestion/pedidos/{id}(id=${pedido.id})}">
-                                            <i class="fas fa-eye"></i> Ver
+                                        <a class="btn btn-sm btn-info" th:href="@{/gestion/pedidos/{id}(id=${pedido.idPedido})}">
+                                            <i class="fas fa-eye"></i>
                                         </a>
-                                        <a class="btn btn-sm btn-warning" th:href="@{/gestion/pedidos/{id}/editar(id=${pedido.id})}">
-                                            <i class="fas fa-edit"></i> Editar
+                                        <a class="btn btn-sm btn-warning" th:href="@{/gestion/pedidos/{id}/editar(id=${pedido.idPedido})}">
+                                            <i class="fas fa-edit"></i>
                                         </a>
-                                        <a class="btn btn-sm btn-danger" th:href="@{/gestion/pedidos/{id}/eliminar(id=${pedido.id})}"
+                                        <a class="btn btn-sm btn-danger" th:href="@{/gestion/pedidos/{id}/eliminar(id=${pedido.idPedido})}"
                                            onclick="return confirm('¿Eliminar este pedido?')">
-                                            <i class="fas fa-trash"></i> Eliminar
+                                            <i class="fas fa-trash"></i>
                                         </a>
                                     </td>
                                 </tr>

@@ -229,13 +229,20 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ==========================================
-// FUNCI\u00d3N PARA AGREGAR AL CARRITO
+// FUNCIÓN PARA AGREGAR AL CARRITO
+// ==============================================================================
+// NOTA: Este archivo actualmente usa localStorage para almacenar el carrito.
+// TODO: En futuras versiones, conectar con la base de datos usando fetch API
+// para sincronizar el carrito con el backend.
+// ==============================================================================
 // ==========================================
 
 function agregarAlCarrito(productoId, tipo) { addToCartHogar(productoId); return; // delega a addToCartHogar (usa API central)
     const producto = productosHogar.find(p => p.id === productoId);
     if (!producto) return;
 
+    // ========== INICIO: CÓDIGO LOCALSTORAGE (mantener comentado para referencia) ==========
+    // TODO: Cambiar a fetch('/api/carrito/agregar', { method: 'POST', body: JSON.stringify(producto) })
     // Obtener carrito del localStorage
     let carrito = JSON.parse(localStorage.getItem('carritoRobinson')) || [];
     
@@ -257,17 +264,21 @@ function agregarAlCarrito(productoId, tipo) { addToCartHogar(productoId); return
     
     // Guardar en localStorage
     localStorage.setItem('carritoRobinson', JSON.stringify(carrito));
+    // ========== FIN: CÓDIGO LOCALSTORAGE ==========
     
     // Actualizar contador del carrito
     actualizarContadorCarrito();
     
-    // Mostrar notificaci\u00f3n
+    // Mostrar notificación
     mostrarNotificacion('Producto agregado al carrito');
 }
 
 function actualizarContadorCarrito() {
+    // ========== INICIO: CÓDIGO LOCALSTORAGE (mantener comentado para referencia) ==========
+    // TODO: Cambiar a fetch('/api/carrito/contador') cuando se implemente el backend
     const carrito = JSON.parse(localStorage.getItem('carritoRobinson')) || [];
     const totalItems = carrito.reduce((sum, item) => sum + item.cantidad, 0);
+    // ========== FIN: CÓDIGO LOCALSTORAGE ==========
     
     const badges = document.querySelectorAll('.cart-count');
     badges.forEach(badge => {
@@ -291,6 +302,7 @@ function mostrarNotificacion(mensaje) {
 // Actualizar contador al cargar la p\u00e1gina
 document.addEventListener('DOMContentLoaded', actualizarContadorCarrito);
 // Función de compatibilidad para agregar desde la vista Hogar (usa la API central cuando esté disponible)
+// TODO: En futuras versiones, conectar directamente con el backend usando fetch API
 function addToCartHogar(productoId) {
     console.log('addToCartHogar invoked with', productoId);
     // Asegurar tipo numérico por si viene como string desde el onclick
@@ -312,6 +324,8 @@ function addToCartHogar(productoId) {
         try {
             const resultado = window.agregarAlCarrito(payload);
             console.log('window.agregarAlCarrito result:', resultado);
+            // ========== INICIO: VERIFICACIÓN LOCALSTORAGE (mantener comentado para referencia) ==========
+            // TODO: Cambiar a verificación con el backend cuando se implemente
             // Si la API no devolviera true/undefined, aún confirmamos que localStorage se actualizó
             const stored = JSON.parse(localStorage.getItem('carritoRobinson') || '[]');
             const existe = stored.findIndex(item => item.id === payload.id && item.tipo === payload.tipo) !== -1;
@@ -324,21 +338,25 @@ function addToCartHogar(productoId) {
                 localStorage.setItem('carritoRobinson', JSON.stringify(carrito));
                 actualizarContadorCarrito();
             }
+            // ========== FIN: VERIFICACIÓN LOCALSTORAGE ==========
         } catch (e) {
             console.error('Error ejecutando window.agregarAlCarrito:', e);
-            // Fallback local
+            // ========== INICIO: FALLBACK LOCALSTORAGE (mantener comentado para referencia) ==========
             let carrito = JSON.parse(localStorage.getItem('carritoRobinson') || '[]');
             const idx = carrito.findIndex(item => item.id === payload.id && item.tipo === payload.tipo);
             if (idx !== -1) carrito[idx].cantidad += 1; else carrito.push({...payload, cantidad:1});
             localStorage.setItem('carritoRobinson', JSON.stringify(carrito));
             actualizarContadorCarrito();
+            // ========== FIN: FALLBACK LOCALSTORAGE ==========
         }
     } else {
-        // Fallback mínimo
+        // ========== INICIO: FALLBACK LOCALSTORAGE MÍNIMO (mantener comentado para referencia) ==========
+        // TODO: Cambiar a fetch('/api/carrito/agregar', { method: 'POST', body: JSON.stringify(payload) })
         let carrito = JSON.parse(localStorage.getItem('carritoRobinson') || '[]');
         const idx = carrito.findIndex(item => item.id === payload.id && item.tipo === payload.tipo);
         if (idx !== -1) carrito[idx].cantidad += 1; else carrito.push({...payload, cantidad:1});
         localStorage.setItem('carritoRobinson', JSON.stringify(carrito));
         actualizarContadorCarrito();
+        // ========== FIN: FALLBACK LOCALSTORAGE MÍNIMO ==========
     }
 }
