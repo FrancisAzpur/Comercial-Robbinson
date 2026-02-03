@@ -1,72 +1,138 @@
 package com.Robbinson.ComRobinson.modelo;
 
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 /**
- * Modelo de Cliente para el registro y gestión de compradores
+ * Entidad Cliente - Representa a los clientes del sistema
+ * Mapeada a la tabla 'clientes' en la base de datos
  */
+@Entity
+@Table(name = "clientes")
 public class Cliente {
     
-    private Long id;
-    private String nombre;
-    private String apellido;
-    private String email;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_cliente")
+    private Long idCliente;
+    
+    @Column(name = "nombre_completo", nullable = false, length = 100)
+    private String nombreCompleto;
+    
+    @Column(name = "correo_electronico", nullable = false, unique = true, length = 100)
+    private String correoElectronico;
+    
+    @Column(name = "contrasena_hash", nullable = false, length = 255)
+    private String contrasenaHash;
+    
+    @Column(name = "telefono", length = 15)
     private String telefono;
-    private String direccion;
-    private String ciudad;
-    private String codigoPostal;
+    
+    @Column(name = "tipo_documento", length = 20)
+    @Enumerated(EnumType.STRING)
+    private TipoDocumento tipoDocumento = TipoDocumento.DNI;
+    
+    @Column(name = "documento_identidad", unique = true, length = 20)
+    private String documentoIdentidad;
+    
+    @Column(name = "activo", nullable = false)
+    private Boolean activo = true;
+    
+    @Column(name = "fecha_registro", updatable = false)
     private LocalDateTime fechaRegistro;
+    
+    @Column(name = "ultima_actualizacion")
+    private LocalDateTime ultimaActualizacion;
 
-    // Constructor vacío
-    public Cliente() {
-        this.fechaRegistro = LocalDateTime.now();
+    // Enum para tipo de documento
+    public enum TipoDocumento {
+        DNI, RUC, PASAPORTE
     }
 
-    // Constructor con parámetros
-    public Cliente(Long id, String nombre, String apellido, String email, 
-                   String telefono, String direccion, String ciudad, String codigoPostal) {
-        this.id = id;
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.email = email;
-        this.telefono = telefono;
-        this.direccion = direccion;
-        this.ciudad = ciudad;
-        this.codigoPostal = codigoPostal;
+    // Constructor vacío requerido por JPA
+    public Cliente() {
         this.fechaRegistro = LocalDateTime.now();
+        this.ultimaActualizacion = LocalDateTime.now();
+    }
+
+    // Constructor con campos principales
+    public Cliente(String nombreCompleto, String correoElectronico, String contrasenaHash) {
+        this();
+        this.nombreCompleto = nombreCompleto;
+        this.correoElectronico = correoElectronico;
+        this.contrasenaHash = contrasenaHash;
+    }
+
+    // Métodos de ciclo de vida JPA
+    @PrePersist
+    protected void onCreate() {
+        fechaRegistro = LocalDateTime.now();
+        ultimaActualizacion = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        ultimaActualizacion = LocalDateTime.now();
     }
 
     // Getters y Setters
+    public Long getIdCliente() {
+        return idCliente;
+    }
+
+    public void setIdCliente(Long idCliente) {
+        this.idCliente = idCliente;
+    }
+
+    // Alias para compatibilidad con servicios existentes
     public Long getId() {
-        return id;
+        return idCliente;
     }
 
     public void setId(Long id) {
-        this.id = id;
+        this.idCliente = id;
     }
 
+    public String getNombreCompleto() {
+        return nombreCompleto;
+    }
+
+    public void setNombreCompleto(String nombreCompleto) {
+        this.nombreCompleto = nombreCompleto;
+    }
+
+    // Alias para compatibilidad
     public String getNombre() {
-        return nombre;
+        return nombreCompleto;
     }
 
     public void setNombre(String nombre) {
-        this.nombre = nombre;
+        this.nombreCompleto = nombre;
     }
 
-    public String getApellido() {
-        return apellido;
+    public String getCorreoElectronico() {
+        return correoElectronico;
     }
 
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
+    public void setCorreoElectronico(String correoElectronico) {
+        this.correoElectronico = correoElectronico;
     }
 
+    // Alias para compatibilidad
     public String getEmail() {
-        return email;
+        return correoElectronico;
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        this.correoElectronico = email;
+    }
+
+    public String getContrasenaHash() {
+        return contrasenaHash;
+    }
+
+    public void setContrasenaHash(String contrasenaHash) {
+        this.contrasenaHash = contrasenaHash;
     }
 
     public String getTelefono() {
@@ -77,28 +143,28 @@ public class Cliente {
         this.telefono = telefono;
     }
 
-    public String getDireccion() {
-        return direccion;
+    public TipoDocumento getTipoDocumento() {
+        return tipoDocumento;
     }
 
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
+    public void setTipoDocumento(TipoDocumento tipoDocumento) {
+        this.tipoDocumento = tipoDocumento;
     }
 
-    public String getCiudad() {
-        return ciudad;
+    public String getDocumentoIdentidad() {
+        return documentoIdentidad;
     }
 
-    public void setCiudad(String ciudad) {
-        this.ciudad = ciudad;
+    public void setDocumentoIdentidad(String documentoIdentidad) {
+        this.documentoIdentidad = documentoIdentidad;
     }
 
-    public String getCodigoPostal() {
-        return codigoPostal;
+    public Boolean getActivo() {
+        return activo;
     }
 
-    public void setCodigoPostal(String codigoPostal) {
-        this.codigoPostal = codigoPostal;
+    public void setActivo(Boolean activo) {
+        this.activo = activo;
     }
 
     public LocalDateTime getFechaRegistro() {
@@ -109,8 +175,22 @@ public class Cliente {
         this.fechaRegistro = fechaRegistro;
     }
 
-    // Método para obtener nombre completo
-    public String getNombreCompleto() {
-        return nombre + " " + apellido;
+    public LocalDateTime getUltimaActualizacion() {
+        return ultimaActualizacion;
+    }
+
+    public void setUltimaActualizacion(LocalDateTime ultimaActualizacion) {
+        this.ultimaActualizacion = ultimaActualizacion;
+    }
+
+    @Override
+    public String toString() {
+        return "Cliente{" +
+                "idCliente=" + idCliente +
+                ", nombreCompleto='" + nombreCompleto + '\'' +
+                ", correoElectronico='" + correoElectronico + '\'' +
+                ", telefono='" + telefono + '\'' +
+                ", activo=" + activo +
+                '}';
     }
 }
