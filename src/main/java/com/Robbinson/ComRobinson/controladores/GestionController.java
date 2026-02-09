@@ -1,18 +1,26 @@
 package com.Robbinson.ComRobinson.controladores;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.Robbinson.ComRobinson.modelo.Cliente;
+import com.Robbinson.ComRobinson.modelo.DetallePedido;
 import com.Robbinson.ComRobinson.modelo.Pedido;
 import com.Robbinson.ComRobinson.modelo.Producto;
 import com.Robbinson.ComRobinson.servicios.ClienteService;
@@ -27,25 +35,60 @@ import com.Robbinson.ComRobinson.servicios.ProductoService;
 @RequestMapping("/gestion")
 public class GestionController {
 
-    // Servicios inyectados por constructor (buena práctica)
     private final ClienteService clienteService;
     private final PedidoService pedidoService;
     private final ProductoService productoService;
 
-    // Inyección de dependencias por constructor
-    public GestionController(ClienteService clienteService, 
-                            PedidoService pedidoService,
-                            ProductoService productoService) {
+    public GestionController(ClienteService clienteService,
+                             PedidoService pedidoService,
+                             ProductoService productoService) {
         this.clienteService = clienteService;
         this.pedidoService = pedidoService;
         this.productoService = productoService;
     }
 
-    // ==================== RUTAS DE CLIENTES ====================
+    // ==================== RUTA PRINCIPAL ====================
+
+    @GetMapping("")
+    public String gestionIndex() {
+        return "redirect:/gestion/dashboard";
+    }
+
+    // ==================== DASHBOARD ====================
+
+    @GetMapping("/dashboard")
+    public String dashboard(Model modelo) {
+        long totalClientes = clienteService.contarClientes();
+        long totalPedidos = pedidoService.contarPedidos();
+        long totalProductos = productoService.contarProductosActivos();
+
+        // Calcular ventas (pedidos entregados)
+        List<Pedido> ventasEntregados = pedidoService.obtenerPedidosPorEstado("ENTREGADO");
+        long totalVentas = ventasEntregados.size();
+        BigDecimal totalVentasMonto = ventasEntregados.stream()
+                .map(Pedido::getTotal)
+                .filter(t -> t != null)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        // Productos con stock bajo
+        List<Producto> productosStockBajo = productoService.obtenerProductosConStockBajo();
+
+        modelo.addAttribute("totalClientes", totalClientes);
+        modelo.addAttribute("totalPedidos", totalPedidos);
+        modelo.addAttribute("totalProductos", totalProductos);
+        modelo.addAttribute("totalVentas", totalVentas);
+        modelo.addAttribute("totalVentasMonto", totalVentasMonto);
+        modelo.addAttribute("productosStockBajo", productosStockBajo);
+        modelo.addAttribute("titulo", "Dashboard de Gestión");
+
+        return "gestion/dashboard";
+    }
+
+    // ==================== CLIENTES ====================
 
     /**
-     * Mostrar página de listado de clientes
-     * Ruta: GET /gestion/clientes
+     * Listado de clientes
+     * GET /gestion/clientes
      */
     @GetMapping("/clientes")
     public String listarClientes(Model modelo) {
@@ -56,32 +99,49 @@ public class GestionController {
     }
 
     /**
-     * Mostrar formulario para agregar nuevo cliente
+     * Formulario para nuevo cliente
+     * GET /gestion/clientes/nuevo
      */
     @GetMapping("/clientes/nuevo")
     public String formularioNuevoCliente(Model modelo) {
         modelo.addAttribute("cliente", new Cliente());
+        modelo.addAttribute("tiposDocumento", Cliente.TipoDocumento.values());
         modelo.addAttribute("titulo", "Registrar Nuevo Cliente");
         return "gestion/clientes-formulario";
     }
 
     /**
-     * Procesar el formulario y agregar cliente
+     * Guardar cliente (nuevo o actualización)
+     * POST /gestion/clientes/guardar
      */
     @PostMapping("/clientes/guardar")
-    public String guardarCliente(Cliente cliente) {
-        clienteService.guardarCliente(cliente);
+    public String guardarCliente(@ModelAttribute Cliente cliente, RedirectAttributes redirectAttributes) {
+        try {
+            if (cliente.getIdCliente() != null && cliente.getIdCliente() > 0) {
+                // Actualizar existente
+                clienteService.actualizarCliente(cliente.getIdCliente(), cliente);
+                redirectAttributes.addFlashAttribute("mensajeExito", "Cliente actualizado correctamente");
+            } else {
+                // Crear nuevo
+                clienteService.guardarCliente(cliente);
+                redirectAttributes.addFlashAttribute("mensajeExito", "Cliente registrado correctamente");
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("mensajeError", "Error al guardar cliente: " + e.getMessage());
+        }
         return "redirect:/gestion/clientes";
     }
 
     /**
-     * Mostrar detalle de un cliente específico
+     * Detalle de un cliente
+     * GET /gestion/clientes/{id}
      */
     @GetMapping("/clientes/{id}")
     public String detalleCliente(@PathVariable Long id, Model modelo) {
         Optional<Cliente> cliente = clienteService.obtenerClientePorId(id);
         if (cliente.isPresent()) {
             modelo.addAttribute("cliente", cliente.get());
+            modelo.addAttribute("pedidos", pedidoService.obtenerPedidosPorCliente(id));
             modelo.addAttribute("titulo", "Detalle del Cliente");
             return "gestion/clientes-detalle";
         }
@@ -89,13 +149,15 @@ public class GestionController {
     }
 
     /**
-     * Mostrar formulario para editar cliente
+     * Formulario para editar cliente
+     * GET /gestion/clientes/{id}/editar
      */
     @GetMapping("/clientes/{id}/editar")
     public String formularioEditarCliente(@PathVariable Long id, Model modelo) {
         Optional<Cliente> cliente = clienteService.obtenerClientePorId(id);
         if (cliente.isPresent()) {
             modelo.addAttribute("cliente", cliente.get());
+            modelo.addAttribute("tiposDocumento", Cliente.TipoDocumento.values());
             modelo.addAttribute("titulo", "Editar Cliente");
             return "gestion/clientes-formulario";
         }
@@ -103,25 +165,38 @@ public class GestionController {
     }
 
     /**
-     * Procesar actualización de cliente
+     * Actualizar cliente
+     * POST /gestion/clientes/{id}/actualizar
      */
     @PostMapping("/clientes/{id}/actualizar")
-    public String actualizarCliente(@PathVariable Long id, Cliente clienteActualizado) {
-        clienteService.actualizarCliente(id, clienteActualizado);
+    public String actualizarCliente(@PathVariable Long id, @ModelAttribute Cliente clienteActualizado,
+                                    RedirectAttributes redirectAttributes) {
+        try {
+            clienteService.actualizarCliente(id, clienteActualizado);
+            redirectAttributes.addFlashAttribute("mensajeExito", "Cliente actualizado correctamente");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("mensajeError", "Error al actualizar: " + e.getMessage());
+        }
         return "redirect:/gestion/clientes/" + id;
     }
 
     /**
      * Eliminar un cliente
+     * GET /gestion/clientes/{id}/eliminar
      */
     @GetMapping("/clientes/{id}/eliminar")
-    public String eliminarCliente(@PathVariable Long id) {
-        clienteService.eliminarCliente(id);
+    public String eliminarCliente(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        if (clienteService.eliminarCliente(id)) {
+            redirectAttributes.addFlashAttribute("mensajeExito", "Cliente eliminado correctamente");
+        } else {
+            redirectAttributes.addFlashAttribute("mensajeError", "No se pudo eliminar el cliente");
+        }
         return "redirect:/gestion/clientes";
     }
 
     /**
      * Buscar clientes por nombre
+     * GET /gestion/clientes/buscar?nombre=xxx
      */
     @GetMapping("/clientes/buscar")
     public String buscarClientes(@RequestParam String nombre, Model modelo) {
@@ -131,54 +206,68 @@ public class GestionController {
         return "gestion/clientes-listado";
     }
 
-    // ==================== RUTAS DE PEDIDOS ====================
+    // ==================== PEDIDOS ====================
 
     /**
-     * Mostrar página de listado de pedidos
+     * Listado de pedidos
+     * GET /gestion/pedidos
      */
     @GetMapping("/pedidos")
     public String listarPedidos(Model modelo) {
         List<Pedido> pedidos = pedidoService.obtenerTodosLosPedidos();
         int[] conteos = pedidoService.contarPedidosPorEstado();
-        
+
         modelo.addAttribute("pedidos", pedidos);
         modelo.addAttribute("totalPendiente", conteos[0]);
         modelo.addAttribute("totalProcesando", conteos[1]);
         modelo.addAttribute("totalEnviado", conteos[2]);
         modelo.addAttribute("totalEntregado", conteos[3]);
+        modelo.addAttribute("estados", Pedido.EstadoPedido.values());
         modelo.addAttribute("titulo", "Gestión de Pedidos");
-        
+
         return "gestion/pedidos-listado";
     }
 
     /**
-     * Mostrar formulario para crear nuevo pedido
+     * Formulario para crear nuevo pedido
+     * GET /gestion/pedidos/nuevo
      */
     @GetMapping("/pedidos/nuevo")
     public String formularioNuevoPedido(Model modelo) {
         modelo.addAttribute("pedido", new Pedido());
         modelo.addAttribute("clientes", clienteService.obtenerClientesActivos());
+        modelo.addAttribute("productos", productoService.obtenerProductosActivos());
+        modelo.addAttribute("metodosPago", Pedido.MetodoPago.values());
         modelo.addAttribute("titulo", "Crear Nuevo Pedido");
         return "gestion/pedidos-formulario";
     }
 
     /**
      * Guardar nuevo pedido
+     * POST /gestion/pedidos/guardar
      */
     @PostMapping("/pedidos/guardar")
-    public String guardarPedido(Pedido pedido) {
-        pedidoService.guardarPedido(pedido);
+    public String guardarPedido(@ModelAttribute Pedido pedido, RedirectAttributes redirectAttributes) {
+        try {
+            pedidoService.guardarPedido(pedido);
+            redirectAttributes.addFlashAttribute("mensajeExito", "Pedido creado correctamente");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("mensajeError", "Error al crear pedido: " + e.getMessage());
+        }
         return "redirect:/gestion/pedidos";
     }
 
     /**
-     * Ver detalle de un pedido
+     * Detalle de un pedido
+     * GET /gestion/pedidos/{id}
      */
     @GetMapping("/pedidos/{id}")
     public String detallePedido(@PathVariable Long id, Model modelo) {
         Optional<Pedido> pedido = pedidoService.obtenerPedidoPorId(id);
         if (pedido.isPresent()) {
             modelo.addAttribute("pedido", pedido.get());
+            modelo.addAttribute("detalles", pedidoService.obtenerDetallesPorPedido(id));
+            modelo.addAttribute("estados", Pedido.EstadoPedido.values());
             modelo.addAttribute("titulo", "Detalle del Pedido");
             return "gestion/pedidos-detalle";
         }
@@ -186,13 +275,16 @@ public class GestionController {
     }
 
     /**
-     * Mostrar formulario para editar pedido
+     * Formulario para editar pedido
+     * GET /gestion/pedidos/{id}/editar
      */
     @GetMapping("/pedidos/{id}/editar")
     public String formularioEditarPedido(@PathVariable Long id, Model modelo) {
         Optional<Pedido> pedido = pedidoService.obtenerPedidoPorId(id);
         if (pedido.isPresent()) {
             modelo.addAttribute("pedido", pedido.get());
+            modelo.addAttribute("clientes", clienteService.obtenerClientesActivos());
+            modelo.addAttribute("metodosPago", Pedido.MetodoPago.values());
             modelo.addAttribute("titulo", "Editar Pedido");
             return "gestion/pedidos-formulario";
         }
@@ -201,35 +293,55 @@ public class GestionController {
 
     /**
      * Actualizar pedido
+     * POST /gestion/pedidos/{id}/actualizar
      */
     @PostMapping("/pedidos/{id}/actualizar")
-    public String actualizarPedido(@PathVariable Long id, Pedido pedidoActualizado) {
-        pedidoService.actualizarPedido(id, pedidoActualizado);
+    public String actualizarPedido(@PathVariable Long id, @ModelAttribute Pedido pedidoActualizado,
+                                   RedirectAttributes redirectAttributes) {
+        try {
+            pedidoService.actualizarPedido(id, pedidoActualizado);
+            redirectAttributes.addFlashAttribute("mensajeExito", "Pedido actualizado correctamente");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("mensajeError", "Error al actualizar: " + e.getMessage());
+        }
         return "redirect:/gestion/pedidos/" + id;
     }
 
     /**
      * Cambiar estado de un pedido
+     * POST /gestion/pedidos/{id}/cambiar-estado
      */
     @PostMapping("/pedidos/{id}/cambiar-estado")
-    public String cambiarEstadoPedido(@PathVariable Long id, @RequestParam String estado) {
-        pedidoService.cambiarEstadoPedido(id, estado);
+    public String cambiarEstadoPedido(@PathVariable Long id, @RequestParam String estado,
+                                      RedirectAttributes redirectAttributes) {
+        try {
+            pedidoService.cambiarEstadoPedido(id, estado);
+            redirectAttributes.addFlashAttribute("mensajeExito", "Estado actualizado a: " + estado);
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("mensajeError", "Error al cambiar estado: " + e.getMessage());
+        }
         return "redirect:/gestion/pedidos/" + id;
     }
 
     /**
      * Eliminar un pedido
+     * GET /gestion/pedidos/{id}/eliminar
      */
     @GetMapping("/pedidos/{id}/eliminar")
-    public String eliminarPedido(@PathVariable Long id) {
-        pedidoService.eliminarPedido(id);
+    public String eliminarPedido(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        if (pedidoService.eliminarPedido(id)) {
+            redirectAttributes.addFlashAttribute("mensajeExito", "Pedido eliminado correctamente");
+        } else {
+            redirectAttributes.addFlashAttribute("mensajeError", "No se pudo eliminar el pedido");
+        }
         return "redirect:/gestion/pedidos";
     }
 
-    // ==================== RUTAS DE PRODUCTOS ====================
+    // ==================== PRODUCTOS ====================
 
     /**
-     * Mostrar página de listado de productos
+     * Listado de productos
+     * GET /gestion/productos
      */
     @GetMapping("/productos")
     public String listarProductos(Model modelo) {
@@ -240,7 +352,8 @@ public class GestionController {
     }
 
     /**
-     * Mostrar formulario para agregar nuevo producto
+     * Formulario para nuevo producto
+     * GET /gestion/productos/nuevo
      */
     @GetMapping("/productos/nuevo")
     public String formularioNuevoProducto(Model modelo) {
@@ -250,16 +363,28 @@ public class GestionController {
     }
 
     /**
-     * Guardar nuevo producto
+     * Guardar producto (nuevo o actualización)
+     * POST /gestion/productos/guardar
      */
     @PostMapping("/productos/guardar")
-    public String guardarProducto(Producto producto) {
-        productoService.guardarProducto(producto);
+    public String guardarProducto(@ModelAttribute Producto producto, RedirectAttributes redirectAttributes) {
+        try {
+            if (producto.getIdProducto() != null && producto.getIdProducto() > 0) {
+                productoService.actualizarProducto(producto.getIdProducto(), producto);
+                redirectAttributes.addFlashAttribute("mensajeExito", "Producto actualizado correctamente");
+            } else {
+                productoService.guardarProducto(producto);
+                redirectAttributes.addFlashAttribute("mensajeExito", "Producto registrado correctamente");
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("mensajeError", "Error al guardar producto: " + e.getMessage());
+        }
         return "redirect:/gestion/productos";
     }
 
     /**
-     * Ver detalle de un producto
+     * Detalle de un producto
+     * GET /gestion/productos/{id}
      */
     @GetMapping("/productos/{id}")
     public String detalleProducto(@PathVariable Long id, Model modelo) {
@@ -273,7 +398,8 @@ public class GestionController {
     }
 
     /**
-     * Mostrar formulario para editar producto
+     * Formulario para editar producto
+     * GET /gestion/productos/{id}/editar
      */
     @GetMapping("/productos/{id}/editar")
     public String formularioEditarProducto(@PathVariable Long id, Model modelo) {
@@ -288,34 +414,37 @@ public class GestionController {
 
     /**
      * Actualizar producto
+     * POST /gestion/productos/{id}/actualizar
      */
     @PostMapping("/productos/{id}/actualizar")
-    public String actualizarProducto(@PathVariable Long id, Producto productoActualizado) {
-        Optional<Producto> productoOpt = productoService.obtenerProductoPorId(id);
-        if (productoOpt.isPresent()) {
-            Producto producto = productoOpt.get();
-            producto.setNombreProducto(productoActualizado.getNombreProducto());
-            producto.setDescripcion(productoActualizado.getDescripcion());
-            producto.setPrecioVenta(productoActualizado.getPrecioVenta());
-            producto.setPrecioCompra(productoActualizado.getPrecioCompra());
-            producto.setStockActual(productoActualizado.getStockActual());
-            producto.setActivo(productoActualizado.getActivo());
-            productoService.guardarProducto(producto);
+    public String actualizarProducto(@PathVariable Long id, @ModelAttribute Producto productoActualizado,
+                                     RedirectAttributes redirectAttributes) {
+        try {
+            productoService.actualizarProducto(id, productoActualizado);
+            redirectAttributes.addFlashAttribute("mensajeExito", "Producto actualizado correctamente");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("mensajeError", "Error al actualizar: " + e.getMessage());
         }
         return "redirect:/gestion/productos/" + id;
     }
 
     /**
      * Eliminar un producto
+     * GET /gestion/productos/{id}/eliminar
      */
     @GetMapping("/productos/{id}/eliminar")
-    public String eliminarProducto(@PathVariable Long id) {
-        productoService.eliminarProducto(id);
+    public String eliminarProducto(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        if (productoService.eliminarProducto(id)) {
+            redirectAttributes.addFlashAttribute("mensajeExito", "Producto eliminado correctamente");
+        } else {
+            redirectAttributes.addFlashAttribute("mensajeError", "No se pudo eliminar el producto");
+        }
         return "redirect:/gestion/productos";
     }
 
     /**
      * Buscar productos por nombre
+     * GET /gestion/productos/buscar?nombre=xxx
      */
     @GetMapping("/productos/buscar")
     public String buscarProductos(@RequestParam String nombre, Model modelo) {
@@ -325,68 +454,127 @@ public class GestionController {
         return "gestion/productos-listado";
     }
 
-    // ==================== RUTAS DE VENTAS (Pedidos Entregados) ====================
+    // ==================== VENTAS ====================
 
     /**
-     * Mostrar página de ventas (pedidos completados/entregados)
-     * Las ventas son pedidos que han sido entregados exitosamente
+     * Listado de ventas (pedidos entregados)
+     * GET /gestion/ventas
      */
     @GetMapping("/ventas")
     public String listarVentas(Model modelo) {
-        // Obtener pedidos con estado ENTREGADO (considerados como ventas completadas)
         List<Pedido> ventasEntregados = pedidoService.obtenerPedidosPorEstado("ENTREGADO");
-        
-        // Calcular estadísticas
+
         int totalVentas = ventasEntregados.size();
         BigDecimal totalVentasMonto = ventasEntregados.stream()
                 .map(Pedido::getTotal)
+                .filter(t -> t != null)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-        BigDecimal promedio = totalVentas > 0 
+        BigDecimal promedio = totalVentas > 0
                 ? totalVentasMonto.divide(BigDecimal.valueOf(totalVentas), 2, java.math.RoundingMode.HALF_UP)
                 : BigDecimal.ZERO;
-        
+
         modelo.addAttribute("ventas", ventasEntregados);
         modelo.addAttribute("totalVentas", totalVentas);
         modelo.addAttribute("totalVentasMonto", totalVentasMonto);
         modelo.addAttribute("promedio", promedio);
         modelo.addAttribute("titulo", "Ventas Completadas");
-        
+
         return "gestion/ventas-listado";
     }
 
-    // ==================== DASHBOARD ====================
+    // ==================== GRÁFICOS ====================
 
     /**
-     * Dashboard principal de gestión
+     * Gráficos de ventas con datos completos para Chart.js
+     * GET /gestion/graficos/ventas
      */
-    @GetMapping("/dashboard")
-    public String dashboard(Model modelo) {
-        long totalClientes = clienteService.contarClientes();
-        long totalPedidos = pedidoService.contarPedidos();
-        long totalProductos = productoService.contarProductosActivos();
-        
-        // Calcular ventas (pedidos entregados)
+    @GetMapping("/graficos/ventas")
+    public String graficosVentas(Model modelo) {
         List<Pedido> ventasEntregados = pedidoService.obtenerPedidosPorEstado("ENTREGADO");
-        long totalVentas = ventasEntregados.size();
-        BigDecimal totalVentasMonto = ventasEntregados.stream()
+
+        // Estadísticas principales
+        int totalVentas = ventasEntregados.size();
+        BigDecimal totalMonto = ventasEntregados.stream()
                 .map(Pedido::getTotal)
+                .filter(t -> t != null)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-        
-        modelo.addAttribute("totalClientes", totalClientes);
-        modelo.addAttribute("totalPedidos", totalPedidos);
-        modelo.addAttribute("totalProductos", totalProductos);
+        BigDecimal promedio = totalVentas > 0
+                ? totalMonto.divide(BigDecimal.valueOf(totalVentas), 2, RoundingMode.HALF_UP)
+                : BigDecimal.ZERO;
+
+        // Calcular unidades vendidas y ventas por producto
+        Map<String, Integer> ventasPorProducto = new HashMap<>();
+        int totalUnidades = 0;
+        for (Pedido pedido : ventasEntregados) {
+            List<DetallePedido> detalles = pedidoService.obtenerDetallesPorPedido(pedido.getIdPedido());
+            for (DetallePedido detalle : detalles) {
+                String nombreProd = detalle.getProducto() != null ? detalle.getProducto().getNombreProducto() : "Sin nombre";
+                int cant = detalle.getCantidad() != null ? detalle.getCantidad() : 0;
+                ventasPorProducto.merge(nombreProd, cant, Integer::sum);
+                totalUnidades += cant;
+            }
+        }
+
+        // Ventas por fecha (agrupadas por día)
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        Map<String, BigDecimal> ventasPorFecha = new LinkedHashMap<>();
+        for (Pedido pedido : ventasEntregados) {
+            if (pedido.getFechaPedido() != null) {
+                String fecha = pedido.getFechaPedido().format(fmt);
+                BigDecimal monto = pedido.getTotal() != null ? pedido.getTotal() : BigDecimal.ZERO;
+                ventasPorFecha.merge(fecha, monto, BigDecimal::add);
+            }
+        }
+
+        // Ventas por cliente (como "vendedor" en este contexto)
+        Map<String, BigDecimal> ventasPorVendedor = new HashMap<>();
+        for (Pedido pedido : ventasEntregados) {
+            String cliente = pedido.getCliente() != null ? pedido.getCliente().getNombreCompleto() : "Sin cliente";
+            BigDecimal monto = pedido.getTotal() != null ? pedido.getTotal() : BigDecimal.ZERO;
+            ventasPorVendedor.merge(cliente, monto, BigDecimal::add);
+        }
+
         modelo.addAttribute("totalVentas", totalVentas);
-        modelo.addAttribute("totalVentasMonto", totalVentasMonto);
-        modelo.addAttribute("titulo", "Dashboard de Gestión");
-        
-        return "gestion/dashboard";
+        modelo.addAttribute("totalMonto", totalMonto);
+        modelo.addAttribute("totalUnidades", totalUnidades);
+        modelo.addAttribute("promedio", promedio);
+        modelo.addAttribute("ventasPorProducto", ventasPorProducto);
+        modelo.addAttribute("ventasPorFecha", ventasPorFecha);
+        modelo.addAttribute("ventasPorVendedor", ventasPorVendedor);
+        modelo.addAttribute("titulo", "Gráficos de Ventas");
+        return "gestion/graficos-ventas";
     }
 
     /**
-     * Ruta principal de gestión (redirige al dashboard)
+     * Gráficos de pedidos con datos completos para Chart.js
+     * GET /gestion/graficos/pedidos
      */
-    @GetMapping("")
-    public String gestionIndex() {
-        return "redirect:/gestion/dashboard";
+    @GetMapping("/graficos/pedidos")
+    public String graficosPedidos(Model modelo) {
+        int[] conteos = pedidoService.contarPedidosPorEstado();
+        List<Pedido> todosPedidos = pedidoService.obtenerTodosLosPedidos();
+
+        // Pedidos por fecha
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        Map<String, Integer> pedidosPorFecha = new LinkedHashMap<>();
+        for (Pedido pedido : todosPedidos) {
+            if (pedido.getFechaPedido() != null) {
+                String fecha = pedido.getFechaPedido().format(fmt);
+                pedidosPorFecha.merge(fecha, 1, Integer::sum);
+            }
+        }
+
+        // Pedidos por método de pago
+        Map<String, Integer> pedidosPorMetodo = new HashMap<>();
+        for (Pedido pedido : todosPedidos) {
+            String metodo = pedido.getMetodoPago() != null ? pedido.getMetodoPago().name() : "SIN_DEFINIR";
+            pedidosPorMetodo.merge(metodo, 1, Integer::sum);
+        }
+
+        modelo.addAttribute("conteoEstados", conteos);
+        modelo.addAttribute("pedidosPorFecha", pedidosPorFecha);
+        modelo.addAttribute("pedidosPorMetodo", pedidosPorMetodo);
+        modelo.addAttribute("titulo", "Gráficos de Pedidos");
+        return "gestion/graficos-pedidos";
     }
 }

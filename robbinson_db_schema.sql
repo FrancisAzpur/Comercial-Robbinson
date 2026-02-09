@@ -21,7 +21,7 @@ CREATE TABLE clientes (
     documento_identidad VARCHAR(20) UNIQUE COMMENT 'Número de documento único',
     activo BOOLEAN NOT NULL DEFAULT TRUE COMMENT 'Cliente activo o inactivo',
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'Fecha de registro del cliente',
-    ultima_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    ultima_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Última actualización de datos',
     
     INDEX idx_cliente_correo (correo_electronico),
     INDEX idx_cliente_documento (documento_identidad),

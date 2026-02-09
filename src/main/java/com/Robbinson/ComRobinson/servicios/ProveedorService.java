@@ -1,77 +1,67 @@
 package com.Robbinson.ComRobinson.servicios;
 
-import com.Robbinson.ComRobinson.modelo.Proveedor;
-import com.Robbinson.ComRobinson.repositorio.ProveedorRepository;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Servicio para gestionar operaciones de Proveedores
- * Utiliza JPA Repository para interactuar con la base de datos
- */
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.Robbinson.ComRobinson.modelo.Proveedor;
+import com.Robbinson.ComRobinson.repositorio.ProveedorRepository;
+
 @Service
 @Transactional
 public class ProveedorService {
 
-    private final ProveedorRepository proveedorRepository;
+    @Autowired
+    private ProveedorRepository proveedorRepository;
 
-    public ProveedorService(ProveedorRepository proveedorRepository) {
-        this.proveedorRepository = proveedorRepository;
-    }
-
-    /**
-     * Guardar o actualizar un proveedor
-     */
     public Proveedor guardarProveedor(Proveedor proveedor) {
         return proveedorRepository.save(proveedor);
     }
 
-    /**
-     * Obtener todos los proveedores
-     */
-    @Transactional(readOnly = true)
     public List<Proveedor> obtenerTodosLosProveedores() {
         return proveedorRepository.findAll();
     }
 
-    /**
-     * Obtener proveedor por ID
-     */
-    @Transactional(readOnly = true)
     public Optional<Proveedor> obtenerProveedorPorId(Long id) {
         return proveedorRepository.findById(id);
     }
 
-    /**
-     * Buscar proveedor por RUC
-     */
-    @Transactional(readOnly = true)
     public Optional<Proveedor> buscarPorRuc(String ruc) {
         return proveedorRepository.findByRuc(ruc);
     }
 
-    /**
-     * Buscar proveedores por nombre
-     */
-    @Transactional(readOnly = true)
     public List<Proveedor> buscarPorNombre(String nombre) {
         return proveedorRepository.findByNombreEmpresaContainingIgnoreCase(nombre);
     }
 
-    /**
-     * Obtener proveedores activos
-     */
-    @Transactional(readOnly = true)
     public List<Proveedor> obtenerProveedoresActivos() {
-        return proveedorRepository.findByActivoTrue();
+        return proveedorRepository.findByActivo(true);
     }
 
-    /**
-     * Eliminar un proveedor por ID
-     */
+    public boolean rucExiste(String ruc) {
+        return proveedorRepository.existsByRuc(ruc);
+    }
+
+    public Proveedor actualizarProveedor(Long id, Proveedor proveedorActualizado) {
+        return proveedorRepository.findById(id)
+                .map(proveedor -> {
+                    proveedor.setNombreEmpresa(proveedorActualizado.getNombreEmpresa());
+                    proveedor.setRuc(proveedorActualizado.getRuc());
+                    proveedor.setContactoNombre(proveedorActualizado.getContactoNombre());
+                    proveedor.setContactoTelefono(proveedorActualizado.getContactoTelefono());
+                    proveedor.setContactoEmail(proveedorActualizado.getContactoEmail());
+                    proveedor.setDireccion(proveedorActualizado.getDireccion());
+                    proveedor.setCiudad(proveedorActualizado.getCiudad());
+                    proveedor.setPais(proveedorActualizado.getPais());
+                    proveedor.setActivo(proveedorActualizado.getActivo());
+                    return proveedorRepository.save(proveedor);
+                })
+                .orElse(null);
+    }
+
     public boolean eliminarProveedor(Long id) {
         if (proveedorRepository.existsById(id)) {
             proveedorRepository.deleteById(id);
@@ -80,11 +70,7 @@ public class ProveedorService {
         return false;
     }
 
-    /**
-     * Contar proveedores activos
-     */
-    @Transactional(readOnly = true)
-    public long contarProveedoresActivos() {
-        return proveedorRepository.countByActivoTrue();
+    public long contarProveedores() {
+        return proveedorRepository.count();
     }
 }
