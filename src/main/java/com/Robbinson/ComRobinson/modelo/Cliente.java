@@ -1,5 +1,6 @@
 package com.Robbinson.ComRobinson.modelo;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
@@ -18,7 +19,9 @@ import jakarta.persistence.Table;
  */
 @Entity
 @Table(name = "clientes")
-public class Cliente {
+public class Cliente implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,7 +45,7 @@ public class Cliente {
     private TipoDocumento tipoDocumento = TipoDocumento.DNI;
 
     @Column(name = "documento_identidad", unique = true, length = 20)
-    private String documentoIdentidad;
+    private String documentoIdentidad; // nombre cambiado para mayor claridad
 
     @Column(name = "activo", nullable = false)
     private Boolean activo = true;

@@ -15,6 +15,20 @@
         <section class="container d-flex justify-content-center align-items-center my-5 p-4 rounded" style="background:#f4f1ee;">
             <div class="col-md-5 col-lg-4">
 
+                <!-- Mensaje de éxito (ej: registro exitoso) -->
+                <div th:if="${mensajeExito}" class="alert alert-success alert-dismissible fade show mb-3" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <span th:text="${mensajeExito}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+
+                <!-- Mensaje de error -->
+                <div th:if="${mensajeError}" class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    <span th:text="${mensajeError}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+
                 <div class="card shadow-lg border-0 rounded-3">
                     <div class="card-header text-center" style="background:#f1f3f5; color:#1f2937;">
                         <h5 class="fw-bold mb-0">Iniciar Sesión</h5>
@@ -23,23 +37,23 @@
                     <div class="card-body p-5">
                         <form th:action="@{/login}" method="post">
                             <div class="mb-3">
-                                <label class="form-label">Correo Electrónico</label>
-                                <input type="email"
+                                <label for="correo" class="form-label">Correo Electrónico</label>
+                                <input type="email" id="correo" name="correo"
                                        class="form-control"
                                        placeholder="correo@ejemplo.com"
                                        required>
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label">Contraseña</label>
-                                <input type="password"
+                                <label for="contrasena" class="form-label">Contraseña</label>
+                                <input type="password" id="contrasena" name="contrasena"
                                        class="form-control"
                                        placeholder="••••••••"
                                        required>
                             </div>
 
                             <button type="submit" class="btn btn-primary w-100">
-                                Ingresar
+                                <i class="fas fa-sign-in-alt me-2"></i>Ingresar
                             </button>
                         </form>
                     </div>

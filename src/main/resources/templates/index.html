@@ -9,6 +9,15 @@
     <!-- Margen superior para navbar fija -->
     <div style="margin-top: 70px;">
 
+    <!-- Mensaje de bienvenida después del login -->
+    <div th:if="${mensajeExito}" class="container mt-3">
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            <span th:text="${mensajeExito}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    </div>
+
     <!-- Hero -->
     <section class="hero" id="hero">
         <div class="container">

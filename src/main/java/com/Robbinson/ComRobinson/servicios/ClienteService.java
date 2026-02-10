@@ -81,4 +81,19 @@ public class ClienteService {
     public long contarClientes() {
         return clienteRepository.count();
     }
+
+    /**
+     * Autentica un cliente por correo y contraseña
+     * Retorna el Cliente si las credenciales son correctas, o vacío si no
+     */
+    public Optional<Cliente> autenticar(String correo, String contrasena) {
+        Optional<Cliente> cliente = clienteRepository.findByCorreoElectronico(correo);
+        if (cliente.isPresent() && cliente.get().getContrasenaHash().equals(contrasena)) {
+            // Solo permite login si el cliente está activo
+            if (Boolean.TRUE.equals(cliente.get().getActivo())) {
+                return cliente;
+            }
+        }
+        return Optional.empty();
+    }
 }

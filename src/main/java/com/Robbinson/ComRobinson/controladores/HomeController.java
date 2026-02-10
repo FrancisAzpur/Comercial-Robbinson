@@ -1,14 +1,23 @@
 package com.Robbinson.ComRobinson.controladores;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.Robbinson.ComRobinson.modelo.Cliente;
 import com.Robbinson.ComRobinson.modelo.Producto;
+import com.Robbinson.ComRobinson.servicios.ClienteService;
 import com.Robbinson.ComRobinson.servicios.ProductoService;
+
+import jakarta.servlet.http.HttpSession;
 
 /**
  * Controlador para las páginas públicas del sitio web
@@ -19,6 +28,9 @@ public class HomeController {
 
     @Autowired
     private ProductoService productoService;
+
+    @Autowired
+    private ClienteService clienteService;
 
     // ==================== PÁGINA DE INICIO ====================
 
@@ -82,21 +94,87 @@ public class HomeController {
 
     /** Página de inicio de sesión */
     @GetMapping("/login")
-    public String login() {
+    public String login(HttpSession session) {
+        // Si ya está logueado, redirigir al inicio
+        if (session.getAttribute("clienteLogueado") != null) {
+            return "redirect:/";
+        }
         return "login";
     }
 
-    /** Página de registro de nuevo usuario */
+    /** Procesar login - valida contra la BD */
+    @PostMapping("/login")
+    public String procesarLogin(@RequestParam String correo,
+                                @RequestParam String contrasena,
+                                HttpSession session,
+                                RedirectAttributes redirectAttributes) {
+        Optional<Cliente> cliente = clienteService.autenticar(correo, contrasena);
+
+        if (cliente.isPresent()) {
+            // Guardar datos del cliente en la sesión
+            session.setAttribute("clienteLogueado", cliente.get());
+            session.setAttribute("nombreCliente", cliente.get().getNombreCompleto());
+            session.setAttribute("idCliente", cliente.get().getIdCliente());
+            redirectAttributes.addFlashAttribute("mensajeExito",
+                    "¡Bienvenido/a, " + cliente.get().getNombreCompleto() + "!");
+            return "redirect:/";
+        } else {
+            redirectAttributes.addFlashAttribute("mensajeError",
+                    "Correo o contraseña incorrectos, o la cuenta está inactiva");
+            return "redirect:/login";
+        }
+    }
+
+    /** Cerrar sesión */
+    @GetMapping("/logout")
+    public String logout(HttpSession session, RedirectAttributes redirectAttributes) {
+        session.invalidate();
+        redirectAttributes.addFlashAttribute("mensajeExito", "Has cerrado sesión correctamente");
+        return "redirect:/login";
+    }
+
+    /** Página de registro de nuevo usuario (GET - muestra formulario) */
     @GetMapping("/registro")
-    public String registro() {
+    public String registro(Model model) {
+        model.addAttribute("cliente", new Cliente());
         return "registro";
+    }
+
+    /** Procesar registro de nuevo cliente (POST - guarda en BD) */
+    @PostMapping("/registro")
+    public String procesarRegistro(@ModelAttribute Cliente cliente, RedirectAttributes redirectAttributes) {
+        try {
+            // Verificar si el correo ya existe
+            if (clienteService.correoExiste(cliente.getCorreoElectronico())) {
+                redirectAttributes.addFlashAttribute("mensajeError", "El correo electrónico ya está registrado");
+                return "redirect:/registro";
+            }
+
+            // Verificar si el documento ya existe
+            if (cliente.getDocumentoIdentidad() != null && !cliente.getDocumentoIdentidad().isEmpty()
+                    && clienteService.documentoExiste(cliente.getDocumentoIdentidad())) {
+                redirectAttributes.addFlashAttribute("mensajeError", "El número de documento ya está registrado");
+                return "redirect:/registro";
+            }
+
+            // El cliente se crea activo por defecto (definido en el constructor del modelo)
+            clienteService.guardarCliente(cliente);
+            redirectAttributes.addFlashAttribute("mensajeExito", "¡Cuenta creada exitosamente! Ya puedes iniciar sesión");
+            return "redirect:/login";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("mensajeError", "Error al crear la cuenta: " + e.getMessage());
+            return "redirect:/registro";
+        }
     }
 
     // ==================== ADMINISTRACIÓN ====================
 
-    /** Panel de administración principal */
+    /** Panel de administración principal - requiere sesión */
     @GetMapping("/admin")
-    public String adminPanel() {
+    public String adminPanel(HttpSession session) {
+        if (session.getAttribute("clienteLogueado") == null) {
+            return "redirect:/login";
+        }
         return "admin-panel";
     }
 }

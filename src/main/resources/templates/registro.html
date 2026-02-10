@@ -15,31 +15,53 @@
         <section class="container d-flex justify-content-center align-items-center my-5 p-4 rounded" style="background:#f4f1ee;">
             <div class="col-md-6 col-lg-5">
 
+                <!-- Mensaje de error -->
+                <div th:if="${mensajeError}" class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    <span th:text="${mensajeError}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+
                 <div class="card shadow-lg border-0 rounded-3">
                     <div class="card-header text-center" style="background:#f1f3f5; color:#1f2937;">
                         <h5 class="fw-semibold mb-0">Crear Cuenta</h5>
                     </div>
 
                     <div class="card-body p-5">
-                        <form>
+                        <form th:action="@{/registro}" th:object="${cliente}" method="post">
                             <div class="mb-3">
-                                <label class="form-label">Nombre</label>
-                                <input type="text" class="form-control" placeholder="Tu nombre" required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Apellido</label>
-                                <input type="text" class="form-control" placeholder="Tu apellido" required>
+                                <label class="form-label">Nombre Completo</label>
+                                <input type="text" th:field="*{nombreCompleto}" class="form-control" placeholder=" " required>
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label">Correo Electrónico</label>
-                                <input type="email" class="form-control" placeholder="correo@ejemplo.com" required>
+                                <input type="email" th:field="*{correoElectronico}" class="form-control" placeholder="correo@ejemplo.com" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Contraseña</label>
+                                <input type="password" th:field="*{contrasenaHash}" class="form-control" placeholder="••••••••" required>
+                            </div>
+                               
+                            <div class="mb-3">
+                                <label class="form-label">Teléfono</label>
+                                <input type="tel" th:field="*{telefono}" class="form-control" placeholder="Tu número de teléfono" required>
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label">Contraseña</label>
-                                <input type="password" class="form-control" placeholder="••••••••" required>
+                               <label for="tipo_documento" class="form-label">Tipo de Documento *</label>
+                                <select class="form-select" id="tipo_documento" th:field="*{tipoDocumento}" required>
+                                    <option value="">Selecciona un tipo de documento</option>
+                                    <option th:each="tipo : ${T(com.Robbinson.ComRobinson.modelo.Cliente.TipoDocumento).values()}" 
+                                             th:value="${tipo}" 
+                                                th:text="${tipo}">
+                                    </option>
+                                </select>
+                            </div>
+
+                             <div class="mb-3">
+                                <label class="form-label">Número de Documento</label>
+                                <input type="tel" th:field="*{documentoIdentidad}" class="form-control" placeholder="Tu número de documento" required>
                             </div>
 
                             <button type="submit" class="btn btn-primary w-100">

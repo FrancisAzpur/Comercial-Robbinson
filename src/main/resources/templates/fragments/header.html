@@ -81,18 +81,43 @@
                             <span class="badge bg-danger cart-count">0</span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link"
-                           th:href="@{/login}"
-                           th:classappend="${titulo == 'Iniciar Sesión'} ? 'active' : ''">
-                            <i class="fas fa-user me-1"></i> Login
+
+                    <!-- Si NO hay sesión activa: mostrar Login -->
+                    <li class="nav-item" th:if="${session.clienteLogueado == null}">
+                        <a class="nav-link" th:href="@{/login}">
+                            <i class="fas fa-sign-in-alt me-1"></i> Login
                         </a>
                     </li>
-                    <li class="nav-item ms-2">
-                        <a class="nav-link" th:href="@{/admin-panel}" style="color: #e07a5f; font-weight: 600;">
-                            <i class="fas fa-cogs me-1"></i> Admin
+
+                    <!-- Si HAY sesión activa: mostrar nombre + dropdown -->
+                    <li class="nav-item dropdown" th:if="${session.clienteLogueado != null}">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" 
+                           data-bs-toggle="dropdown" aria-expanded="false" 
+                           style="color: #e07a5f; font-weight: 600;">
+                            <i class="fas fa-user-circle me-1"></i>
+                            <span th:text="${session.nombreCliente}">Usuario</span>
                         </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item" th:href="@{/gestion/dashboard}">
+                                    <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" th:href="@{/admin}">
+                                    <i class="fas fa-cogs me-2"></i>Panel Admin
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item text-danger" th:href="@{/logout}">
+                                    <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+                                </a>
+                            </li>
+                        </ul>
                     </li>
+
+
                 </ul>
             </div>
         </div>

@@ -11,6 +11,8 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +20,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import jakarta.servlet.http.HttpSession;
 
 import com.Robbinson.ComRobinson.modelo.Cliente;
 import com.Robbinson.ComRobinson.modelo.DetallePedido;
@@ -38,19 +42,31 @@ public class GestionController {
     private final ClienteService clienteService;
     private final PedidoService pedidoService;
     private final ProductoService productoService;
+    private final HttpSession httpSession;
 
     public GestionController(ClienteService clienteService,
                              PedidoService pedidoService,
-                             ProductoService productoService) {
+                             ProductoService productoService,
+                             HttpSession httpSession) {
         this.clienteService = clienteService;
         this.pedidoService = pedidoService;
         this.productoService = productoService;
+        this.httpSession = httpSession;
+    }
+
+    /**
+     * Verifica que haya sesión activa antes de cada request.
+     * Si no hay sesión, redirige al login.
+     */
+    private boolean noHaySesion() {
+        return httpSession.getAttribute("clienteLogueado") == null;
     }
 
     // ==================== RUTA PRINCIPAL ====================
 
     @GetMapping("")
     public String gestionIndex() {
+        if (noHaySesion()) return "redirect:/login";
         return "redirect:/gestion/dashboard";
     }
 
@@ -58,6 +74,7 @@ public class GestionController {
 
     @GetMapping("/dashboard")
     public String dashboard(Model modelo) {
+        if (noHaySesion()) return "redirect:/login";
         long totalClientes = clienteService.contarClientes();
         long totalPedidos = pedidoService.contarPedidos();
         long totalProductos = productoService.contarProductosActivos();
@@ -115,7 +132,12 @@ public class GestionController {
      * POST /gestion/clientes/guardar
      */
     @PostMapping("/clientes/guardar")
-    public String guardarCliente(@ModelAttribute Cliente cliente, RedirectAttributes redirectAttributes) {
+    public String guardarCliente(@Validated @ModelAttribute Cliente cliente, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            // Vuelve al form con errores visibles via th:errors
+            return "gestion/clientes-formulario";
+        }
+        
         try {
             if (cliente.getIdCliente() != null && cliente.getIdCliente() > 0) {
                 // Actualizar existente
