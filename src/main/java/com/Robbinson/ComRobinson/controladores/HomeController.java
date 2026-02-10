@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.Robbinson.ComRobinson.modelo.Cliente;
+import com.Robbinson.ComRobinson.modelo.DireccionCliente;
 import com.Robbinson.ComRobinson.modelo.Producto;
 import com.Robbinson.ComRobinson.servicios.ClienteService;
+import com.Robbinson.ComRobinson.servicios.DireccionClienteService;
 import com.Robbinson.ComRobinson.servicios.ProductoService;
 
 import jakarta.servlet.http.HttpSession;
@@ -31,6 +33,9 @@ public class HomeController {
 
     @Autowired
     private ClienteService clienteService;
+
+    @Autowired
+    private DireccionClienteService direccionClienteService;
 
     // ==================== PÁGINA DE INICIO ====================
 
@@ -158,12 +163,48 @@ public class HomeController {
             }
 
             // El cliente se crea activo por defecto (definido en el constructor del modelo)
-            clienteService.guardarCliente(cliente);
-            redirectAttributes.addFlashAttribute("mensajeExito", "¡Cuenta creada exitosamente! Ya puedes iniciar sesión");
-            return "redirect:/login";
+            Cliente clienteGuardado = clienteService.guardarCliente(cliente);
+            redirectAttributes.addFlashAttribute("mensajeExito", "¡Cuenta creada exitosamente! Ahora registra tu dirección de envío");
+            return "redirect:/registro/direccion?idCliente=" + clienteGuardado.getIdCliente();
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("mensajeError", "Error al crear la cuenta: " + e.getMessage());
             return "redirect:/registro";
+        }
+    }
+
+    /** Formulario para registrar dirección después del registro (GET) */
+    @GetMapping("/registro/direccion")
+    public String formularioDireccion(@RequestParam Long idCliente, Model model, RedirectAttributes redirectAttributes) {
+        Optional<Cliente> cliente = clienteService.obtenerClientePorId(idCliente);
+        if (cliente.isEmpty()) {
+            redirectAttributes.addFlashAttribute("mensajeError", "Cliente no encontrado");
+            return "redirect:/registro";
+        }
+        model.addAttribute("direccion", new DireccionCliente());
+        model.addAttribute("cliente", cliente.get());
+        return "registro-direccion";
+    }
+
+    /** Procesar registro de dirección (POST - guarda en BD) */
+    @PostMapping("/registro/direccion")
+    public String procesarDireccion(@RequestParam Long idCliente,
+                                     @ModelAttribute DireccionCliente direccion,
+                                     RedirectAttributes redirectAttributes) {
+        try {
+            Optional<Cliente> cliente = clienteService.obtenerClientePorId(idCliente);
+            if (cliente.isEmpty()) {
+                redirectAttributes.addFlashAttribute("mensajeError", "Cliente no encontrado");
+                return "redirect:/registro";
+            }
+            direccion.setCliente(cliente.get());
+            direccion.setEsPrincipal(true); // Primera dirección es la principal
+            direccionClienteService.guardarDireccion(direccion);
+            redirectAttributes.addFlashAttribute("mensajeExito",
+                    "¡Registro completo! Tu cuenta y dirección han sido creadas. Ya puedes iniciar sesión");
+            return "redirect:/login";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("mensajeError", "Error al registrar dirección: " + e.getMessage());
+            return "redirect:/registro/direccion?idCliente=" + idCliente;
         }
     }
 

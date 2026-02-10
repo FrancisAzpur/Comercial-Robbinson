@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/header :: head('Registro de Dirección')}"></head>
+
+<body>
+
+    <!-- Header -->
+    <header th:replace="~{fragments/header :: header}"></header>
+
+    <!-- Margen para navbar fija -->
+    <div style="margin-top: 70px;">
+
+        <!-- CONTENIDO REGISTRO DIRECCIÓN -->
+        <section class="container d-flex justify-content-center align-items-center my-5 p-4 rounded" style="background:#f4f1ee;">
+            <div class="col-md-8 col-lg-6">
+
+                <!-- Mensaje de éxito -->
+                <div th:if="${mensajeExito}" class="alert alert-success alert-dismissible fade show mb-3" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <span th:text="${mensajeExito}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+
+                <!-- Mensaje de error -->
+                <div th:if="${mensajeError}" class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    <span th:text="${mensajeError}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+
+                <div class="card shadow-lg border-0 rounded-3">
+                    <div class="card-header text-center" style="background:#d4edda; color:#155724;">
+                        <h5 class="fw-semibold mb-0">
+                            <i class="fas fa-check-circle me-2"></i>¡Cuenta Creada Exitosamente!
+                        </h5>
+                    </div>
+
+                    <div class="card-body p-4">
+                        <!-- Info del cliente registrado -->
+                        <div class="alert alert-info mb-4">
+                            <i class="fas fa-user me-2"></i>
+                            <strong>Bienvenido/a, <span th:text="${cliente.nombreCompleto}"></span></strong><br>
+                            <small class="text-muted">Ahora completa tu dirección de envío para finalizar el registro</small>
+                        </div>
+
+                        <h6 class="fw-semibold mb-3">
+                            <i class="fas fa-map-marker-alt me-2 text-danger"></i>Dirección de Envío
+                        </h6>
+
+                        <form th:action="@{/registro/direccion}" th:object="${direccion}" method="post">
+                            <!-- ID del cliente oculto -->
+                            <input type="hidden" name="idCliente" th:value="${cliente.idCliente}">
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Alias (ej: Casa, Trabajo)</label>
+                                    <input type="text" th:field="*{alias}" class="form-control" 
+                                           placeholder="Ej: Mi Casa" maxlength="50">
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Código Postal</label>
+                                    <input type="text" th:field="*{codigoPostal}" class="form-control" 
+                                           placeholder="Ej: 15001" maxlength="10">
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Dirección Completa *</label>
+                                <input type="text" th:field="*{direccion}" class="form-control" 
+                                       placeholder="Av. / Jr. / Calle, Número, Interior" required maxlength="255">
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Referencia</label>
+                                <input type="text" th:field="*{referencia}" class="form-control" 
+                                       placeholder="Cerca de..., Frente a..., Al costado de..." maxlength="255">
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Distrito *</label>
+                                    <input type="text" th:field="*{distrito}" class="form-control" 
+                                           placeholder="Ej: Miraflores" required maxlength="100">
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Provincia *</label>
+                                    <input type="text" th:field="*{provincia}" class="form-control" 
+                                           placeholder="Ej: Lima" required maxlength="100">
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Departamento *</label>
+                                    <input type="text" th:field="*{departamento}" class="form-control" 
+                                           placeholder="Ej: Lima" required maxlength="100">
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-success w-100 btn-lg mt-2">
+                                <i class="fas fa-save me-2"></i>Guardar Dirección y Finalizar Registro
+                            </button>
+                        </form>
+
+                        <hr class="my-3">
+                        <div class="text-center">
+                            <a th:href="@{/login}" class="text-muted text-decoration-none">
+                                <i class="fas fa-arrow-right me-1"></i>Omitir y ir al Login
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+
+    <!-- Scripts -->
+    <div th:replace="~{fragments/footer :: scripts}"></div>
+
+</body>
+</html>

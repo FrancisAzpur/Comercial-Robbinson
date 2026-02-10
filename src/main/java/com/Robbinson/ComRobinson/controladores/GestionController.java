@@ -21,15 +21,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import jakarta.servlet.http.HttpSession;
-
 import com.Robbinson.ComRobinson.modelo.Cliente;
 import com.Robbinson.ComRobinson.modelo.DetallePedido;
+import com.Robbinson.ComRobinson.modelo.DireccionCliente;
 import com.Robbinson.ComRobinson.modelo.Pedido;
 import com.Robbinson.ComRobinson.modelo.Producto;
 import com.Robbinson.ComRobinson.servicios.ClienteService;
+import com.Robbinson.ComRobinson.servicios.DireccionClienteService;
 import com.Robbinson.ComRobinson.servicios.PedidoService;
 import com.Robbinson.ComRobinson.servicios.ProductoService;
+
+import jakarta.servlet.http.HttpSession;
 
 /**
  * Controlador de Gestión para administrar Clientes, Pedidos y Productos
@@ -40,15 +42,18 @@ import com.Robbinson.ComRobinson.servicios.ProductoService;
 public class GestionController {
 
     private final ClienteService clienteService;
+    private final DireccionClienteService direccionClienteService;
     private final PedidoService pedidoService;
     private final ProductoService productoService;
     private final HttpSession httpSession;
 
     public GestionController(ClienteService clienteService,
+                             DireccionClienteService direccionClienteService,
                              PedidoService pedidoService,
                              ProductoService productoService,
                              HttpSession httpSession) {
         this.clienteService = clienteService;
+        this.direccionClienteService = direccionClienteService;
         this.pedidoService = pedidoService;
         this.productoService = productoService;
         this.httpSession = httpSession;
@@ -164,6 +169,7 @@ public class GestionController {
         if (cliente.isPresent()) {
             modelo.addAttribute("cliente", cliente.get());
             modelo.addAttribute("pedidos", pedidoService.obtenerPedidosPorCliente(id));
+            modelo.addAttribute("direcciones", direccionClienteService.obtenerDireccionesPorCliente(id));
             modelo.addAttribute("titulo", "Detalle del Cliente");
             return "gestion/clientes-detalle";
         }
@@ -226,6 +232,106 @@ public class GestionController {
         modelo.addAttribute("clientes", clientes);
         modelo.addAttribute("titulo", "Resultados de búsqueda: " + nombre);
         return "gestion/clientes-listado";
+    }
+
+    // ==================== DIRECCIONES DE CLIENTES ====================
+
+    /**
+     * Listado de todas las direcciones
+     * GET /gestion/direcciones
+     */
+    @GetMapping("/direcciones")
+    public String listarDirecciones(Model modelo) {
+        List<DireccionCliente> direcciones = direccionClienteService.obtenerTodasLasDirecciones();
+        modelo.addAttribute("direcciones", direcciones);
+        modelo.addAttribute("titulo", "Gestión de Direcciones");
+        return "gestion/direcciones-listado";
+    }
+
+    /**
+     * Formulario para nueva dirección
+     * GET /gestion/direcciones/nuevo
+     */
+    @GetMapping("/direcciones/nuevo")
+    public String formularioNuevaDireccion(Model modelo) {
+        modelo.addAttribute("direccion", new DireccionCliente());
+        modelo.addAttribute("clientes", clienteService.obtenerTodosLosClientes());
+        modelo.addAttribute("titulo", "Registrar Nueva Dirección");
+        return "gestion/direcciones-formulario";
+    }
+
+    /**
+     * Guardar dirección (nueva o actualización)
+     * POST /gestion/direcciones/guardar
+     */
+    @PostMapping("/direcciones/guardar")
+    public String guardarDireccion(@RequestParam Long idCliente,
+                                    @ModelAttribute DireccionCliente direccion,
+                                    RedirectAttributes redirectAttributes) {
+        try {
+            Optional<Cliente> cliente = clienteService.obtenerClientePorId(idCliente);
+            if (cliente.isEmpty()) {
+                redirectAttributes.addFlashAttribute("mensajeError", "Cliente no encontrado");
+                return "redirect:/gestion/direcciones";
+            }
+            direccion.setCliente(cliente.get());
+
+            if (direccion.getIdDireccion() != null && direccion.getIdDireccion() > 0) {
+                direccionClienteService.actualizarDireccion(direccion.getIdDireccion(), direccion);
+                redirectAttributes.addFlashAttribute("mensajeExito", "Dirección actualizada correctamente");
+            } else {
+                direccionClienteService.guardarDireccion(direccion);
+                redirectAttributes.addFlashAttribute("mensajeExito", "Dirección registrada correctamente");
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("mensajeError", "Error al guardar dirección: " + e.getMessage());
+        }
+        return "redirect:/gestion/direcciones";
+    }
+
+    /**
+     * Detalle de una dirección
+     * GET /gestion/direcciones/{id}
+     */
+    @GetMapping("/direcciones/{id}")
+    public String detalleDireccion(@PathVariable Long id, Model modelo) {
+        Optional<DireccionCliente> direccion = direccionClienteService.obtenerDireccionPorId(id);
+        if (direccion.isPresent()) {
+            modelo.addAttribute("direccion", direccion.get());
+            modelo.addAttribute("titulo", "Detalle de la Dirección");
+            return "gestion/direcciones-detalle";
+        }
+        return "redirect:/gestion/direcciones";
+    }
+
+    /**
+     * Formulario para editar dirección
+     * GET /gestion/direcciones/{id}/editar
+     */
+    @GetMapping("/direcciones/{id}/editar")
+    public String formularioEditarDireccion(@PathVariable Long id, Model modelo) {
+        Optional<DireccionCliente> direccion = direccionClienteService.obtenerDireccionPorId(id);
+        if (direccion.isPresent()) {
+            modelo.addAttribute("direccion", direccion.get());
+            modelo.addAttribute("clientes", clienteService.obtenerTodosLosClientes());
+            modelo.addAttribute("titulo", "Editar Dirección");
+            return "gestion/direcciones-formulario";
+        }
+        return "redirect:/gestion/direcciones";
+    }
+
+    /**
+     * Eliminar una dirección
+     * GET /gestion/direcciones/{id}/eliminar
+     */
+    @GetMapping("/direcciones/{id}/eliminar")
+    public String eliminarDireccion(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        if (direccionClienteService.eliminarDireccion(id)) {
+            redirectAttributes.addFlashAttribute("mensajeExito", "Dirección eliminada correctamente");
+        } else {
+            redirectAttributes.addFlashAttribute("mensajeError", "No se pudo eliminar la dirección");
+        }
+        return "redirect:/gestion/direcciones";
     }
 
     // ==================== PEDIDOS ====================
