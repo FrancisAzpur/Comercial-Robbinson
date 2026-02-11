@@ -105,28 +105,28 @@ BOOTSTRAP: detail-card, badge, form inline, btn-primary
                     <div class="row mb-3">
                         <div class="col-md-4"><span class="detail-label">Fecha Pedido:</span></div>
                         <div class="col-md-8">
-                            <span th:text="${#temporals.format(pedido.fechaPedido, 'dd/MM/yyyy HH:mm')}"></span>
+                            <span th:text="${pedido.fechaPedido != null ? #temporals.format(pedido.fechaPedido, 'dd/MM/yyyy HH:mm') : '-'}"></span>
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-4"><span class="detail-label">Subtotal:</span></div>
-                        <div class="col-md-8">S/. <span th:text="${#numbers.formatDecimal(pedido.subtotal, 1, 2, true)}"></span></div>
+                        <div class="col-md-8">S/. <span th:text="${pedido.subtotal != null ? #numbers.formatDecimal(pedido.subtotal, 1, 2, true) : '0.00'}"></span></div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-4"><span class="detail-label">Impuesto (18%):</span></div>
-                        <div class="col-md-8">S/. <span th:text="${#numbers.formatDecimal(pedido.impuesto, 1, 2, true)}"></span></div>
+                        <div class="col-md-8">S/. <span th:text="${pedido.impuesto != null ? #numbers.formatDecimal(pedido.impuesto, 1, 2, true) : '0.00'}"></span></div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-4"><span class="detail-label">Costo Envío:</span></div>
-                        <div class="col-md-8">S/. <span th:text="${#numbers.formatDecimal(pedido.costoEnvio, 1, 2, true)}"></span></div>
+                        <div class="col-md-8">S/. <span th:text="${pedido.costoEnvio != null ? #numbers.formatDecimal(pedido.costoEnvio, 1, 2, true) : '0.00'}"></span></div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-4"><span class="detail-label">Total:</span></div>
-                        <div class="col-md-8"><strong>S/. <span th:text="${#numbers.formatDecimal(pedido.total, 1, 2, true)}"></span></strong></div>
+                        <div class="col-md-8"><strong>S/. <span th:text="${pedido.total != null ? #numbers.formatDecimal(pedido.total, 1, 2, true) : '0.00'}"></span></strong></div>
                     </div>
 
                     <div class="row mb-3">

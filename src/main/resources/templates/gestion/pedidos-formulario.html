@@ -117,7 +117,7 @@ BOOTSTRAP: form-control, form-select, btn-primary, row/col grid
                             <!-- Cliente -->
                             <div class="col-md-6 mb-3">
                                 <label for="cliente" class="form-label">Cliente <span class="text-danger">*</span></label>
-                                <select class="form-select" id="cliente" th:field="*{cliente}" required>
+                                <select class="form-select" id="cliente" th:field="*{cliente.idCliente}" required>
                                     <option value="">Seleccionar cliente...</option>
                                     <option th:each="cli : ${clientes}" 
                                             th:value="${cli.idCliente}" 

@@ -167,8 +167,16 @@ public class PedidoService {
      * Convierte el String a EstadoPedido antes de buscar
      */
     public List<Pedido> obtenerPedidosPorEstado(String estado) {
-        Pedido.EstadoPedido estadoEnum = Pedido.EstadoPedido.valueOf(estado.toUpperCase());
-        return pedidoRepository.findByEstado(estadoEnum);
+        if (estado == null || estado.trim().isEmpty()) {
+            return obtenerTodosLosPedidos();
+        }
+        try {
+            Pedido.EstadoPedido estadoEnum = Pedido.EstadoPedido.valueOf(estado.toUpperCase());
+            return pedidoRepository.findByEstado(estadoEnum);
+        } catch (IllegalArgumentException e) {
+            // Estado inválido: devolver todos los pedidos en lugar de lanzar
+            return obtenerTodosLosPedidos();
+        }
     }
 
     // ==================== CAMBIAR ESTADO ====================
