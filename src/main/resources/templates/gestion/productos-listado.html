@@ -163,8 +163,8 @@
                                         </span>
                                     </td>
                                     <td th:text="${producto.nombreProducto}"></td>
-                                    <td>S/. <span th:text="${#numbers.formatDecimal(producto.precioCompra, 1, 2, true)}"></span></td>
-                                    <td>S/. <span th:text="${#numbers.formatDecimal(producto.precioVenta, 1, 2, true)}"></span></td>
+                                    <td>S/. <span th:text="${#numbers.formatDecimal(producto.precioCompra, 1, 2)}"></span></td>
+                                    <td>S/. <span th:text="${#numbers.formatDecimal(producto.precioVenta, 1, 2)}"></span></td>
                                     <td>
                                         <span th:if="${producto.stockActual <= producto.stockMinimo}" class="stock-bajo">
                                             <i class="fas fa-exclamation-triangle"></i> 
