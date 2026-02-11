@@ -126,7 +126,7 @@ CHART.JS: Gráficos de barras, líneas y donut con datos dinámicos
                 <div class="stat-label">Total Ingresos</div>
                 <div class="stat-value">
                     <!-- th:text formatea el monto total con 2 decimales y símbolo de soles -->
-                    S/. <span th:text="${#numbers.formatDecimal(totalMonto, 1, 2, true)}">0.00</span>
+                    S/. <span th:text="${#numbers.formatDecimal(totalMonto, 1, 2)}">0.00</span>
                 </div>
             </div>
             <div class="stat-box">
@@ -139,7 +139,7 @@ CHART.JS: Gráficos de barras, líneas y donut con datos dinámicos
                 <div class="stat-label">Promedio por Venta</div>
                 <div class="stat-value">
                     <!-- Calcula el promedio dividiendo total monto entre cantidad de ventas -->
-                    S/. <span th:text="${#numbers.formatDecimal(promedio, 1, 2, true)}">0.00</span>
+                    S/. <span th:text="${#numbers.formatDecimal(promedio, 1, 2)}">0.00</span>
                 </div>
             </div>
         </div>
