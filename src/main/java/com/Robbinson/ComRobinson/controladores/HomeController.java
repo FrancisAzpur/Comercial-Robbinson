@@ -89,17 +89,9 @@ public class HomeController {
         return "contacto";
     }
 
-    /** Página del carrito de compras - pasa info de sesión al template */
+    /** Página del carrito de compras */
     @GetMapping("/carrito")
-    public String carrito(HttpSession session, Model model) {
-        Cliente clienteLogueado = (Cliente) session.getAttribute("clienteLogueado");
-        if (clienteLogueado != null) {
-            model.addAttribute("clienteLogueado", clienteLogueado);
-            // Obtener dirección principal para mostrar en el checkout
-            Optional<DireccionCliente> dir = direccionClienteService
-                    .obtenerDireccionPrincipal(clienteLogueado.getIdCliente());
-            dir.ifPresent(d -> model.addAttribute("direccionPrincipal", d));
-        }
+    public String carrito() {
         return "carrito";
     }
 

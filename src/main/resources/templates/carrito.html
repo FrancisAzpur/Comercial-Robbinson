@@ -30,14 +30,14 @@
                                     <th>Precio</th>
                                     <th>Cantidad</th>
                                     <th>Subtotal</th>
-                                    <th>Acci&oacute;n</th>
+                                    <th>Acción</th>
                                 </tr>
                             </thead>
                             <tbody id="cartItems">
                                 <tr id="emptyCart">
                                     <td colspan="5" class="text-center py-4 text-muted">
                                         <i class="fas fa-inbox fa-2x mb-2 d-block"></i>
-                                        Tu carrito est&aacute; vac&iacute;o
+                                        Tu carrito está vacío
                                     </td>
                                 </tr>
                             </tbody>
@@ -45,7 +45,7 @@
                     </div>
                 </div>
 
-                <!-- Bot&oacute;n para continuar comprando -->
+                <!-- Botón para continuar comprando -->
                 <div class="mt-3">
                     <a href="/" class="btn btn-outline-secondary">
                         <i class="fas fa-arrow-left me-2"></i> Continuar comprando
@@ -76,7 +76,7 @@
                             <strong id="total" style="font-size: 1.2em; color: #e07a5f;">S/. 0.00</strong>
                         </div>
 
-                        <button class="btn btn-primary w-100 mb-2" id="btnProcesarPago" onclick="procesarPago()" disabled>
+                        <button class="btn btn-primary w-100 mb-2" id="btnProcesarPago" onclick="procesarPago()">
                             <i class="fas fa-credit-card me-2"></i> Procesar Pago
                         </button>
                         <button class="btn btn-outline-danger w-100" onclick="limpiarCarrito()">
@@ -90,139 +90,37 @@
 
     </div>
 
-    <!-- Modal de confirmaci&oacute;n de pago (se muestra al usuario logueado) -->
-    <div class="modal fade" id="modalConfirmarPago" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title">
-                        <i class="fas fa-credit-card me-2"></i> Confirmar Pedido
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- Datos del cliente logueado -->
-                    <div class="card mb-3">
-                        <div class="card-header bg-light">
-                            <h6 class="mb-0"><i class="fas fa-user me-2"></i>Datos del Cliente</h6>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <p><strong>Nombre:</strong> <span id="confirmar_nombre" th:text="${clienteLogueado != null ? clienteLogueado.nombreCompleto : ''}"></span></p>
-                                    <p><strong>Correo:</strong> <span id="confirmar_correo" th:text="${clienteLogueado != null ? clienteLogueado.correoElectronico : ''}"></span></p>
-                                </div>
-                                <div class="col-md-6">
-                                    <p><strong>Tel&eacute;fono:</strong> <span id="confirmar_telefono" th:text="${clienteLogueado != null ? clienteLogueado.telefono : ''}"></span></p>
-                                    <p><strong>Direcci&oacute;n:</strong> <span id="confirmar_direccion" th:text="${direccionPrincipal != null ? direccionPrincipal.direccion : 'No registrada'}"></span></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- M&eacute;todo de pago -->
-                    <div class="card mb-3">
-                        <div class="card-header bg-light">
-                            <h6 class="mb-0"><i class="fas fa-wallet me-2"></i>M&eacute;todo de Pago</h6>
-                        </div>
-                        <div class="card-body">
-                            <select class="form-select" id="metodoPago">
-                                <option value="EFECTIVO">Efectivo</option>
-                                <option value="TARJETA_CREDITO">Tarjeta de Cr&eacute;dito</option>
-                                <option value="TARJETA_DEBITO">Tarjeta de D&eacute;bito</option>
-                                <option value="TRANSFERENCIA">Transferencia Bancaria</option>
-                                <option value="YAPE">Yape</option>
-                                <option value="PLIN">Plin</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Resumen de productos -->
-                    <div class="card mb-3">
-                        <div class="card-header bg-light">
-                            <h6 class="mb-0"><i class="fas fa-box me-2"></i>Productos</h6>
-                        </div>
-                        <div class="card-body p-0">
-                            <table class="table table-sm mb-0" id="tablaConfirmacion">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Producto</th>
-                                        <th>Cantidad</th>
-                                        <th>Precio</th>
-                                        <th>Subtotal</th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- Totales -->
-                    <div class="row text-end">
-                        <div class="col-md-8">
-                            <p>Subtotal:</p>
-                            <p>IGV (18%):</p>
-                            <h5>Total a Pagar:</h5>
-                        </div>
-                        <div class="col-md-4">
-                            <p id="confirmar_subtotal">S/. 0.00</p>
-                            <p id="confirmar_igv">S/. 0.00</p>
-                            <h5 id="confirmar_total" style="color: #e07a5f;">S/. 0.00</h5>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-success" onclick="confirmarPagoBackend()" id="btnConfirmarPago">
-                        <i class="fas fa-check me-2"></i> Confirmar y Pagar
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal de pedido exitoso -->
-    <div class="modal fade" id="modalPedidoExitoso" tabindex="-1">
+    <!-- Modal de confirmación de pago -->
+    <div class="modal fade" id="modalPago" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header bg-success text-white">
                     <h5 class="modal-title">
-                        <i class="fas fa-check-circle me-2"></i> Pedido Realizado
+                        <i class="fas fa-check-circle me-2"></i> Confirmación de Orden
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-success" role="alert">
                         <i class="fas fa-check-circle me-2"></i>
-                        <strong>&iexcl;Pedido Realizado Exitosamente!</strong>
+                        <strong>¡Pedido Realizado Exitosamente!</strong>
                     </div>
 
-                    <!-- Informaci&oacute;n de la orden -->
+                    <!-- Información de la orden -->
                     <div class="row mb-4">
                         <div class="col-md-6">
-                            <h6>N&uacute;mero de Pedido</h6>
-                            <p id="exitoNroPedido" class="fs-5 fw-bold text-primary"></p>
+                            <h6>Número de Orden</h6>
+                            <p id="modalNroOrden" class="fs-5 fw-bold text-primary">ORD-2024-000001</p>
                         </div>
                         <div class="col-md-6">
                             <h6>Fecha</h6>
-                            <p id="exitoFecha" class="fs-5"></p>
-                        </div>
-                    </div>
-
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <h6>Cliente</h6>
-                            <p id="exitoCliente" class="fs-6"></p>
-                        </div>
-                        <div class="col-md-6">
-                            <h6>M&eacute;todo de Pago</h6>
-                            <p id="exitoMetodoPago" class="fs-6"></p>
+                            <p id="modalFecha" class="fs-5">28/01/2026</p>
                         </div>
                     </div>
 
                     <h6>Productos Ordenados</h6>
                     <div class="table-responsive">
-                        <table class="table table-sm" id="exitoProductos">
+                        <table class="table table-sm" id="modalProductos">
                             <thead class="table-light">
                                 <tr>
                                     <th>Producto</th>
@@ -244,16 +142,17 @@
                             <h5>Total Pagado:</h5>
                         </div>
                         <div class="col-md-4">
-                            <p id="exitoSubtotal">S/. 0.00</p>
-                            <p id="exitoIGV">S/. 0.00</p>
-                            <h5 id="exitoTotal" style="color: #e07a5f;">S/. 0.00</h5>
+                            <p id="modalSubtotal">S/. 0.00</p>
+                            <p id="modalIGV">S/. 0.00</p>
+                            <h5 id="modalTotal" style="color: #e07a5f;">S/. 0.00</h5>
                         </div>
                     </div>
 
+                    <!-- Información adicional -->
                     <div class="alert alert-info mt-4">
                         <i class="fas fa-info-circle me-2"></i>
                         <small>
-                            Tu pedido ha sido registrado y guardado en la base de datos.
+                            Tu pedido ha sido registrado exitosamente. 
                             Pronto nos pondremos en contacto para confirmar los detalles de entrega.
                         </small>
                     </div>
@@ -268,6 +167,118 @@
         </div>
     </div>
 
+    <!-- Modal de datos del cliente -->
+    <div class="modal fade" id="modalCliente" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-user me-2"></i> Datos de Facturación
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formCliente" novalidate>
+                        <!-- Nombre y Apellido -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="cliente_nombre" class="form-label">Nombre *</label>
+                                <input type="text" class="form-control" id="cliente_nombre" 
+                                       placeholder="Ej: Francisco" required>
+                                <small class="text-muted">Nombre completo requerido</small>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="cliente_apellido" class="form-label">Apellido *</label>
+                                <input type="text" class="form-control" id="cliente_apellido" 
+                                       placeholder="Ej: Azpur" required>
+                                <small class="text-muted">Apellido completo requerido</small>
+                            </div>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label for="cliente_email" class="form-label">Correo Electrónico *</label>
+                            <input type="email" class="form-control" id="cliente_email" 
+                                   placeholder="Ej: correo@gmail.com" required
+                                   pattern="[a-zA-Z0-9._%+-]+@(gmail\.com|hotmail\.com|yahoo\.com|outlook\.com|.*\.com)">
+                            <small class="text-muted">Ej: usuario@gmail.com, usuario@hotmail.com, usuario@yahoo.com</small>
+                            <div class="invalid-feedback" id="emailError" style="display: none;">
+                                Por favor, ingresa un correo válido (@gmail.com, @hotmail.com, @yahoo.com, etc.)
+                            </div>
+                        </div>
+
+                        <!-- Teléfono -->
+                        <div class="mb-3">
+                            <label for="cliente_telefono" class="form-label">Teléfono *</label>
+                            <input type="tel" class="form-control" id="cliente_telefono" 
+                                   placeholder="Ej: 987654321" required
+                                   pattern="[0-9]{9}" 
+                                   inputmode="numeric"
+                                   maxlength="9">
+                            <small class="text-muted">Ingresa exactamente 9 dígitos (sin espacios ni guiones)</small>
+                            <div class="invalid-feedback" id="telefonoError" style="display: none;">
+                                El teléfono debe tener exactamente 9 dígitos
+                            </div>
+                        </div>
+
+                        <!-- Dirección -->
+                        <div class="mb-3">
+                            <label for="cliente_direccion" class="form-label">Dirección de Entrega *</label>
+                            <textarea class="form-control" id="cliente_direccion" rows="2" 
+                                      placeholder="Ej: Av. Principal 123, Apt. 4B" required></textarea>
+                            <small class="text-muted">Dirección completa para la entrega</small>
+                        </div>
+
+                        <!-- Provincia y Ciudad -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="cliente_provincia" class="form-label">Provincia *</label>
+                                <select class="form-select" id="cliente_provincia" required onchange="cargarCiudades()">
+                                    <option value="">Selecciona una provincia...</option>
+                                    <option value="lima">Lima</option>
+                                    <option value="arequipa">Arequipa</option>
+                                    <option value="cusco">Cusco</option>
+                                    <option value="junin">Junín</option>
+                                    <option value="la-libertad">La Libertad</option>
+                                    <option value="piura">Piura</option>
+                                    <option value="puno">Puno</option>
+                                    <option value="tacna">Tacna</option>
+                                    <option value="ucayali">Ucayali</option>
+                                    <option value="ayacucho">Ayacucho</option>
+                                    <option value="apurímac">Apurímac</option>
+                                    <option value="huancavelica">Huancavelica</option>
+                                    <option value="ica">Ica</option>
+                                    <option value="huánuco">Huánuco</option>
+                                    <option value="loreto">Loreto</option>
+                                    <option value="madre-de-dios">Madre de Dios</option>
+                                    <option value="moquegua">Moquegua</option>
+                                    <option value="pasco">Pasco</option>
+                                    <option value="san-martín">San Martín</option>
+                                    <option value="tumbes">Tumbes</option>
+                                    <option value="callao">Callao</option>
+                                </select>
+                                <small class="text-muted">Selecciona tu provincia</small>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="cliente_ciudad" class="form-label">Ciudad/Distrito *</label>
+                                <select class="form-select" id="cliente_ciudad" required>
+                                    <option value="">Primero selecciona una provincia</option>
+                                </select>
+                                <small class="text-muted">Las ciudades cambiarán según la provincia</small>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="confirmarPago()">
+                        <i class="fas fa-check me-2"></i> Confirmar Pago
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer th:replace="~{fragments/footer :: footer}"></footer>
 
@@ -275,273 +286,250 @@
     <div th:replace="~{fragments/footer :: scripts}"></div>
 
     <script>
-        // ================================================================
-        // CARRITO.HTML - L&oacute;gica de la p&aacute;gina del carrito
-        // Usa la API REST /api/carrito/* para todas las operaciones
-        // ================================================================
+        // Cargar carrito del localStorage
+        function cargarCarrito() {
+            const carrito = JSON.parse(localStorage.getItem('carritoRobinson')) || [];
+            const contenedor = document.getElementById('cartItems');
+            
+            if (carrito.length === 0) {
+                contenedor.innerHTML = `
+                    <tr id="emptyCart">
+                        <td colspan="5" class="text-center py-4 text-muted">
+                            <i class="fas fa-inbox fa-2x mb-2 d-block"></i>
+                            Tu carrito está vacío
+                        </td>
+                    </tr>
+                `;
+                document.getElementById('btnProcesarPago').disabled = true;
+                actualizarTotales();
+                return;
+            }
 
-        // Cargar carrito desde el servidor
-        function cargarCarritoVista() {
-            fetch('/api/carrito')
-                .then(response => response.json())
-                .then(data => {
-                    const items = data.items || [];
-                    const contenedor = document.getElementById('cartItems');
+            contenedor.innerHTML = '';
+            document.getElementById('emptyCart')?.remove();
 
-                    if (items.length === 0) {
-                        contenedor.innerHTML = `
-                            <tr id="emptyCart">
-                                <td colspan="5" class="text-center py-4 text-muted">
-                                    <i class="fas fa-inbox fa-2x mb-2 d-block"></i>
-                                    Tu carrito est&aacute; vac&iacute;o
-                                </td>
-                            </tr>
-                        `;
-                        document.getElementById('btnProcesarPago').disabled = true;
-                        actualizarTotalesVista(0, 0, 0);
-                        return;
-                    }
+            carrito.forEach((item, index) => {
+                const subtotal = item.precio * item.cantidad;
+                const row = `
+                    <tr>
+                        <td>
+                            <strong>${item.nombre}</strong>
+                        </td>
+                        <td>S/. ${item.precio.toFixed(2)}</td>
+                        <td>
+                            <div class="input-group input-group-sm" style="width: 100px;">
+                                <button class="btn btn-outline-secondary" type="button" onclick="cambiarCantidad(${index}, -1)">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <input type="text" class="form-control text-center" value="${item.cantidad}" readonly>
+                                <button class="btn btn-outline-secondary" type="button" onclick="cambiarCantidad(${index}, 1)">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </td>
+                        <td>S/. ${subtotal.toFixed(2)}</td>
+                        <td>
+                            <button class="btn btn-sm btn-danger" onclick="eliminarDelCarrito(${index})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                contenedor.innerHTML += row;
+            });
 
-                    contenedor.innerHTML = '';
-                    items.forEach(item => {
-                        const subtotal = parseFloat(item.precio) * item.cantidad;
-                        const row = `
-                            <tr>
-                                <td><strong>${item.nombre}</strong></td>
-                                <td>S/. ${parseFloat(item.precio).toFixed(2)}</td>
-                                <td>
-                                    <div class="input-group input-group-sm" style="width: 100px;">
-                                        <button class="btn btn-outline-secondary" type="button"
-                                                onclick="cambiarCantidadAPI(${item.idProducto}, ${item.cantidad - 1})">
-                                            <i class="fas fa-minus"></i>
-                                        </button>
-                                        <input type="text" class="form-control text-center" value="${item.cantidad}" readonly>
-                                        <button class="btn btn-outline-secondary" type="button"
-                                                onclick="cambiarCantidadAPI(${item.idProducto}, ${item.cantidad + 1})">
-                                            <i class="fas fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                                <td>S/. ${subtotal.toFixed(2)}</td>
-                                <td>
-                                    <button class="btn btn-sm btn-danger" onclick="eliminarItemAPI(${item.idProducto})">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        `;
-                        contenedor.innerHTML += row;
-                    });
-
-                    document.getElementById('btnProcesarPago').disabled = false;
-                    actualizarTotalesVista(
-                        parseFloat(data.subtotal),
-                        parseFloat(data.igv),
-                        parseFloat(data.total)
-                    );
-                })
-                .catch(error => {
-                    console.error('Error al cargar carrito:', error);
-                });
+            document.getElementById('btnProcesarPago').disabled = false;
+            actualizarTotales();
         }
 
-        // Actualizar totales en la vista
-        function actualizarTotalesVista(subtotal, igv, total) {
+        // Cambiar cantidad
+        function cambiarCantidad(index, cambio) {
+            let carrito = JSON.parse(localStorage.getItem('carritoRobinson')) || [];
+            carrito[index].cantidad += cambio;
+
+            if (carrito[index].cantidad <= 0) {
+                carrito.splice(index, 1);
+            }
+
+            localStorage.setItem('carritoRobinson', JSON.stringify(carrito));
+            cargarCarrito();
+        }
+
+        // Eliminar del carrito
+        function eliminarDelCarrito(index) {
+            if (confirm('¿Deseas eliminar este producto del carrito?')) {
+                let carrito = JSON.parse(localStorage.getItem('carritoRobinson')) || [];
+                carrito.splice(index, 1);
+                localStorage.setItem('carritoRobinson', JSON.stringify(carrito));
+                cargarCarrito();
+            }
+        }
+
+        // Actualizar totales
+        function actualizarTotales() {
+            const carrito = JSON.parse(localStorage.getItem('carritoRobinson')) || [];
+            const subtotal = carrito.reduce((total, item) => total + (item.precio * item.cantidad), 0);
+            const igv = subtotal * 0.18;
+            const total = subtotal + igv;
+
             document.getElementById('subtotal').textContent = 'S/. ' + subtotal.toFixed(2);
             document.getElementById('igv').textContent = 'S/. ' + igv.toFixed(2);
             document.getElementById('total').textContent = 'S/. ' + total.toFixed(2);
         }
 
-        // Cambiar cantidad via API
-        function cambiarCantidadAPI(idProducto, nuevaCantidad) {
-            if (nuevaCantidad <= 0) {
-                eliminarItemAPI(idProducto);
+        // Procesar pago
+        function procesarPago() {
+            const carrito = JSON.parse(localStorage.getItem('carritoRobinson')) || [];
+            if (carrito.length === 0) {
+                alert('Tu carrito está vacío');
                 return;
             }
 
-            fetch('/api/carrito/actualizar/' + idProducto, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ cantidad: nuevaCantidad })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.exito) {
-                    cargarCarritoVista();
-                }
-            });
+            // Mostrar modal de datos del cliente
+            const modal = new bootstrap.Modal(document.getElementById('modalCliente'));
+            modal.show();
         }
 
-        // Eliminar item via API
-        function eliminarItemAPI(idProducto) {
-            if (confirm('Deseas eliminar este producto del carrito?')) {
-                fetch('/api/carrito/eliminar/' + idProducto, { method: 'DELETE' })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.exito) {
-                            cargarCarritoVista();
-                        }
-                    });
+        // Confirmar pago
+        function confirmarPago() {
+            const formCliente = document.getElementById('formCliente');
+            
+            // Validar campos
+            const nombre = document.getElementById('cliente_nombre').value.trim();
+            const apellido = document.getElementById('cliente_apellido').value.trim();
+            const email = document.getElementById('cliente_email').value.trim();
+            const telefono = document.getElementById('cliente_telefono').value.trim();
+            const direccion = document.getElementById('cliente_direccion').value.trim();
+            const provincia = document.getElementById('cliente_provincia').value;
+            const ciudad = document.getElementById('cliente_ciudad').value;
+
+            // Validar que los campos no estén vacíos
+            if (!nombre || !apellido || !email || !telefono || !direccion || !provincia || !ciudad) {
+                alert('Por favor, rellena todos los campos requeridos');
+                return;
             }
+
+            // Validar teléfono (9 dígitos exactos)
+            const regexTelefono = /^[0-9]{9}$/;
+            if (!regexTelefono.test(telefono)) {
+                alert('El teléfono debe contener exactamente 9 dígitos');
+                document.getElementById('cliente_telefono').focus();
+                return;
+            }
+
+            // Validar email (gmail, hotmail, yahoo, outlook, etc)
+            const regexEmail = /^[a-zA-Z0-9._%+-]+@(gmail\.com|hotmail\.com|yahoo\.com|outlook\.com|[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/;
+            if (!regexEmail.test(email)) {
+                alert('Por favor, ingresa un correo válido (ej: usuario@gmail.com)');
+                document.getElementById('cliente_email').focus();
+                return;
+            }
+
+            const carrito = JSON.parse(localStorage.getItem('carritoRobinson')) || [];
+            const subtotal = carrito.reduce((total, item) => total + (item.precio * item.cantidad), 0);
+            const igv = subtotal * 0.18;
+            const total = subtotal + igv;
+
+            // Generar número de orden
+            const nroOrden = 'ORD-' + new Date().getFullYear() + '-' + String(Math.floor(Math.random() * 999999)).padStart(6, '0');
+            
+            // Llenar modal de confirmación
+            document.getElementById('modalNroOrden').textContent = nroOrden;
+            document.getElementById('modalFecha').textContent = new Date().toLocaleDateString('es-PE', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            });
+
+            // Llenar tabla de productos
+            let tablaHTML = '';
+            carrito.forEach(item => {
+                const subtotalItem = item.precio * item.cantidad;
+                tablaHTML += `
+                    <tr>
+                        <td>${item.nombre}</td>
+                        <td>${item.cantidad}</td>
+                        <td>S/. ${item.precio.toFixed(2)}</td>
+                        <td>S/. ${subtotalItem.toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+            document.getElementById('modalProductos').querySelector('tbody').innerHTML = tablaHTML;
+
+            // Actualizar totales en modal
+            document.getElementById('modalSubtotal').textContent = 'S/. ' + subtotal.toFixed(2);
+            document.getElementById('modalIGV').textContent = 'S/. ' + igv.toFixed(2);
+            document.getElementById('modalTotal').textContent = 'S/. ' + total.toFixed(2);
+
+            // Cerrar modal de cliente y abrir de confirmación
+            bootstrap.Modal.getInstance(document.getElementById('modalCliente')).hide();
+            
+            setTimeout(() => {
+                const modalConfirm = new bootstrap.Modal(document.getElementById('modalPago'));
+                modalConfirm.show();
+                
+                // Limpiar carrito y datos
+                localStorage.removeItem('carritoRobinson');
+                document.getElementById('formCliente').reset();
+                cargarCarrito();
+            }, 300);
         }
 
         // Limpiar carrito
         function limpiarCarrito() {
-            if (confirm('Est&aacute;s seguro de que deseas vaciar tu carrito?')) {
-                fetch('/api/carrito/vaciar', { method: 'DELETE' })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.exito) {
-                            cargarCarritoVista();
-                        }
-                    });
+            if (confirm('¿Estás seguro de que deseas vaciar tu carrito?')) {
+                localStorage.removeItem('carritoRobinson');
+                cargarCarrito();
             }
         }
 
-        // ================================================================
-        // PROCESAR PAGO
-        // Si est&aacute; logueado: mostrar confirmaci&oacute;n directa con sus datos
-        // Si NO est&aacute; logueado: redirigir a login
-        // ================================================================
+        // Datos de ciudades por provincia
+        const ciudadesPorProvincia = {
+            'lima': ['Lima', 'Ancón', 'Ate', 'Barranco', 'Breña Alta', 'Chadacayo', 'Chaclacayo', 'Chorrillos', 'Comas', 'Cono Norte', 'Cono Sur', 'El Agustino', 'Independencia', 'Jesús María', 'La Molina', 'La Victoria', 'Lince', 'Los Olivos', 'Lurín', 'Magdalena', 'Miraflores', 'Pachacamac', 'Pucusana', 'Pueblo Libre', 'Puente Piedra', 'Rímac', 'San Bartolo', 'San Isidro', 'San Juan de Lurigancho', 'San Juan de Miraflores', 'San Luis', 'San Martín de Porres', 'San Miguel', 'Santa Anita', 'Santa María del Mar', 'Santa Rosa', 'Santiago de Surco', 'Surquillo', 'Villa El Salvador', 'Villa María del Triunfo'],
+            'arequipa': ['Arequipa', 'Alto Selva Alegre', 'Cayma', 'Cerro Colorado', 'Characato', 'Jacobo Hunter', 'La Joya', 'Mariano Melgar', 'Miraflores', 'Mollebaya', 'Polobaya', 'Puno', 'Sabandía', 'Socabaya', 'Tiabaya', 'Uchumayo', 'Yanahuara', 'Yarabamba', 'Yura'],
+            'cusco': ['Cusco', 'Ccatcca', 'Poroy', 'San Blás', 'San Jerónimo', 'Santiago', 'Sayantí', 'Wanchaq'],
+            'junin': ['Huancayo', 'Apaseo', 'Chilca', 'Chongos Bajo', 'Colca', 'Concepción', 'Huancán', 'Huasahuasi', 'Huatalestiquia', 'Jugal', 'Natividad', 'Pariahuanca', 'Paya', 'Quichas', 'Quilcas', 'San Agustín', 'San José de Quero'],
+            'la-libertad': ['Trujillo', 'Ascope', 'Bolivar', 'Chepén', 'Chicama', 'Chimbote', 'Coishco', 'Jequetepeque', 'Julcán', 'Otuzco', 'Pacasmayo', 'Paijan', 'Palacios', 'Pataz', 'Sánchez Carrión', 'Santiago de Chuco', 'Viru'],
+            'piura': ['Piura', 'Ayabaca', 'Castilla', 'Catacaos', 'Chulucanas', 'Cura Morí', 'El Tallan', 'La Unión', 'Lalaquiz', 'Las Lomas', 'Montero', 'Morales', 'Olmos', 'Paita', 'Parachique', 'Sechura', 'Tambogrande'],
+            'puno': ['Puno', 'Acora', 'Amantaní', 'Asillo', 'Atuncolla', 'Capachica', 'Chucuito', 'Coata', 'Cojata', 'Conduriri', 'Huata', 'Ilave', 'Juliaca', 'Lampa', 'Laraqueri', 'Macusani', 'Moho', 'Muni', 'Nuñoa', 'Ocuviri', 'Ollachea', 'Platería', 'Pomata', 'Putina', 'Quisama', 'Raya', 'Sandia', 'Santa Rosa', 'Taraco', 'Tiquillaca', 'Tirapata', 'Tocora', 'Toro', 'Ucayali', 'Yunguyo'],
+            'tacna': ['Tacna', 'Candarave', 'Estique', 'Karachipampa', 'Pocollay', 'Sama', 'Tarucachi', 'Tomasiri', 'Vilavilani'],
+            'ucayali': ['Pucallpa', 'Callería', 'Iparia', 'Masisea', 'Raymondi', 'Yarinacocha', 'Campoverde', 'Iñapari', 'Santa Clara', 'Sepahua', 'Tahuanía'],
+            'ayacucho': ['Ayacucho', 'Cangallo', 'Fajardo', 'Huamanga', 'Huanta', 'Huancapi', 'Huantancay', 'Huarancalla', 'Huariaca', 'Huarancayo', 'Iguain', 'Lucanas', 'Pachia', 'Pajan', 'Pujo', 'Quinua', 'San José de Usco', 'San Juan Bautista', 'Santillana', 'Soras', 'Ticllas', 'Vinchos'],
+            'apurímac': ['Abancay', 'Acosvinchos', 'Andarapa', 'Andahuaylas', 'Antaparco', 'Cayamarca', 'Chapimarca', 'Chila', 'Chincheros', 'Huayana', 'Iguain', 'Jajaja', 'Junín', 'Kishuar', 'Lambrama', 'Ocobamba', 'Oropesa', 'Pacobamba', 'Palma', 'Pampacolca', 'Pampallaqta', 'Pampamarca', 'Pampas', 'Pancorbo', 'Pararin', 'Parquichata', 'Pasaje', 'Pataypampa', 'Pichirhua', 'Pocohuanca', 'Pomacocha', 'Pomata', 'Pomahuaca', 'Pomatallaqta', 'Poma Tambo', 'Puente Apurímac', 'Puerres', 'Pujaca', 'Pumallaqta', 'Puncubamba', 'Putacca', 'Sacseo', 'Sallalli', 'San Antonio', 'San Miguel', 'Santa Rosa', 'Santiago', 'Santillana', 'Sapallanga', 'Sarcobamba', 'Simaña', 'Soraqui', 'Sotobamba', 'Talavera', 'Tamaybamba', 'Tambo', 'Tangay', 'Tayacaja', 'Tintay', 'Tipacti', 'Tipantí', 'Tirapampa', 'Tirapata', 'Tirayoc', 'Tocachi', 'Tocas', 'Toco', 'Tomas', 'Tomay Kichwa', 'Tomayquichwa', 'Tonco', 'Tonosica', 'Toraya', 'Toriaya', 'Toronquichwa', 'Toroya', 'Totora', 'Totora Chico', 'Totora Grande', 'Tramaico', 'Trapiche', 'Trapichillo', 'Triaca', 'Triaje', 'Tricaña', 'Tricayoc', 'Trinipampa', 'Tripampa', 'Triparato', 'Tripimayo', 'Tripirhuayoc', 'Tripiroy', 'Tripitayo', 'Tripitía', 'Tripitiri', 'Tripitiy', 'Tripitoj', 'Tripty', 'Triqueray', 'Trisatayoc', 'Trisaya', 'Trisayao', 'Trisayco', 'Trisaycu', 'Trisayni', 'Trisayra', 'Trisayti', 'Triscayo', 'Triscayoe', 'Trisculco', 'Triscuri', 'Trisecaya', 'Trisecayao', 'Trisecaycu', 'Trisecayo', 'Trisecayria', 'Trisecayti', 'Trisecayyo', 'Trisecula', 'Trisecuña', 'Trisecuray', 'Trisecuria', 'Trisecuyo', 'Trisecuyta', 'Trisecuytan', 'Trisecuytani', 'Trisecuytanij', 'Trisecuyto', 'Trisecuytoj', 'Trisecuytojñ', 'Trisecuytojy', 'Trisecuytoji', 'Trisendia', 'Trisendria', 'Trisendrío', 'Trisenía', 'Trisenia', 'Trisenía', 'Trisenio', 'Trisennio', 'Triseno', 'Trisenta', 'Trisentia', 'Trisenti', 'Trisentiá', 'Trisentí', 'Trisentía', 'Trisentio', 'Trisentión', 'Trisentiós', 'Trisentioy', 'Trisentioz', 'Trisentiú', 'Trisentja', 'Trisentji', 'Trisentjo', 'Trisentju', 'Trisentka', 'Trisentki', 'Trisentko', 'Trisentriá', 'Trisentrié', 'Trisentrió', 'Trisentriú', 'Trisentría', 'Trisentría', 'Trisentrió', 'Trisentrió'],
+            'huancavelica': ['Huancavelica', 'Acoria', 'Acostambo', 'Alcamenca', 'Andabamba', 'Anta', 'Aracmayo', 'Asnacucho', 'Asnahuanca', 'Asquipampa', 'Ataura', 'Aymaraes', 'Ayoaycu', 'Ayopampa', 'Ayrancina', 'Azangaro', 'Azangaromayo', 'Azcapochihua', 'Azcara', 'Azcarán', 'Azcarina', 'Azcate', 'Azco', 'Azcocbamba', 'Azcopampa', 'Azcopocna'],
+            'ica': ['Ica', 'Acarí', 'Acarime', 'Acaripa', 'Acaritambo', 'Acariyuyo', 'Acatea', 'Acategua', 'Acatila', 'Acatimayo', 'Acatiyuyo', 'Acayco', 'Acayma', 'Acayuyo', 'Achalay', 'Achalaya', 'Achalayo', 'Achauca', 'Achaucanango', 'Achaucani', 'Achaucanipampa', 'Achaucaniyuyo', 'Achaucanvira'],
+            'huánuco': ['Huánuco', 'Acopalca', 'Acostambo', 'Acradera', 'Aculla', 'Achancará', 'Achancaraja', 'Achancarampa', 'Achancarapata', 'Achancara Huayco', 'Achancaratambo', 'Achancara Yaucaní', 'Achancara Yaucanía', 'Achancara Yaucanío', 'Achancara Yaucaniri', 'Achancara Yaucanpampa'],
+            'loreto': ['Iquitos', 'Belén', 'Indiana', 'Islandia', 'Padre Cocha', 'Remanso Aucayo'],
+            'madre-de-dios': ['Puerto Maldonado', 'Lakeya', 'Laberinto'],
+            'moquegua': ['Moquegua', 'Carumas', 'Chojata', 'Ensenada', 'Lloque', 'Omate', 'Samegua', 'Torata', 'Ubinas', 'Yunga'],
+            'pasco': ['Cerro de Pasco', 'Chaupimarca', 'Huachón', 'Huariaca', 'Huaraucaca', 'Huari', 'Huayllay', 'Pallanchaca', 'Paucartambo', 'Quichas', 'Santa Rosa de Sacco', 'Tinyahuarco', 'Tiquisio', 'Villacabamba', 'Yanacancha'],
+            'san-martín': ['Moyobamba', 'Soritor', 'Tabalosos', 'Yuracyacu', 'Awajún'],
+            'tumbes': ['Tumbes', 'Aguas Verdes', 'Ariquipes', 'Calblanque', 'Casitas', 'Corrales', 'Culebra', 'El Calmón', 'Matapalo', 'Paita', 'Pampanilla', 'Riconcada', 'San Juan de la Virgen', 'Zorritos'],
+            'callao': ['Callao', 'Ancón', 'Bellavista', 'Carmen de la Legua', 'Chaclacayo', 'La Perla', 'La Punta', 'Lurín', 'Mi Perú', 'Monsefú', 'Pachacamac', 'Pucusana', 'Punta Hermosa', 'Punta Negra', 'San Antonio', 'Santa Rosa', 'Ventanilla']
+        };
 
-        function procesarPago() {
-            // Verificar sesi&oacute;n con el servidor
-            fetch('/api/carrito/sesion')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.logueado) {
-                        // Usuario logueado: mostrar modal de confirmaci&oacute;n directa
-                        mostrarModalConfirmacion();
-                    } else {
-                        // No logueado: redirigir al login
-                        alert('Debes iniciar sesi&oacute;n para realizar una compra');
-                        window.location.href = '/login';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error verificando sesi&oacute;n:', error);
-                    alert('Error de conexi&oacute;n. Int&eacute;ntalo de nuevo.');
-                });
-        }
+        // Cargar ciudades dinámicamente
+        function cargarCiudades() {
+            const provinciaSelect = document.getElementById('cliente_provincia');
+            const ciudadSelect = document.getElementById('cliente_ciudad');
+            const provinciaSeleccionada = provinciaSelect.value;
 
-        // Mostrar modal de confirmaci&oacute;n con datos del carrito
-        function mostrarModalConfirmacion() {
-            fetch('/api/carrito')
-                .then(response => response.json())
-                .then(data => {
-                    const items = data.items || [];
-                    if (items.length === 0) {
-                        alert('Tu carrito est&aacute; vac&iacute;o');
-                        return;
-                    }
+            // Limpiar opciones previas
+            ciudadSelect.innerHTML = '<option value="">Selecciona una ciudad...</option>';
 
-                    // Llenar tabla de productos
-                    let tablaHTML = '';
-                    items.forEach(item => {
-                        const subtotalItem = parseFloat(item.precio) * item.cantidad;
-                        tablaHTML += `
-                            <tr>
-                                <td>${item.nombre}</td>
-                                <td>${item.cantidad}</td>
-                                <td>S/. ${parseFloat(item.precio).toFixed(2)}</td>
-                                <td>S/. ${subtotalItem.toFixed(2)}</td>
-                            </tr>
-                        `;
-                    });
-                    document.getElementById('tablaConfirmacion').querySelector('tbody').innerHTML = tablaHTML;
-
-                    // Totales
-                    document.getElementById('confirmar_subtotal').textContent = 'S/. ' + parseFloat(data.subtotal).toFixed(2);
-                    document.getElementById('confirmar_igv').textContent = 'S/. ' + parseFloat(data.igv).toFixed(2);
-                    document.getElementById('confirmar_total').textContent = 'S/. ' + parseFloat(data.total).toFixed(2);
-
-                    // Mostrar modal
-                    const modal = new bootstrap.Modal(document.getElementById('modalConfirmarPago'));
-                    modal.show();
-                });
-        }
-
-        // Confirmar pago y enviar al backend
-        function confirmarPagoBackend() {
-            const btnConfirmar = document.getElementById('btnConfirmarPago');
-            btnConfirmar.disabled = true;
-            btnConfirmar.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Procesando...';
-
-            const metodoPago = document.getElementById('metodoPago').value;
-
-            fetch('/api/carrito/checkout', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    metodoPago: metodoPago
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Cerrar modal de confirmaci&oacute;n
-                bootstrap.Modal.getInstance(document.getElementById('modalConfirmarPago')).hide();
-
-                if (data.exito) {
-                    // Mostrar modal de &eacute;xito con datos del pedido
-                    mostrarModalExito(data);
-                    // Recargar tabla del carrito (ya estar&aacute; vac&iacute;o)
-                    setTimeout(() => cargarCarritoVista(), 500);
-                } else {
-                    alert('Error al procesar el pedido: ' + data.mensaje);
-                }
-
-                btnConfirmar.disabled = false;
-                btnConfirmar.innerHTML = '<i class="fas fa-check me-2"></i> Confirmar y Pagar';
-            })
-            .catch(error => {
-                console.error('Error en checkout:', error);
-                alert('Error de conexi&oacute;n al procesar el pago.');
-                btnConfirmar.disabled = false;
-                btnConfirmar.innerHTML = '<i class="fas fa-check me-2"></i> Confirmar y Pagar';
-            });
-        }
-
-        // Mostrar modal de pedido exitoso
-        function mostrarModalExito(data) {
-            document.getElementById('exitoNroPedido').textContent = data.numeroPedido;
-
-            // Formatear fecha
-            const fecha = new Date(data.fechaPedido);
-            document.getElementById('exitoFecha').textContent = fecha.toLocaleDateString('es-PE', {
-                year: 'numeric', month: '2-digit', day: '2-digit'
-            });
-
-            document.getElementById('exitoCliente').textContent = data.cliente || '';
-            document.getElementById('exitoMetodoPago').textContent = data.metodoPago || '';
-
-            // Llenar tabla de productos
-            let tablaHTML = '';
-            if (data.items) {
-                data.items.forEach(item => {
-                    tablaHTML += `
-                        <tr>
-                            <td>${item.nombre}</td>
-                            <td>${item.cantidad}</td>
-                            <td>S/. ${parseFloat(item.precio).toFixed(2)}</td>
-                            <td>S/. ${parseFloat(item.subtotal).toFixed(2)}</td>
-                        </tr>
-                    `;
+            if (provinciaSeleccionada && ciudadesPorProvincia[provinciaSeleccionada]) {
+                const ciudades = ciudadesPorProvincia[provinciaSeleccionada];
+                ciudades.forEach(ciudad => {
+                    const option = document.createElement('option');
+                    option.value = ciudad;
+                    option.textContent = ciudad;
+                    ciudadSelect.appendChild(option);
                 });
             }
-            document.getElementById('exitoProductos').querySelector('tbody').innerHTML = tablaHTML;
-
-            document.getElementById('exitoSubtotal').textContent = 'S/. ' + parseFloat(data.subtotal).toFixed(2);
-            document.getElementById('exitoIGV').textContent = 'S/. ' + parseFloat(data.igv).toFixed(2);
-            document.getElementById('exitoTotal').textContent = 'S/. ' + parseFloat(data.total).toFixed(2);
-
-            setTimeout(() => {
-                const modal = new bootstrap.Modal(document.getElementById('modalPedidoExitoso'));
-                modal.show();
-            }, 400);
         }
 
         // Cargar carrito al iniciar
-        window.addEventListener('DOMContentLoaded', cargarCarritoVista);
+        window.addEventListener('DOMContentLoaded', cargarCarrito);
     </script>
 </body>
 </html>

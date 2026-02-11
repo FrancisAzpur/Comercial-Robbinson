@@ -198,31 +198,23 @@ function vincularEventosCarrito() {
                 id: parseInt(boton.dataset.id),
                 nombre: boton.dataset.nombre,
                 precio: parseFloat(boton.dataset.precio),
-                imagen: boton.dataset.imagen
+                imagen: boton.dataset.imagen,
+                tipo: 'electrodomesticos'
             };
             if (window.agregarAlCarrito) {
-                window.agregarAlCarrito(producto).then(exito => {
-                    if (exito) {
-                        mostrarNotificacionElectro('Producto agregado al carrito');
-                    }
-                });
+                window.agregarAlCarrito(producto);
             } else {
-                console.error('agregarAlCarrito no disponible');
+                // ========== INICIO: FALLBACK LOCALSTORAGE (mantener comentado para referencia) ==========
+                // TODO: Cuando se implemente el backend, este fallback debería usar:
+                // fetch('/api/carrito/agregar', { method: 'POST', body: JSON.stringify(producto) })
+                let carrito = JSON.parse(localStorage.getItem('carritoRobinson') || '[]');
+                const idx = carrito.findIndex(item => item.id === producto.id && item.tipo === producto.tipo);
+                if (idx !== -1) carrito[idx].cantidad += 1; else carrito.push({...producto, cantidad:1});
+                localStorage.setItem('carritoRobinson', JSON.stringify(carrito));
+                // ========== FIN: FALLBACK LOCALSTORAGE ==========
             }
         });
     });
-}
-
-/**
- * Muestra una notificación temporal
- */
-function mostrarNotificacionElectro(mensaje) {
-    const notif = document.createElement('div');
-    notif.className = 'alert alert-success position-fixed top-0 start-50 translate-middle-x mt-3';
-    notif.style.zIndex = '9999';
-    notif.innerHTML = `<i class="fas fa-check-circle me-2"></i>${mensaje}`;
-    document.body.appendChild(notif);
-    setTimeout(() => notif.remove(), 2000);
 }
 
 /**

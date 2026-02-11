@@ -1,22 +1,33 @@
-// carrito.js - VERSION CON BACKEND (API REST)
+// carrito.js - VERSIÓN CORREGIDA
+// Funcionalidades del carrito de compras
 // ==============================================================================
-// El carrito se almacena en la sesion del servidor (HttpSession).
-// Las operaciones se realizan mediante fetch() contra /api/carrito/*.
-// El localStorage ya NO se usa para almacenar el carrito.
+// NOTA: Este archivo actualmente usa localStorage para almacenar el carrito.
+// TODO: En futuras versiones, conectar con la base de datos usando fetch API
+// para sincronizar el carrito con el backend (controlador CarritoController).
 // ==============================================================================
 
-// Variable global para el carrito (cache local de lo que hay en el servidor)
+// Variable global para el carrito
 let carrito = [];
 
+// Constante para la clave del localStorage (DEBE SER LA MISMA)
+const CARRO_KEY = 'carritoRobinson';
+
 // ==============================================================================
-// INICIALIZACION
+// SECCIÓN: ALMACENAMIENTO EN LOCALSTORAGE (Comentado para referencia)
+// En el futuro, estas funciones deben conectar con endpoints REST del backend:
+// - POST /api/carrito/agregar - Agregar producto
+// - GET /api/carrito - Obtener carrito
+// - DELETE /api/carrito/{id} - Eliminar producto
+// - PUT /api/carrito/{id} - Actualizar cantidad
 // ==============================================================================
 
+// Inicializar carrito al cargar la página
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Carrito.js inicializando (modo backend)...');
-    cargarCarritoDesdeServidor();
-
-    // Configurar evento para el boton del carrito en el navbar
+    console.log('Carrito.js inicializando...');
+    cargarCarrito();
+    actualizarContadorCarrito();
+    
+    // Configurar evento para el botón del carrito en el navbar
     const btnCarrito = document.querySelector('.carrito-btn');
     if (btnCarrito) {
         btnCarrito.addEventListener('click', function(e) {
@@ -24,245 +35,194 @@ document.addEventListener('DOMContentLoaded', function() {
             window.location.href = '/carrito';
         });
     }
-
-    // Actualizar contador periodicamente
-    setInterval(actualizarContadorCarrito, 5000);
+    
+    // También actualizar contador periódicamente por si acaso
+    setInterval(actualizarContadorCarrito, 2000);
 });
 
-// ==============================================================================
-// COMUNICACION CON EL BACKEND
-// ==============================================================================
-
-/**
- * Carga el carrito desde el servidor y actualiza la cache local.
- */
-function cargarCarritoDesdeServidor() {
-    fetch('/api/carrito')
-        .then(response => response.json())
-        .then(data => {
-            carrito = (data.items || []).map(item => ({
-                id: item.idProducto,
-                nombre: item.nombre,
-                precio: parseFloat(item.precio),
-                imagen: item.imagen,
-                cantidad: item.cantidad
-            }));
-            console.log('Carrito cargado desde servidor:', carrito);
-            actualizarContadorCarrito();
-        })
-        .catch(error => {
-            console.error('Error al cargar carrito desde servidor:', error);
-        });
-}
-
-/**
- * Carga el carrito desde la cache local (para uso interno).
- */
+// Función para cargar el carrito desde localStorage
+// TODO: Cambiar a fetch('/api/carrito') cuando se implemente el backend
 function cargarCarrito() {
-    cargarCarritoDesdeServidor();
-}
+    // ========== INICIO: CÓDIGO LOCALSTORAGE (mantener comentado para referencia) ==========
+    // Preferir la clave nueva
+    const carritoGuardado = localStorage.getItem(CARRO_KEY);
+    console.log('Cargando carrito, localStorage:', carritoGuardado);
 
-/**
- * Agrega un producto al carrito via API del backend.
- * @param {Object} producto - { id, nombre, precio, imagen }
- * @returns {Promise<boolean>} true si se agrego exitosamente
- */
-function agregarAlCarrito(producto) {
-    console.log('Agregando al carrito (backend):', producto);
-
-    return fetch('/api/carrito/agregar', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            idProducto: producto.id,
-            nombre: producto.nombre,
-            precio: producto.precio,
-            imagen: producto.imagen
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.exito) {
-            console.log('Producto agregado:', data.mensaje);
-            // Actualizar cache local
-            const existente = carrito.findIndex(item => item.id === producto.id);
-            if (existente !== -1) {
-                carrito[existente].cantidad += 1;
-            } else {
-                carrito.push({ ...producto, cantidad: 1 });
-            }
-            actualizarContadorDesdeServidor(data.totalItems);
-            return true;
-        } else {
-            console.error('Error al agregar:', data.mensaje);
-            return false;
+    if (carritoGuardado) {
+        try {
+            carrito = JSON.parse(carritoGuardado);
+        } catch (error) {
+            console.error('Error al cargar el carrito:', error);
+            carrito = [];
         }
-    })
-    .catch(error => {
-        console.error('Error de red al agregar al carrito:', error);
-        return false;
-    });
-}
-
-/**
- * Actualiza la cantidad de un producto en el carrito via API.
- */
-function actualizarCantidadCarrito(productoId, nuevaCantidad) {
-    if (nuevaCantidad < 1) {
-        eliminarDelCarritoAPI(productoId);
-        return;
-    }
-
-    fetch('/api/carrito/actualizar/' + productoId, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ cantidad: nuevaCantidad })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.exito) {
-            const idx = carrito.findIndex(item => item.id === productoId);
-            if (idx !== -1) {
-                carrito[idx].cantidad = nuevaCantidad;
-            }
-            actualizarContadorDesdeServidor(data.totalItems);
-
-            if (window.location.pathname.includes('carrito')) {
-                window.location.reload();
-            }
-        }
-    })
-    .catch(error => {
-        console.error('Error al actualizar cantidad:', error);
-    });
-}
-
-/**
- * Elimina un producto del carrito via API.
- */
-function eliminarDelCarritoAPI(productoId) {
-    fetch('/api/carrito/eliminar/' + productoId, {
-        method: 'DELETE'
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.exito) {
-            carrito = carrito.filter(item => item.id !== productoId);
-            actualizarContadorDesdeServidor(data.totalItems);
-
-            if (window.location.pathname.includes('carrito')) {
-                window.location.reload();
-            }
-        }
-    })
-    .catch(error => {
-        console.error('Error al eliminar del carrito:', error);
-    });
-}
-
-/**
- * Wrapper para compatibilidad con codigo existente.
- */
-function eliminarDelCarrito(productoId) {
-    eliminarDelCarritoAPI(productoId);
-}
-
-/**
- * Vacia todo el carrito via API.
- */
-function vaciarCarrito() {
-    fetch('/api/carrito/vaciar', { method: 'DELETE' })
-        .then(response => response.json())
-        .then(data => {
-            if (data.exito) {
+    } else {
+        // Compatibilidad hacia atrás: migrar desde clave antigua 'carrito' si existe
+        const antiguo = localStorage.getItem('carrito');
+        if (antiguo) {
+            try {
+                carrito = JSON.parse(antiguo);
+                localStorage.setItem(CARRO_KEY, JSON.stringify(carrito));
+                localStorage.removeItem('carrito');
+                console.log('Carrito migrado desde clave antigua `carrito` a `carritoRobinson`.');
+            } catch (e) {
+                console.error('Error migrando carrito antiguo:', e);
                 carrito = [];
-                actualizarContadorDesdeServidor(0);
-
-                if (window.location.pathname.includes('carrito')) {
-                    window.location.reload();
-                }
             }
-        })
-        .catch(error => {
-            console.error('Error al vaciar carrito:', error);
-        });
+        }
+    }
+    // ========== FIN: CÓDIGO LOCALSTORAGE ==========
+
+    console.log('Carrito cargado:', carrito);
+    // Asegurar que el contador del navbar se actualice tras cargar
+    actualizarContadorCarrito();
 }
 
-// ==============================================================================
-// ACTUALIZACION DEL CONTADOR EN EL NAVBAR
-// ==============================================================================
+// Función para guardar el carrito en localStorage
+// TODO: Cambiar a fetch('/api/carrito', { method: 'POST', body: JSON.stringify(carrito) })
+function guardarCarrito() {
+    // ========== INICIO: CÓDIGO LOCALSTORAGE (mantener comentado para referencia) ==========
+    localStorage.setItem(CARRO_KEY, JSON.stringify(carrito));
+    console.log('Carrito guardado:', carrito);
+    // ========== FIN: CÓDIGO LOCALSTORAGE ==========
+}
 
-/**
- * Actualiza el contador del carrito consultando al servidor.
- */
+// Función para agregar un producto al carrito
+function agregarAlCarrito(producto) {
+    console.log('Agregando al carrito:', producto);
+    
+    // Verificar si el producto ya está en el carrito
+    const itemExistenteIndex = carrito.findIndex(item => item.id === producto.id);
+    
+    if (itemExistenteIndex !== -1) {
+        // Incrementar cantidad si ya existe
+        carrito[itemExistenteIndex].cantidad += 1;
+        console.log('Producto existente, nueva cantidad:', carrito[itemExistenteIndex].cantidad);
+    } else {
+        // Agregar nuevo producto al carrito
+        carrito.push({
+            ...producto,
+            cantidad: 1
+        });
+        console.log('Nuevo producto agregado');
+    }
+    
+    // Guardar y actualizar
+    guardarCarrito();
+    actualizarContadorCarrito();
+    
+    return true;
+}
+
+// Función para actualizar el contador del carrito en el navbar
 function actualizarContadorCarrito() {
-    fetch('/api/carrito/contador')
-        .then(response => response.json())
-        .then(data => {
-            actualizarContadorDesdeServidor(data.totalItems);
-        })
-        .catch(() => {
-            // Silenciar errores de red
-        });
-}
-
-/**
- * Actualiza el DOM del contador con el valor dado.
- */
-function actualizarContadorDesdeServidor(totalItems) {
+    const totalItems = carrito.reduce((total, item) => total + item.cantidad, 0);
+    
+    console.log('Actualizando contador, total items:', totalItems);
+    
+    // BUSCAR TODOS LOS POSIBLES CONTADORES (actualizado)
     const selectores = [
-        '.cart-count',
-        '.contador-carrito',
-        '.badge.bg-danger',
-        '.navbar .badge'
+        '.cart-count',           // Tu navbar usa esta clase
+        '.contador-carrito',     // Clase que teníamos antes
+        '.badge.bg-danger',      // Badge rojo
+        '.navbar .badge'         // Cualquier badge en navbar
     ];
-
+    
     selectores.forEach(selector => {
         const elementos = document.querySelectorAll(selector);
         elementos.forEach(elemento => {
-            if (elemento.textContent.match(/^\d+$/) ||
-                elemento.classList.contains('cart-count') ||
+            // Solo actualizar si parece un contador (número o clase específica)
+            if (elemento.textContent.match(/^\d+$/) || 
+                elemento.classList.contains('cart-count') || 
                 elemento.classList.contains('contador-carrito')) {
                 elemento.textContent = totalItems;
                 elemento.style.display = totalItems > 0 ? 'inline-block' : 'none';
+                console.log(`Contador actualizado (${selector}):`, totalItems);
             }
         });
     });
+    
+    return totalItems;
 }
 
-// ==============================================================================
-// FUNCIONES AUXILIARES
-// ==============================================================================
+// Función para eliminar un producto del carrito
+function eliminarDelCarrito(productoId) {
+    carrito = carrito.filter(item => item.id !== productoId);
+    guardarCarrito();
+    actualizarContadorCarrito();
+    
+    // Si estamos en la página del carrito, recargar la vista
+    if (window.location.pathname.includes('carrito')) {
+        window.location.reload();
+    }
+}
 
+// Función para actualizar la cantidad de un producto en el carrito
+function actualizarCantidadCarrito(productoId, nuevaCantidad) {
+    if (nuevaCantidad < 1) {
+        eliminarDelCarrito(productoId);
+        return;
+    }
+    
+    const itemIndex = carrito.findIndex(item => item.id === productoId);
+    if (itemIndex !== -1) {
+        carrito[itemIndex].cantidad = nuevaCantidad;
+        guardarCarrito();
+        actualizarContadorCarrito();
+        
+        // Si estamos en la página del carrito, recargar la vista
+        if (window.location.pathname.includes('carrito')) {
+            window.location.reload();
+        }
+    }
+}
+
+// Función para obtener el total del carrito
 function obtenerTotalCarrito() {
     return carrito.reduce((total, item) => total + (item.precio * item.cantidad), 0);
 }
 
-function obtenerCarritoCompleto() {
-    return [...carrito];
+// Función para vaciar el carrito
+function vaciarCarrito() {
+    carrito = [];
+    guardarCarrito();
+    actualizarContadorCarrito();
+    
+    // Si estamos en la página del carrito, recargar la vista
+    if (window.location.pathname.includes('carrito')) {
+        window.location.reload();
+    }
 }
 
-// ==============================================================================
-// EXPORTAR FUNCIONES GLOBALES
-// ==============================================================================
+// Función para obtener el carrito completo
+function obtenerCarritoCompleto() {
+    return [...carrito]; // Copia del carrito
+}
 
+// Exportar funciones para uso global
 window.agregarAlCarrito = agregarAlCarrito;
 window.eliminarDelCarrito = eliminarDelCarrito;
-window.eliminarDelCarritoAPI = eliminarDelCarritoAPI;
 window.actualizarCantidadCarrito = actualizarCantidadCarrito;
 window.vaciarCarrito = vaciarCarrito;
 window.obtenerTotalCarrito = obtenerTotalCarrito;
 window.actualizarContadorCarrito = actualizarContadorCarrito;
 window.obtenerCarritoCompleto = obtenerCarritoCompleto;
-window.cargarCarritoDesdeServidor = cargarCarritoDesdeServidor;
+window.CARRO_KEY = CARRO_KEY; // Exportar la clave también
 
-// Debug
+// Añadir función de debug
 window.debugCarrito = function() {
-    console.log('=== DEBUG CARRITO (BACKEND) ===');
-    console.log('Carrito en memoria (cache):', carrito);
+    console.log('=== DEBUG CARRITO ===');
+    console.log('Clave localStorage:', CARRO_KEY);
+    console.log('Contenido localStorage:', localStorage.getItem(CARRO_KEY));
+    console.log('Carrito en memoria:', carrito);
     console.log('Total items:', carrito.reduce((total, item) => total + item.cantidad, 0));
-    fetch('/api/carrito')
-        .then(r => r.json())
-        .then(data => console.log('Carrito en servidor:', data))
-        .catch(e => console.error('Error consultando servidor:', e));
+    
+    const contadores = document.querySelectorAll('.cart-count, .contador-carrito, .badge');
+    console.log('Contadores encontrados:', contadores.length);
+    contadores.forEach((cont, i) => {
+        console.log(`Contador ${i}:`, {
+            clase: cont.className,
+            texto: cont.textContent,
+            display: cont.style.display
+        });
+    });
 };

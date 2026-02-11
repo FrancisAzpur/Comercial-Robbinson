@@ -201,18 +201,18 @@ function agregarProductoAlCarrito(boton) {
         id: boton.dataset.id,
         nombre: boton.dataset.nombre,
         precio: parseFloat(boton.dataset.precio),
-        imagen: boton.dataset.imagen
+        imagen: boton.dataset.imagen,
+        cantidad: 1,
+        tipo: 'ofertas'
     };
     
-    // Usar la función del carrito central (API backend)
+    // Usar la función del carrito central si existe
     if (window && typeof window.agregarAlCarrito === 'function') {
-        window.agregarAlCarrito(producto).then(exito => {
-            if (exito) {
-                mostrarNotificacionCarrito(producto.nombre);
-            }
-        });
+        window.agregarAlCarrito(producto);
+        mostrarNotificacionCarrito(producto.nombre);
     } else {
-        console.error('agregarAlCarrito no disponible');
+        // Fallback a localStorage
+        agregarAlCarritoFallback(producto);
     }
 }
 
@@ -240,15 +240,42 @@ function agregarComboAlCarrito(boton) {
         };
     }
     
-    // Usar la función del carrito central (API backend)
+    // Usar la función del carrito central si existe
     if (window && typeof window.agregarAlCarrito === 'function') {
-        window.agregarAlCarrito(combo).then(exito => {
-            if (exito) {
-                mostrarNotificacionCarrito(combo.nombre);
-            }
-        });
+        window.agregarAlCarrito(combo);
+        mostrarNotificacionCarrito(combo.nombre);
     } else {
-        console.error('agregarAlCarrito no disponible');
+        // Fallback a localStorage
+        agregarAlCarritoFallback(combo);
+    }
+}
+
+function agregarAlCarritoFallback(item) {
+    let carrito = JSON.parse(localStorage.getItem('carritoRobinson')) || [];
+    
+    // Verificar si ya existe
+    const index = carrito.findIndex(p => p.id === item.id);
+    
+    if (index !== -1) {
+        carrito[index].cantidad += 1;
+    } else {
+        carrito.push(item);
+    }
+    
+    localStorage.setItem('carritoRobinson', JSON.stringify(carrito));
+    actualizarContadorCarritoFallback();
+    mostrarNotificacionCarrito(item.nombre);
+}
+
+function actualizarContadorCarritoFallback() {
+    const carrito = JSON.parse(localStorage.getItem('carritoRobinson')) || [];
+    const total = carrito.reduce((sum, item) => sum + item.cantidad, 0);
+    
+    // Actualizar en el navbar
+    const contador = document.querySelector('.cart-count');
+    if (contador) {
+        contador.textContent = total;
+        contador.style.display = total > 0 ? 'inline-block' : 'none';
     }
 }
 

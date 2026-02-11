@@ -88,9 +88,8 @@ public class PedidoService {
         // 2. TRIGGER actualizar_stock_venta (AFTER INSERT) → resta stock
         return pedidoRepository.save(pedido);
     }
-    
-    @Transactional(readOnly = true)
-    public List<Pedido> obtenerTodosLosPedidos(String estado) {
+
+    public List<Pedido> obtenerTodosLosPedidos() {
         return pedidoRepository.findAllByOrderByFechaPedidoDesc();
     }
 
