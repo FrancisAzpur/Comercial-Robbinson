@@ -184,7 +184,7 @@ BOOTSTRAP: table, badge, btn-outline-*, container, row/col grid
                                     <td><strong th:text="${pedido.numeroPedido}"></strong></td>
                                     <td th:text="${pedido.cliente != null ? pedido.cliente.nombreCompleto : 'Sin cliente'}"></td>
                                     <td th:text="${#temporals.format(pedido.fechaPedido, 'dd/MM/yyyy')}"></td>
-                                    <td th:text="${pedido.total != null ? #numbers.formatDecimal(pedido.total, 1, 2, true) : '0.00'}"></td>
+                                    <td th:text="${pedido.total != null ? #numbers.formatDecimal(pedido.total, 1, 2) : '0.00'}"></td>
                                     <td>
                                         <span th:class="'badge badge-' + ${pedido.estado}" 
                                               th:text="${pedido.estado}"></span>
