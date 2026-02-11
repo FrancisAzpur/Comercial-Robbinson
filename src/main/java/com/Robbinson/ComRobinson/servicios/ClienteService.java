@@ -11,8 +11,25 @@ import com.Robbinson.ComRobinson.modelo.Cliente;
 import com.Robbinson.ComRobinson.repositorio.ClienteRepository;
 
 /**
- * Servicio para gestionar operaciones de Clientes
- * Utiliza JPA Repository para interactuar con la base de datos
+ * =========================================================================
+ * SERVICIO DE CLIENTES - Lógica de negocio para la tabla 'clientes'
+ * =========================================================================
+ * PUNTO DE EVALUACIÓN: CRUD completo + Autenticación
+ * 
+ * @Service: Marca esta clase como componente de servicio en Spring
+ * @Transactional: Todas las operaciones se ejecutan dentro de una transacción
+ *                 Si ocurre un error, se hace ROLLBACK automático
+ * 
+ * OPERACIONES CRUD:
+ *   C (Create) → guardarCliente()
+ *   R (Read)   → obtenerTodosLosClientes(), obtenerClientePorId(), buscarPorNombre()
+ *   U (Update) → actualizarCliente()
+ *   D (Delete) → eliminarCliente()
+ * 
+ * FUNCIONALIDAD ADICIONAL:
+ *   - autenticar(): Verifica correo + contraseña para login
+ *   - correoExiste(), documentoExiste(): Validaciones de unicidad
+ * =========================================================================
  */
 @Service
 @Transactional

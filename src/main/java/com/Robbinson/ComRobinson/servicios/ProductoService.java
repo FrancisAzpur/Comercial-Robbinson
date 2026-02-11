@@ -10,6 +10,19 @@ import org.springframework.transaction.annotation.Transactional;
 import com.Robbinson.ComRobinson.modelo.Producto;
 import com.Robbinson.ComRobinson.repositorio.ProductoRepository;
 
+/**
+ * =========================================================================
+ * SERVICIO DE PRODUCTOS - Lógica de negocio para la tabla 'productos'
+ * =========================================================================
+ * PUNTO DE EVALUACIÓN: CRUD completo + Consultas personalizadas
+ * 
+ * Gestiona el catálogo de productos incluyendo:
+ *   - CRUD completo (guardar, listar, actualizar, eliminar)
+ *   - Búsqueda por nombre, código y etiqueta
+ *   - Control de stock (productos con stock bajo)
+ *   - Conteo de productos activos (para el dashboard)
+ * =========================================================================
+ */
 @Service
 @Transactional
 public class ProductoService {

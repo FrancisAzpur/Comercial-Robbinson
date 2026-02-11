@@ -1,3 +1,21 @@
+<!--
+=========================================================================
+LISTADO DE PEDIDOS - pedidos-listado.html
+=========================================================================
+PUNTO DE EVALUACIÓN: Consultas multi-tabla + Bootstrap table + Thymeleaf
+
+COMANDOS THYMELEAF:
+  th:each="pedido : ${pedidos}"                   → Itera todos los pedidos
+  th:text="${pedido.numeroPedido}"                → Muestra datos del pedido
+  th:text="${pedido.cliente.nombreCompleto}"       → MULTI-TABLA: accede al Cliente
+  th:text="${#temporals.format(pedido.fechaPedido, 'dd/MM/yyyy')}" → Formato fecha
+  th:text="${#numbers.formatDecimal(pedido.total, 1, 2, true)}"    → Formato moneda
+  th:class="'badge badge-' + ${pedido.estado}"    → Badge dinámico por estado
+  th:href="@{/gestion/pedidos/{id}(id=${pedido.idPedido})}" → URL con parámetro
+
+BOOTSTRAP: table, badge, btn-outline-*, container, row/col grid
+=========================================================================
+-->
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>

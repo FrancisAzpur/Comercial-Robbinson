@@ -11,8 +11,16 @@ import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
 /**
- * Entidad Proveedor - Representa los proveedores de productos
- * Mapeada a la tabla 'proveedores' en la base de datos
+ * =========================================================================
+ * ENTIDAD PROVEEDOR - Tabla 'proveedores' en la Base de Datos
+ * =========================================================================
+ * PUNTO DE EVALUACIÓN: CRUD de tablas con conexión a BDD
+ * 
+ * Representa los proveedores de productos de Comercial Robinson.
+ * Se relaciona con la tabla 'compras' para gestionar el abastecimiento.
+ * 
+ * RELACIÓN: Proveedor 1 → N Compra (un proveedor puede tener muchas compras)
+ * =========================================================================
  */
 
 @Entity

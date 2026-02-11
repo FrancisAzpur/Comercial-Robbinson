@@ -1,3 +1,25 @@
+<!--
+=========================================================================
+PÁGINA DEL CARRITO - carrito.html
+=========================================================================
+PUNTO DE EVALUACIÓN: DTO (CarritoItem) + API REST + Bootstrap + Thymeleaf
+
+THYMELEAF:
+  th:replace para header/footer fragments
+  th:if="${clienteLogueado != null}" → Datos del usuario logueado
+
+INTERACCIÓN CON API REST (CarritoController):
+  JavaScript consume los endpoints /api/carrito/* para:
+  - Mostrar items del carrito (GET /api/carrito)
+  - Agregar productos (POST /api/carrito/agregar)
+  - Actualizar cantidades (PUT /api/carrito/actualizar/{id})
+  - Eliminar productos (DELETE /api/carrito/eliminar/{id})
+  - Procesar checkout (POST /api/carrito/checkout)
+
+DTO: CarritoItem transporta datos del producto sin exponer la entidad JPA
+BOOTSTRAP: cards, table, modal (checkout), badges, grid
+=========================================================================
+-->
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/header :: head('Mi Carrito')}"></head>

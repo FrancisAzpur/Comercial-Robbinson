@@ -1,3 +1,21 @@
+<!--
+=========================================================================
+PÁGINA DE REGISTRO - registro.html
+=========================================================================
+PUNTO DE EVALUACIÓN: CRUD (Create) + Thymeleaf forms + Bootstrap
+
+THYMELEAF:
+  th:replace para header/footer fragments
+  th:object="${cliente}"   → Vincula formulario al objeto Cliente
+  th:field="*{nombreCompleto}" → Binding bidireccional
+  th:action="@{/registro}" → POST a HomeController.procesarRegistro()
+
+FLUJO POST-REGISTRO:
+  1. Valida que correo y documento no existan (ClienteService)
+  2. Guarda nuevo cliente en BD
+  3. Redirige a /registro/direccion para registrar dirección de envío
+=========================================================================
+-->
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 

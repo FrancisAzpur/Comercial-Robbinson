@@ -1,3 +1,18 @@
+<!--
+=========================================================================
+GRÁFICOS DE VENTAS - graficos-ventas.html
+=========================================================================
+PUNTO DE EVALUACIÓN: Consultas multi-tabla + Chart.js + Thymeleaf
+
+CONSULTAS MULTI-TABLA (4 TABLAS):
+  Pedido → DetallePedido → Producto (ventas por producto)
+  Pedido → Cliente (ventas por cliente/vendedor)
+  Datos: ventasPorProducto, ventasPorFecha, ventasPorVendedor
+
+THYMELEAF: th:text para estadísticas, th:each implícito via Maps en JS
+CHART.JS: Gráficos de barras, líneas y donut con datos dinámicos
+=========================================================================
+-->
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>

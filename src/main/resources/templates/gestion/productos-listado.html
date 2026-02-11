@@ -1,3 +1,19 @@
+<!--
+=========================================================================
+LISTADO DE PRODUCTOS - productos-listado.html
+=========================================================================
+PUNTO DE EVALUACIÓN: CRUD (Read/List) + Bootstrap table + Thymeleaf
+
+COMANDOS THYMELEAF:
+  th:each="producto : ${productos}"   → Itera todos los productos
+  th:src="@{${producto.imagenPrincipal}}"→ Imagen dinámica del producto
+  th:text="${#numbers.formatDecimal(producto.precioVenta, 1, 2, true)}" → Precio
+  th:if="${producto.stockActual <= producto.stockMinimo}" → Alerta stock bajo
+  th:class (condicional)              → Badge de estado activo/inactivo
+
+BOOTSTRAP: table, badge, img-thumbnail, btn-outline-*, search form
+=========================================================================
+-->
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>

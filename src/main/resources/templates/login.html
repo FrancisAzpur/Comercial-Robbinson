@@ -1,6 +1,24 @@
+<!--
+=========================================================================
+PÁGINA DE LOGIN - login.html
+=========================================================================
+PUNTO DE EVALUACIÓN: Autenticación + Thymeleaf + Bootstrap
+
+THYMELEAF:
+  th:replace="~{fragments/header :: head('Login')}" → Incluye header fragment
+  th:action="@{/login}" method="POST"  → Envía credenciales al controlador
+  th:if="${mensajeError}"              → Muestra error de autenticación
+  th:if="${mensajeExito}"              → Muestra mensaje de registro exitoso
+
+FLUJO: El POST /login lo procesa HomeController.procesarLogin()
+  que valida contra la BD usando ClienteService.autenticar()
+  y crea la sesión HTTP con session.setAttribute("clienteLogueado", ...)
+=========================================================================
+-->
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
+<!-- Incluye el fragment 'head' con título 'Login' -->
 <head th:replace="~{fragments/header :: head('Login')}"></head>
 
 <body>

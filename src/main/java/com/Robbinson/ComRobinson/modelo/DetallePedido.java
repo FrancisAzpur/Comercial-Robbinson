@@ -14,8 +14,26 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
 /**
- * Entidad DetallePedido - Representa los productos dentro de un pedido
- * Mapeada a la tabla 'detalle_pedidos' en la base de datos
+ * =========================================================================
+ * ENTIDAD DETALLE_PEDIDO - Tabla 'detalle_pedidos' (Tabla intermedia)
+ * =========================================================================
+ * PUNTO DE EVALUACIÓN: Consultas con múltiples tablas + DTO
+ * 
+ * Tabla intermedia que relaciona PEDIDOS con PRODUCTOS.
+ * Cada fila representa UN producto dentro de un pedido con su cantidad y precio.
+ * 
+ * RELACIONES JPA (MULTI-TABLA):
+ *   @ManyToOne Pedido   → Cada detalle pertenece a UN pedido
+ *   @ManyToOne Producto → Cada detalle referencia a UN producto
+ * 
+ * CONSULTA EN CASCADA:
+ *   Pedido →1→N DetallePedido N→1→ Producto
+ *   Cuando se consulta un pedido, se obtienen sus detalles,
+ *   y de cada detalle se accede al producto (nombre, precio, stock).
+ * 
+ * @PrePersist: Calcula el subtotal automáticamente antes de insertar
+ *   (también existe un TRIGGER en MySQL como respaldo)
+ * =========================================================================
  */
 
 @Entity

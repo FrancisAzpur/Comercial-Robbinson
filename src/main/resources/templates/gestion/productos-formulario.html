@@ -1,3 +1,19 @@
+<!--
+=========================================================================
+FORMULARIO DE PRODUCTOS - productos-formulario.html
+=========================================================================
+PUNTO DE EVALUACIÓN: CRUD (Create/Update) + Bootstrap forms + Thymeleaf
+
+THYMELEAF:
+  th:object="${producto}"            → Vincula formulario al objeto Producto
+  th:field="*{nombreProducto}"       → Binding bidireccional
+  th:field="*{precioVenta}"          → Campo de precio de venta
+  th:field="*{stockActual}"          → Campo de stock
+  Acción dinámica: crear vs actualizar según idProducto
+
+BOOTSTRAP: form-control, form-select, input-group, btn-primary, row/col
+=========================================================================
+-->
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>

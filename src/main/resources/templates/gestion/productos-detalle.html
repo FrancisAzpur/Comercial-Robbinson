@@ -1,3 +1,18 @@
+<!--
+=========================================================================
+DETALLE DE PRODUCTO - productos-detalle.html
+=========================================================================
+PUNTO DE EVALUACIÓN: CRUD (Read) + Bootstrap + Thymeleaf
+
+THYMELEAF:
+  th:text="${producto.nombreProducto}"  → Nombre del producto
+  th:src="@{${producto.imagenPrincipal}}"→ Imagen dinámica
+  th:text="${#numbers.formatDecimal(producto.precioVenta, 1, 2, true)}" → Precio
+  th:if, th:class para estado activo/inactivo y stock
+
+BOOTSTRAP: detail-card, img-fluid, badge, btn-primary
+=========================================================================
+-->
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>

@@ -1,3 +1,24 @@
+<!--
+=========================================================================
+DETALLE DE PEDIDO - pedidos-detalle.html
+=========================================================================
+PUNTO DE EVALUACIÓN: Consulta multi-tabla + Lista desplegable + Thymeleaf
+
+CONSULTAS MULTI-TABLA:
+  Pedido → Cliente (nombre del cliente)
+  Pedido → DetallePedido → Producto (líneas del pedido)
+
+THYMELEAF:
+  th:text="${pedido.cliente.nombreCompleto}" → Navega relación JPA
+  th:text="${#temporals.format(...)}"        → Formato de fecha
+  th:text="${#numbers.formatDecimal(...)}"   → Formato de moneda
+  th:each="detalle : ${detalles}"            → Lista de productos del pedido
+  th:if="${pedido.observaciones}"            → Condicional
+
+LISTA DESPLEGABLE: <select> para cambiar estado del pedido
+BOOTSTRAP: detail-card, badge, form inline, btn-primary
+=========================================================================
+-->
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>

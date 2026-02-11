@@ -1,3 +1,21 @@
+<!--
+=========================================================================
+LISTADO DE CLIENTES - clientes-listado.html
+=========================================================================
+PUNTO DE EVALUACIÓN: CRUD (Read/List) + Bootstrap table + Thymeleaf
+
+COMANDOS THYMELEAF:
+  th:each="cliente : ${clientes}"    → Itera todos los clientes de la BD
+  th:text="${cliente.nombreCompleto}"→ Muestra nombre del cliente
+  th:text="${cliente.tipoDocumento + ' - ' + cliente.documentoIdentidad}" → Concatenación
+  th:class="${cliente.activo ? 'badge bg-success' : 'badge bg-danger'}"    → Clase condicional
+  th:href="@{/gestion/clientes/{id}(id=${cliente.idCliente})}"  → Link dinámico
+
+BÚSQUEDA: Formulario GET /gestion/clientes/buscar con parámetro nombre
+
+BOOTSTRAP: table table-hover, badge, btn-sm, input-group, container
+=========================================================================
+-->
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>

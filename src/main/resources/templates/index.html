@@ -1,5 +1,32 @@
+<!--
+=========================================================================
+PÁGINA DE INICIO - index.html
+=========================================================================
+PUNTO DE EVALUACIÓN: Menús + Bootstrap + Thymeleaf + Organización
+
+COMANDOS THYMELEAF UTILIZADOS:
+  th:replace="~{fragments/header :: head('Inicio')}"  → Incluye el fragment head
+  th:replace="~{fragments/header :: header}"           → Incluye el navbar
+  th:replace="~{fragments/footer :: footer}"           → Incluye el footer
+  th:replace="~{fragments/footer :: scripts}"          → Incluye los scripts
+  th:if="${mensajeExito}"                              → Flash message condicional
+  th:text="${mensajeExito}"                            → Texto del mensaje
+  th:src="@{/img/Moderno.jpg}"                        → URL de imagen estática
+
+BOOTSTRAP:
+  - Hero section con grid (row, col-lg-7, col-lg-5)
+  - Carousel (carouselExampleIndicators)
+  - Cards para productos destacados
+  - Alert para mensajes flash
+  - btn-close para cerrar alertas
+
+ESTRUCTURA:
+  Header (fragment) → Hero → Carousel → Productos Destacados → Footer (fragment)
+=========================================================================
+-->
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
+<!-- Incluye el fragment 'head' del header.html pasando 'Inicio' como título -->
 <head th:replace="~{fragments/header :: head('Inicio')}"></head>
 
 <body>

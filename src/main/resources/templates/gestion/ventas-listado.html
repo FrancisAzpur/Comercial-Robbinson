@@ -1,3 +1,25 @@
+<!--
+=========================================================================
+LISTADO DE VENTAS - ventas-listado.html
+=========================================================================
+PUNTO DE EVALUACIÓN: Consultas multi-tabla + Bootstrap + Thymeleaf
+
+COMANDOS THYMELEAF:
+  th:each="pedido : ${ventas}"  → Itera pedidos con estado ENTREGADO
+  th:text="${pedido.cliente.nombreCompleto}" → MULTI-TABLA: Pedido → Cliente
+  th:text="${#temporals.format(...)}"  → Formato de fecha
+  th:text="${#numbers.formatDecimal(pedido.total, 1, 2, true)}" → Moneda
+  th:text="${totalVentas}"     → Estadísticas calculadas en el controlador
+  th:text="${totalVentasMonto}"→ Monto total
+  th:text="${promedio}"        → Promedio por venta
+
+CONSULTA MULTI-TABLA:
+  Las ventas son Pedidos filtrados por estado=ENTREGADO,
+  que incluyen datos del Cliente asociado (nombre) y método de pago.
+
+BOOTSTRAP: table, cards de resumen, badge, container
+=========================================================================
+-->
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>

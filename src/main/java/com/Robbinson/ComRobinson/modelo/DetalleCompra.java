@@ -14,8 +14,20 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
 /**
- * Entidad DetalleCompra - Representa los productos dentro de una compra
- * Mapeada a la tabla 'detalle_compras' en la base de datos
+ * =========================================================================
+ * ENTIDAD DETALLE_COMPRA - Tabla 'detalle_compras' (Tabla intermedia)
+ * =========================================================================
+ * PUNTO DE EVALUACIÓN: Consultas multi-tabla + Cascada
+ * 
+ * Tabla intermedia que relaciona COMPRAS con PRODUCTOS.
+ * Funciona igual que DetallePedido pero para compras a proveedores.
+ * 
+ * RELACIONES JPA:
+ *   @ManyToOne Compra   → Cada detalle pertenece a UNA compra
+ *   @ManyToOne Producto → Cada detalle referencia a UN producto
+ * 
+ * CADENA DE CASCADA: Compra → DetalleCompra → Producto (stock)
+ * =========================================================================
  */
 
 @Entity

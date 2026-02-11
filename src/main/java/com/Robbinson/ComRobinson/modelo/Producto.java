@@ -14,8 +14,23 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 
 /**
- * Entidad Producto - Representa los productos del catálogo
- * Mapeada a la tabla 'productos' en la base de datos
+ * =========================================================================
+ * ENTIDAD PRODUCTO - Tabla 'productos' en la Base de Datos
+ * =========================================================================
+ * PUNTO DE EVALUACIÓN: CRUD de tablas con conexión a BDD + Bootstrap
+ * 
+ * Representa el catálogo de productos de Comercial Robinson.
+ * Contiene precios de compra y venta, control de stock, imágenes y etiquetas.
+ * 
+ * RELACIONES:
+ *   Producto 1 → N DetallePedido (un producto aparece en muchos detalles de pedido)
+ *   Producto 1 → N DetalleCompra (un producto aparece en muchas órdenes de compra)
+ * 
+ * QUERIES PERSONALIZADAS en ProductoRepository:
+ *   - findProductosConStockBajo(): @Query JPQL que busca productos con stock crítico
+ *   - findByActivoTrueOrderByNombreProductoAsc(): productos activos ordenados
+ *   - findByEtiqueta(): filtra por etiqueta (NUEVO, OFERTA, etc.)
+ * =========================================================================
  */
 
 @Entity

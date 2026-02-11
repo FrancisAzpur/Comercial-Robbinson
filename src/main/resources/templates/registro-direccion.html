@@ -1,6 +1,25 @@
+<!--
+=========================================================================
+REGISTRO DE DIRECCIÓN - registro-direccion.html
+=========================================================================
+PUNTO DE EVALUACIÓN: CRUD (Create) + Thymeleaf forms + Bootstrap
+
+FLUJO: Después de registrar un cliente, se redirige aquí
+para que registre su dirección de envío (primera dirección = principal)
+
+THYMELEAF:
+  th:replace para fragments
+  th:object="${direccion}"   → Vincula al objeto DireccionCliente
+  th:action="@{/registro/direccion}" → POST a HomeController
+  th:value="${cliente.idCliente}" → Pasa el ID del cliente recién creado
+
+BOOTSTRAP: form-control, row/col grid, btn-primary
+=========================================================================
+-->
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
+<!-- Incluye el fragment head con título 'Registro de Dirección' -->
 <head th:replace="~{fragments/header :: head('Registro de Dirección')}"></head>
 
 <body>

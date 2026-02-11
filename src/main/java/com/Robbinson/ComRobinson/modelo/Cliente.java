@@ -14,8 +14,30 @@ import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
 /**
- * Entidad Cliente - Representa a los clientes del sistema
- * Mapeada a la tabla 'clientes' en la base de datos
+ * =========================================================================
+ * ENTIDAD CLIENTE - Tabla 'clientes' en la Base de Datos
+ * =========================================================================
+ * PUNTO DE EVALUACIÓN: CRUD de tablas con conexión a BDD
+ * 
+ * Esta clase es una ENTIDAD JPA que mapea directamente a la tabla 'clientes'
+ * en MySQL. Spring Data JPA + Hibernate se encarga de:
+ *   - Crear/actualizar la tabla automáticamente (ddl-auto=update)
+ *   - Generar las consultas SQL (SELECT, INSERT, UPDATE, DELETE)
+ *   - Manejar las relaciones con otras tablas (DireccionCliente, Pedido)
+ * 
+ * ANOTACIONES JPA CLAVE:
+ *   @Entity     → Marca esta clase como entidad persistente en la BD
+ *   @Table      → Especifica el nombre de la tabla en MySQL
+ *   @Id         → Define la clave primaria
+ *   @GeneratedValue(IDENTITY) → Auto-incremento en MySQL
+ *   @Column     → Configura cada columna (nombre, restricciones, longitud)
+ *   @Enumerated → Almacena el enum TipoDocumento como STRING en la BD
+ *   @PreUpdate  → Callback que actualiza la fecha antes de cada UPDATE
+ * 
+ * RELACIONES CON OTRAS TABLAS:
+ *   Cliente 1 → N DireccionCliente (un cliente tiene muchas direcciones)
+ *   Cliente 1 → N Pedido (un cliente puede hacer muchos pedidos)
+ * =========================================================================
  */
 @Entity
 @Table(name = "clientes")

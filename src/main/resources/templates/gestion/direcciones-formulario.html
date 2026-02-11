@@ -1,3 +1,25 @@
+<!--
+=========================================================================
+FORMULARIO DE DIRECCIONES - direcciones-formulario.html
+=========================================================================
+PUNTO DE EVALUACIÓN: CRUD + Lista desplegable + Consulta multi-tabla
+
+COMANDOS THYMELEAF:
+  th:object="${direccion}"             → Vincula formulario al objeto DireccionCliente
+  th:action="@{/gestion/direcciones/guardar}" → URL de acción
+  th:each="cliente : ${clientes}"      → LISTA DESPLEGABLE de clientes desde BD
+  th:selected="${direccion.cliente...}"→ Pre-selecciona el cliente en modo edición
+  th:value="${cliente.idCliente}"      → Valor del <option>
+  th:text="${cliente.nombreCompleto}"  → Texto del <option>
+  th:field="*{direccion}"              → Binding de campos del formulario
+
+LISTA DESPLEGABLE:
+  <select> Cliente: carga dinámicamente todos los clientes de la BD
+  Esto es una CONSULTA MULTI-TABLA: Dirección necesita seleccionar su Cliente
+
+BOOTSTRAP: form-control, form-select, form-check, btn-primary, row/col
+=========================================================================
+-->
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>

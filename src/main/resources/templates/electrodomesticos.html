@@ -1,3 +1,19 @@
+<!--
+=========================================================================
+CATÁLOGO ELECTRODOMÉSTICOS - electrodomesticos.html
+=========================================================================
+PUNTO DE EVALUACIÓN: Consultas a BD + Thymeleaf iteration + Bootstrap cards
+
+THYMELEAF:
+  th:replace para fragments
+  th:each="producto : ${productos}" → Itera productos activos de la BD
+  th:text="${producto.nombreProducto}" → Nombre del producto
+  th:src para imágenes dinámicas
+  data-* attributes para agregar al carrito vía JavaScript
+
+BOOTSTRAP: cards, grid (row/col-md-4), badges, buttons
+=========================================================================
+-->
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/header :: head('Electrodomésticos')}"></head>

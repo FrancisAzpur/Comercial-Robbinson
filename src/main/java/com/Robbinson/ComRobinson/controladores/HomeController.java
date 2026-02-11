@@ -22,8 +22,30 @@ import com.Robbinson.ComRobinson.servicios.ProductoService;
 import jakarta.servlet.http.HttpSession;
 
 /**
- * Controlador para las páginas públicas del sitio web
- * Maneja las rutas principales: inicio, catálogos, contacto, carrito, login, registro
+ * =========================================================================
+ * CONTROLADOR HOME - Páginas públicas del sitio web
+ * =========================================================================
+ * PUNTO DE EVALUACIÓN: Menús + Organización de páginas + Autenticación
+ * 
+ * Maneja las rutas públicas visibles para todos los usuarios:
+ *   /                    → Página de inicio con productos destacados
+ *   /electrodomesticos   → Catálogo de electrodomésticos
+ *   /hogar               → Catálogo de artículos del hogar
+ *   /ofertas             → Productos en oferta
+ *   /contacto            → Página de contacto
+ *   /carrito             → Carrito de compras
+ *   /login + /logout     → Autenticación con sesión HTTP
+ *   /registro            → Registro de nuevos clientes
+ *   /registro/direccion  → Registro de dirección post-registro
+ *   /admin               → Panel de administración
+ * 
+ * THYMELEAF: Cada método retorna el nombre del template HTML
+ *   que Thymeleaf resuelve en /templates/*.html
+ * 
+ * SESIÓN HTTP: Al hacer login, se guarda el Cliente en la sesión.
+ *   El header.html usa th:if="${session.clienteLogueado}" para
+ *   mostrar/ocultar opciones del menú según el estado de login.
+ * =========================================================================
  */
 @Controller
 public class HomeController {

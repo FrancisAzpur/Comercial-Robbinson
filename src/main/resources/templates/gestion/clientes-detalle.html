@@ -1,3 +1,22 @@
+<!--
+=========================================================================
+DETALLE DE CLIENTE - clientes-detalle.html
+=========================================================================
+PUNTO DE EVALUACIÓN: Consulta multi-tabla + Thymeleaf
+
+CONSULTAS MULTI-TABLA:
+  Cliente → Pedidos del cliente (pedidoService.obtenerPedidosPorCliente)
+  Cliente → Direcciones del cliente (direccionClienteService.obtenerDireccionesPorCliente)
+  3 tablas: clientes + pedidos + direcciones_cliente
+
+THYMELEAF:
+  th:text="${cliente.nombreCompleto}"  → Datos del cliente
+  th:each="pedido : ${pedidos}"        → Lista de pedidos del cliente
+  th:each="dir : ${direcciones}"       → Lista de direcciones del cliente
+
+BOOTSTRAP: detail-card, table, badge, tabs
+=========================================================================
+-->
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
