@@ -144,13 +144,13 @@ BOOTSTRAP: table, cards de resumen, badge, container
             </div>
             <div class="col-md-4">
                 <div class="summary-card">
-                    <h3>S/. <span th:text="${#numbers.formatDecimal(totalVentasMonto, 1, 2, true)}">0.00</span></h3>
+                    <h3>S/. <span th:text="${#numbers.formatDecimal(totalVentasMonto, 1, 2)}">0.00</span></h3>
                     <p>Monto Total de Ventas</p>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="summary-card">
-                    <h3>S/. <span th:text="${#numbers.formatDecimal(promedio, 1, 2, true)}">0.00</span></h3>
+                    <h3>S/. <span th:text="${#numbers.formatDecimal(promedio, 1, 2)}">0.00</span></h3>
                     <p>Promedio por Venta</p>
                 </div>
             </div>
@@ -190,9 +190,9 @@ BOOTSTRAP: table, cards de resumen, badge, container
                                     <td><strong th:text="${pedido.numeroPedido}"></strong></td>
                                     <td th:text="${#temporals.format(pedido.fechaPedido, 'dd/MM/yyyy')}"></td>
                                     <td th:text="${pedido.cliente != null ? pedido.cliente.nombreCompleto : 'Sin cliente'}"></td>
-                                    <td th:text="${#numbers.formatDecimal(pedido.subtotal, 1, 2, true)}"></td>
-                                    <td th:text="${#numbers.formatDecimal(pedido.impuesto, 1, 2, true)}"></td>
-                                    <td><strong th:text="${#numbers.formatDecimal(pedido.total, 1, 2, true)}"></strong></td>
+                                    <td th:text="${#numbers.formatDecimal(pedido.subtotal, 1, 2)}"></td>
+                                    <td th:text="${#numbers.formatDecimal(pedido.impuesto, 1, 2)}"></td>
+                                    <td><strong th:text="${#numbers.formatDecimal(pedido.total, 1, 2)}"></strong></td>
                                     <td th:text="${pedido.metodoPago}"></td>
                                     <td>
                                         <span th:class="'badge badge-' + ${pedido.estado}" th:text="${pedido.estado}"></span>
