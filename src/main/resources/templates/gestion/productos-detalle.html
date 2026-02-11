@@ -107,12 +107,12 @@
 
                             <div class="row mb-3">
                                 <div class="col-md-4"><span class="detail-label">Precio Compra:</span></div>
-                                <div class="col-md-8">S/. <span th:text="${#numbers.formatDecimal(producto.precioCompra, 1, 2, true)}"></span></div>
+                                <div class="col-md-8">S/. <span th:text="${#numbers.formatDecimal(producto.precioCompra, 1, 2)}"></span></div>
                             </div>
 
                             <div class="row mb-3">
                                 <div class="col-md-4"><span class="detail-label">Precio Venta:</span></div>
-                                <div class="col-md-8"><strong>S/. <span th:text="${#numbers.formatDecimal(producto.precioVenta, 1, 2, true)}"></span></strong></div>
+                                <div class="col-md-8"><strong>S/. <span th:text="${#numbers.formatDecimal(producto.precioVenta, 1, 2)}"></span></strong></div>
                             </div>
 
                             <div class="row mb-3">
