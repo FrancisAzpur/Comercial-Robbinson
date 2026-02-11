@@ -375,7 +375,7 @@ public class GestionController {
      */
     @GetMapping("/pedidos")
     public String listarPedidos(Model modelo) {
-        List<Pedido> pedidos = pedidoService.obtenerTodosLosPedidos();
+        List<Pedido> pedidos = pedidoService.obtenerTodosLosPedidos("");
         int[] conteos = pedidoService.contarPedidosPorEstado();
 
         modelo.addAttribute("pedidos", pedidos);
