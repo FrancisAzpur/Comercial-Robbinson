@@ -342,7 +342,7 @@ public class GestionController {
      */
     @GetMapping("/pedidos")
     public String listarPedidos(Model modelo) {
-        List<Pedido> pedidos = pedidoService.obtenerTodosLosPedidos();
+        List<Pedido> pedidos = pedidoService.obtenerTodosLosPedidos("");
         int[] conteos = pedidoService.contarPedidosPorEstado();
 
         modelo.addAttribute("pedidos", pedidos);
@@ -680,7 +680,7 @@ public class GestionController {
     @GetMapping("/graficos/pedidos")
     public String graficosPedidos(Model modelo) {
         int[] conteos = pedidoService.contarPedidosPorEstado();
-        List<Pedido> todosPedidos = pedidoService.obtenerTodosLosPedidos();
+        List<Pedido> todosPedidos = pedidoService.obtenerTodosLosPedidos("");
 
         // Pedidos por fecha
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
