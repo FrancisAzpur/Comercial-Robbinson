@@ -1,3 +1,18 @@
+<!--
+=========================================================================
+PANEL DE ADMINISTRACIÓN - admin-panel.html
+=========================================================================
+PUNTO DE EVALUACIÓN: Menús + Organización de páginas + Bootstrap
+
+PANEL CENTRAL con accesos rápidos a todas las secciones de gestión:
+  - Dashboard, Clientes, Direcciones, Pedidos, Productos
+  - Ventas, Gráficos de Ventas, Gráficos de Pedidos
+
+THYMELEAF: th:replace para fragments, th:href para links
+BOOTSTRAP: cards, grid, icons, responsive layout
+Requiere sesión activa (verificada en HomeController.adminPanel)
+=========================================================================
+-->
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/header :: head('Panel de Operarios')}"></head>

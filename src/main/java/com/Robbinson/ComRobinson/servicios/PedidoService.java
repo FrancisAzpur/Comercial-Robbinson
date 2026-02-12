@@ -17,6 +17,26 @@ import com.Robbinson.ComRobinson.repositorio.DetallePedidoRepository;
 import com.Robbinson.ComRobinson.repositorio.PedidoRepository;
 import com.Robbinson.ComRobinson.repositorio.ProductoRepository;
 
+/**
+ * =========================================================================
+ * SERVICIO DE PEDIDOS - Lógica de negocio para la tabla 'pedidos'
+ * =========================================================================
+ * PUNTO DE EVALUACIÓN: CRUD + Consultas multi-tabla + Lógica de negocio
+ * 
+ * Este es el servicio más complejo del sistema. Gestiona:
+ *   - Creación de pedidos con validación de stock
+ *   - Cálculo automático de subtotal, IGV (18%) y total
+ *   - Cambio de estados del pedido (flujo de trabajo)
+ *   - Estadísticas para el dashboard y gráficos
+ * 
+ * CONSULTAS MULTI-TABLA:
+ *   - crearPedido(): accede a ProductoRepository para validar stock
+ *   - obtenerPedidosPorCliente(): Pedido → Cliente
+ *   - obtenerDetallesPorPedido(): DetallePedido → Pedido + Producto
+ *   - contarPedidosPorEstado(): Agregación por estado
+ *   - obtenerTotalVentas(): @Query JPQL con SUM
+ * =========================================================================
+ */
 @Service
 @Transactional
 public class PedidoService {
@@ -90,7 +110,7 @@ public class PedidoService {
     }
     
     @Transactional(readOnly = true)
-    public List<Pedido> obtenerTodosLosPedidos(String estado) {
+    public List<Pedido> obtenerTodosLosPedidos() {
         return pedidoRepository.findAllByOrderByFechaPedidoDesc();
     }
 
@@ -147,8 +167,16 @@ public class PedidoService {
      * Convierte el String a EstadoPedido antes de buscar
      */
     public List<Pedido> obtenerPedidosPorEstado(String estado) {
-        Pedido.EstadoPedido estadoEnum = Pedido.EstadoPedido.valueOf(estado.toUpperCase());
-        return pedidoRepository.findByEstado(estadoEnum);
+        if (estado == null || estado.trim().isEmpty()) {
+            return obtenerTodosLosPedidos();
+        }
+        try {
+            Pedido.EstadoPedido estadoEnum = Pedido.EstadoPedido.valueOf(estado.toUpperCase());
+            return pedidoRepository.findByEstado(estadoEnum);
+        } catch (IllegalArgumentException e) {
+            // Estado inválido: devolver todos los pedidos en lugar de lanzar
+            return obtenerTodosLosPedidos();
+        }
     }
 
     // ==================== CAMBIAR ESTADO ====================

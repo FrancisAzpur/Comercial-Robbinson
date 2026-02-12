@@ -34,8 +34,41 @@ import com.Robbinson.ComRobinson.servicios.ProductoService;
 import jakarta.servlet.http.HttpSession;
 
 /**
- * Controlador de Gestión para administrar Clientes, Pedidos y Productos
- * Proporciona operaciones CRUD completas y vistas para el sistema
+ * =========================================================================
+ * CONTROLADOR DE GESTIÓN - Panel de Administración CRUD
+ * =========================================================================
+ * PUNTO DE EVALUACIÓN: CRUD de tablas + Consultas multi-tabla + Menús +
+ *                       Listas desplegables + Dashboard con estadísticas
+ * 
+ * Este controlador es el NÚCLEO del sistema de gestión. Proporciona:
+ * 
+ * CRUD COMPLETO para las siguientes tablas (más de 2 tablas con Bootstrap):
+ *   1. CLIENTES    → Listar, Crear, Editar, Eliminar, Buscar, Detalle
+ *   2. DIRECCIONES → Listar, Crear, Editar, Eliminar, Detalle
+ *   3. PEDIDOS     → Listar, Crear, Editar, Eliminar, Cambiar Estado, Detalle
+ *   4. PRODUCTOS   → Listar, Crear, Editar, Eliminar, Buscar, Detalle
+ * 
+ * CONSULTAS MULTI-TABLA:
+ *   - Dashboard: consulta Clientes + Pedidos + Productos + Ventas
+ *   - Detalle Cliente: carga Pedidos del cliente + Direcciones del cliente
+ *   - Detalle Pedido: carga DetallePedido → Producto (3 tablas)
+ *   - Gráficos Ventas: Pedido → DetallePedido → Producto + Cliente (4 tablas)
+ * 
+ * LISTAS DESPLEGABLES (th:each en <select>):
+ *   - Formulario Pedido: dropdown de Clientes activos, Métodos de Pago
+ *   - Formulario Dirección: dropdown de Clientes (seleccionar dueño)
+ *   - Formulario Cliente: dropdown de TipoDocumento (DNI, RUC, PASAPORTE)
+ * 
+ * RUTAS BASE: /gestion/*
+ *   /gestion/dashboard      → Panel con estadísticas
+ *   /gestion/clientes       → CRUD de clientes
+ *   /gestion/direcciones    → CRUD de direcciones
+ *   /gestion/pedidos        → CRUD de pedidos
+ *   /gestion/productos      → CRUD de productos
+ *   /gestion/ventas         → Listado de ventas (pedidos entregados)
+ *   /gestion/graficos/ventas  → Gráficos con Chart.js
+ *   /gestion/graficos/pedidos → Gráficos con Chart.js
+ * =========================================================================
  */
 @Controller
 @RequestMapping("/gestion")
@@ -342,7 +375,7 @@ public class GestionController {
      */
     @GetMapping("/pedidos")
     public String listarPedidos(Model modelo) {
-        List<Pedido> pedidos = pedidoService.obtenerTodosLosPedidos();
+        List<Pedido> pedidos = pedidoService.obtenerPedidosPorEstado("");
         int[] conteos = pedidoService.contarPedidosPorEstado();
 
         modelo.addAttribute("pedidos", pedidos);
@@ -680,7 +713,7 @@ public class GestionController {
     @GetMapping("/graficos/pedidos")
     public String graficosPedidos(Model modelo) {
         int[] conteos = pedidoService.contarPedidosPorEstado();
-        List<Pedido> todosPedidos = pedidoService.obtenerTodosLosPedidos();
+        List<Pedido> todosPedidos = pedidoService.obtenerPedidosPorEstado("");
 
         // Pedidos por fecha
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");

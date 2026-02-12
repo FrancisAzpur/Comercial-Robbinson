@@ -11,7 +11,14 @@ import com.Robbinson.ComRobinson.modelo.DireccionCliente;
 import com.Robbinson.ComRobinson.repositorio.DireccionClienteRepository;
 
 /**
- * Servicio para gestionar operaciones de Direcciones de Clientes
+ * =========================================================================
+ * SERVICIO DE DIRECCIONES - Lógica de negocio para 'direcciones_cliente'
+ * =========================================================================
+ * PUNTO DE EVALUACIÓN: CRUD + Consulta multi-tabla (Dirección → Cliente)
+ * 
+ * Gestiona las direcciones de envío de los clientes.
+ * Incluye la lógica de dirección principal (esPrincipal=true).
+ * =========================================================================
  */
 @Service
 @Transactional

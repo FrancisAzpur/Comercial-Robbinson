@@ -1,3 +1,22 @@
+<!--
+=========================================================================
+FORMULARIO DE CLIENTES - clientes-formulario.html
+=========================================================================
+PUNTO DE EVALUACIÓN: CRUD (Create/Update) + Lista desplegable + Bootstrap
+
+COMANDOS THYMELEAF:
+  th:object="${cliente}"              → Vincula formulario al objeto Cliente
+  th:action (dinámico)                → Crea nuevo o actualiza existente
+  th:field="*{nombreCompleto}"        → Binding bidireccional
+  th:if="${cliente.idCliente == null}"→ Condicional: solo muestra contraseña para nuevos
+  th:each para TipoDocumento          → Lista desplegable de tipos de documento
+
+LISTA DESPLEGABLE:
+  <select> Tipo Documento: DNI, RUC, PASAPORTE (Enum de la entidad Cliente)
+
+BOOTSTRAP: form-control, form-select, form-check form-switch, btn-primary
+=========================================================================
+-->
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>

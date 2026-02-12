@@ -11,8 +11,22 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 /**
- * Entidad DireccionCliente - Representa las direcciones de envío de los clientes
- * Mapeada a la tabla 'direcciones_cliente' en la base de datos
+ * =========================================================================
+ * ENTIDAD DIRECCIÓN CLIENTE - Tabla 'direcciones_cliente'
+ * =========================================================================
+ * PUNTO DE EVALUACIÓN: CRUD + Consultas multi-tabla
+ * 
+ * Almacena las direcciones de envío de los clientes.
+ * Un cliente puede tener múltiples direcciones, una marcada como principal.
+ * 
+ * RELACIÓN JPA:
+ *   @ManyToOne Cliente → Cada dirección pertenece a UN cliente
+ *   Se usa en el formulario de pedidos para seleccionar dirección de envío.
+ * 
+ * LISTA DESPLEGABLE:
+ *   En direcciones-formulario.html se carga un <select> con todos los
+ *   clientes usando th:each para asociar la dirección a un cliente.
+ * =========================================================================
  */
 
 

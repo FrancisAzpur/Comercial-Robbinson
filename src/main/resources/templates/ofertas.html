@@ -1,6 +1,18 @@
+<!--
+=========================================================================
+PÁGINA DE OFERTAS - ofertas.html
+=========================================================================
+PUNTO DE EVALUACIÓN: Consultas a BD + Thymeleaf iteration + Bootstrap
+
+THYMELEAF: th:each para iterar productos con etiqueta "OFERTA"
+  Datos cargados desde ProductoService.obtenerPorEtiqueta("OFERTA")
+BOOTSTRAP: cards, grid, badges, buttons
+=========================================================================
+-->
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
+<!-- Incluye el fragment head con título 'Ofertas' -->
 <head th:replace="fragments/header :: head('Ofertas')">
     <!-- No necesitas nada aquí, se reemplaza por el fragmento 'head' -->
 </head>

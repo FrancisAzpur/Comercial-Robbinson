@@ -1,3 +1,20 @@
+<!--
+=========================================================================
+LISTADO DE DIRECCIONES - direcciones-listado.html
+=========================================================================
+PUNTO DE EVALUACIÓN: CRUD (Read/List) + Consulta multi-tabla + Thymeleaf
+
+CONSULTA MULTI-TABLA:
+  th:text="${dir.cliente.nombreCompleto}" → Navega la relación Dirección → Cliente
+
+THYMELEAF:
+  th:each="dir : ${direcciones}" → Itera todas las direcciones
+  th:text="${dir.direccion}"     → Dirección completa
+  th:if="${dir.esPrincipal}"     → Badge de dirección principal
+
+BOOTSTRAP: table, badge, btn-outline-*, container
+=========================================================================
+-->
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>

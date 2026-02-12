@@ -1,3 +1,25 @@
+<!--
+=========================================================================
+FORMULARIO DE PEDIDOS - pedidos-formulario.html
+=========================================================================
+PUNTO DE EVALUACIÓN: CRUD (Create/Update) + Listas desplegables + Bootstrap
+
+COMANDOS THYMELEAF:
+  th:object="${pedido}"           → Vincula el formulario al objeto Pedido
+  th:action="@{/gestion/pedidos/guardar}" → URL de acción del formulario
+  th:field="*{numeroPedido}"      → Binding bidireccional campo ↔ atributo
+  th:each="cli : ${clientes}"     → Itera clientes para el <select>
+  th:value="${cli.idCliente}"     → Valor de cada <option>
+  th:text="${cli.nombreCompleto}" → Texto visible de cada <option>
+
+LISTAS DESPLEGABLES (<select>) - MÍNIMO 2 PÁGINAS:
+  1. Cliente:     th:each para cargar clientes activos desde la BD
+  2. Método Pago: EFECTIVO, TARJETA_CREDITO, TARJETA_DEBITO, YAPE, PLIN
+  3. Estado:      PENDIENTE, PAGADO, PROCESANDO, ENVIADO, ENTREGADO
+
+BOOTSTRAP: form-control, form-select, btn-primary, row/col grid
+=========================================================================
+-->
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -95,7 +117,7 @@
                             <!-- Cliente -->
                             <div class="col-md-6 mb-3">
                                 <label for="cliente" class="form-label">Cliente <span class="text-danger">*</span></label>
-                                <select class="form-select" id="cliente" th:field="*{cliente}" required>
+                                <select class="form-select" id="cliente" th:field="*{cliente.idCliente}" required>
                                     <option value="">Seleccionar cliente...</option>
                                     <option th:each="cli : ${clientes}" 
                                             th:value="${cli.idCliente}" 

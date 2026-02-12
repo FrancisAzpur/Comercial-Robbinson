@@ -30,9 +30,35 @@ import com.Robbinson.ComRobinson.servicios.ProductoService;
 import jakarta.servlet.http.HttpSession;
 
 /**
- * Controlador REST para el carrito de compras.
- * Maneja el carrito en la sesión del servidor (HttpSession) en lugar de localStorage.
- * Si el usuario está logueado, usa sus datos de la BD para el checkout.
+ * =========================================================================
+ * CONTROLADOR REST DEL CARRITO - API para el carrito de compras
+ * =========================================================================
+ * PUNTO DE EVALUACIÓN: DTO (CarritoItem) + Consultas multi-tabla + API REST
+ * 
+ * @RestController: Retorna JSON en lugar de vistas HTML.
+ * Maneja el carrito en la sesión HTTP del servidor.
+ * 
+ * DTO INTERNO: CarritoItem
+ *   Clase interna que actúa como DTO (Data Transfer Object) para
+ *   transportar datos del producto en el carrito sin exponer la entidad JPA.
+ *   Contiene: idProducto, nombre, precio, imagen, cantidad, getSubtotal()
+ * 
+ * ENDPOINTS REST:
+ *   GET    /api/carrito           → Obtener carrito completo
+ *   GET    /api/carrito/contador  → Contador para badge del navbar
+ *   POST   /api/carrito/agregar   → Agregar producto
+ *   PUT    /api/carrito/actualizar/{id} → Cambiar cantidad
+ *   DELETE /api/carrito/eliminar/{id}   → Eliminar producto
+ *   DELETE /api/carrito/vaciar    → Vaciar carrito
+ *   POST   /api/carrito/checkout  → Procesar pedido (MULTI-TABLA)
+ *   GET    /api/carrito/sesion    → Verificar sesión del usuario
+ * 
+ * CONSULTAS MULTI-TABLA EN CHECKOUT:
+ *   1. Valida producto en BD (ProductoService)
+ *   2. Obtiene dirección principal del cliente (DireccionClienteService)
+ *   3. Crea Pedido con DetallePedido (PedidoService)
+ *   4. El PedidoService valida stock y calcula IGV (18%)
+ * =========================================================================
  */
 @RestController
 @RequestMapping("/api/carrito")

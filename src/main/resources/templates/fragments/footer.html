@@ -1,7 +1,31 @@
+<!--
+=========================================================================
+FRAGMENTO FOOTER - Pie de página y Scripts reutilizables
+=========================================================================
+PUNTO DE EVALUACIÓN: Menús + Bootstrap Grid + Thymeleaf Fragments
+
+COMANDOS THYMELEAF:
+  th:fragment="footer"         → Fragmento del pie de página
+  th:fragment="scripts"        → Fragmento de scripts JS
+  th:src="@{/js/main.js}"     → URL de recursos estáticos
+  th:href="@{/hogar}"          → Enlaces con expresiones de URL
+  th:text="${#dates.year(#dates.createNow())}" → Año dinámico
+
+BOOTSTRAP GRID:
+  row + col-md-3 → Layout de 4 columnas en el footer
+  Secciones: Sobre Nosotros | Productos | Contacto | Redes Sociales
+
+SCRIPTS:
+  - Bootstrap 5.3.3 Bundle JS
+  - AOS (Animate On Scroll)
+  - main.js (funcionalidad general)
+  - carrito.js (funcionalidad del carrito)
+=========================================================================
+-->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-    <!-- Footer Fragment -->
+    <!-- Footer Fragment: se incluye con th:replace="~{fragments/footer :: footer}" -->
     <footer th:fragment="footer" class="footer-main">
         <div class="container">
             <div class="row">

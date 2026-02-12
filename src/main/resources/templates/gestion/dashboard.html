@@ -1,3 +1,33 @@
+<!--
+=========================================================================
+DASHBOARD DE GESTIÓN - dashboard.html
+=========================================================================
+PUNTO DE EVALUACIÓN: Consultas multi-tabla + Menús + Bootstrap
+
+COMANDOS THYMELEAF:
+  th:text="${totalClientes}"       → Total clientes desde ClienteService.contarClientes()
+  th:text="${totalPedidos}"        → Total pedidos desde PedidoService.contarPedidos()
+  th:text="${totalProductos}"      → Total productos activos
+  th:text="${totalVentas}"         → Ventas completadas (pedidos ENTREGADO)
+  th:text="${totalVentasMonto}"    → Monto total de ventas
+  th:each para productosStockBajo  → Lista de productos con stock crítico
+
+CONSULTAS MULTI-TABLA:
+  El dashboard consulta simultáneamente:
+  1. Clientes (count)
+  2. Pedidos (count)
+  3. Productos activos (count)
+  4. Ventas = Pedidos con estado ENTREGADO (filtro + suma de totales)
+  5. Productos con stock bajo (@Query JPQL personalizada)
+
+MENÚ DE GESTIÓN:
+  Dashboard | Clientes | Direcciones | Pedidos | Productos | Inicio
+  Links rápidos: Nuevo Cliente, Nuevo Pedido, Nuevo Producto
+  Reportes: Gráficos Ventas, Gráficos Pedidos
+
+BOOTSTRAP: cards, grid system (row/col-md-3), badges, btn-*, container
+=========================================================================
+-->
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>

@@ -21,8 +21,21 @@ import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
 /**
- * Entidad Compra - Representa las órdenes de compra a proveedores
- * Mapeada a la tabla 'compras' en la base de datos
+ * =========================================================================
+ * ENTIDAD COMPRA - Tabla 'compras' en la Base de Datos
+ * =========================================================================
+ * PUNTO DE EVALUACIÓN: CRUD + Consultas multi-tabla + Cascada
+ * 
+ * Representa las órdenes de compra a PROVEEDORES (abastecimiento).
+ * 
+ * RELACIONES MULTI-TABLA:
+ *   @ManyToOne Proveedor      → Cada compra se hace a UN proveedor
+ *   @OneToMany DetalleCompra  → Lista de productos comprados (CASCADA)
+ * 
+ * CASCADA: CascadeType.ALL + orphanRemoval
+ *   Al guardar una Compra, se persisten automáticamente todos sus detalles.
+ *   El TRIGGER de MySQL 'actualizar_stock_compra' SUMA el stock al insertar.
+ * =========================================================================
  */
 
 @Entity

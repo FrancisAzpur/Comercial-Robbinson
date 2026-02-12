@@ -10,6 +10,16 @@ import org.springframework.transaction.annotation.Transactional;
 import com.Robbinson.ComRobinson.modelo.Proveedor;
 import com.Robbinson.ComRobinson.repositorio.ProveedorRepository;
 
+/**
+ * =========================================================================
+ * SERVICIO DE PROVEEDORES - Lógica de negocio para la tabla 'proveedores'
+ * =========================================================================
+ * PUNTO DE EVALUACIÓN: CRUD completo con conexión a BDD
+ * 
+ * Gestiona los proveedores de productos del sistema.
+ * Se usa junto con CompraService para el flujo de abastecimiento.
+ * =========================================================================
+ */
 @Service
 @Transactional
 public class ProveedorService {

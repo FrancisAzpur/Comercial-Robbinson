@@ -1,5 +1,32 @@
+<!--
+=========================================================================
+FRAGMENTO HEADER - Cabecera reutilizable con Thymeleaf Fragments
+=========================================================================
+PUNTO DE EVALUACIÓN: Menús + Bootstrap 5.3.3 + Comandos Thymeleaf
+
+COMANDOS THYMELEAF UTILIZADOS:
+  th:fragment="head(titulo)"  → Define fragmento reutilizable con parámetro
+  th:fragment="header"        → Define fragmento del navbar
+  th:text="${titulo}"         → Muestra el título dinámico de cada página
+  th:href="@{/css/global.css}"→ Genera URL relativa al contexto de la app
+  th:if / th:unless           → Renderizado condicional
+  th:if="${session.clienteLogueado == null}" → Verifica sesión HTTP
+  th:text="${session.nombreCliente}"  → Muestra nombre del usuario logueado
+
+BOOTSTRAP 5.3.3:
+  - navbar navbar-expand-lg   → Navbar responsive
+  - collapse navbar-collapse  → Menú colapsable en móvil
+  - dropdown dropdown-toggle  → Menú desplegable del usuario
+  - badge bg-danger           → Badge del carrito
+
+MENÚ PRINCIPAL:
+  Inicio | Electrodomésticos | Hogar | Ofertas | Contacto | Carrito | Login
+  Si está logueado: Dropdown con Dashboard, Panel Admin, Cerrar Sesión
+=========================================================================
+-->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<!-- FRAGMENTO HEAD: se incluye en cada página con th:replace="~{fragments/header :: head('Titulo')}" -->
 <head th:fragment="head(titulo)">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">

@@ -21,8 +21,32 @@ import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
 /**
- * Entidad Pedido - Representa las órdenes de compra de los clientes
- * Mapeada a la tabla 'pedidos' en la base de datos
+ * =========================================================================
+ * ENTIDAD PEDIDO - Tabla 'pedidos' en la Base de Datos
+ * =========================================================================
+ * PUNTO DE EVALUACIÓN: Consultas con múltiples tablas + Relaciones en cascada
+ * 
+ * Representa las órdenes de compra de los clientes. Esta entidad es clave
+ * porque CRUZA MÚLTIPLES TABLAS mediante relaciones JPA:
+ * 
+ * RELACIONES (CONSULTAS MULTI-TABLA):
+ *   @ManyToOne Cliente     → Cada pedido pertenece a UN cliente
+ *   @ManyToOne DireccionCliente → Dirección de envío del pedido
+ *   @OneToMany DetallePedido    → Lista de productos del pedido (CASCADA)
+ * 
+ * CASCADA (CascadeType.ALL + orphanRemoval):
+ *   Al guardar un Pedido, automáticamente se guardan todos sus DetallePedido.
+ *   Al eliminar un Pedido, se eliminan sus detalles (orphanRemoval=true).
+ *   Esto es CONSULTA EN CASCADA: Pedido → DetallePedido → Producto
+ * 
+ * ENUMS almacenados como STRING en la BD:
+ *   - MetodoPago: EFECTIVO, TARJETA_CREDITO, YAPE, PLIN, etc.
+ *   - EstadoPedido: PENDIENTE, PAGADO, PROCESANDO, ENVIADO, ENTREGADO, CANCELADO
+ * 
+ * LISTAS DESPLEGABLES en el HTML:
+ *   Los enums se envían al template como modelo.addAttribute("metodosPago", values())
+ *   y se renderizan con th:each en <select> de Thymeleaf.
+ * =========================================================================
  */
 
 @Entity

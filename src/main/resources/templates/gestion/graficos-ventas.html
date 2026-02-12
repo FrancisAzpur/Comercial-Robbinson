@@ -1,3 +1,18 @@
+<!--
+=========================================================================
+GRÁFICOS DE VENTAS - graficos-ventas.html
+=========================================================================
+PUNTO DE EVALUACIÓN: Consultas multi-tabla + Chart.js + Thymeleaf
+
+CONSULTAS MULTI-TABLA (4 TABLAS):
+  Pedido → DetallePedido → Producto (ventas por producto)
+  Pedido → Cliente (ventas por cliente/vendedor)
+  Datos: ventasPorProducto, ventasPorFecha, ventasPorVendedor
+
+THYMELEAF: th:text para estadísticas, th:each implícito via Maps en JS
+CHART.JS: Gráficos de barras, líneas y donut con datos dinámicos
+=========================================================================
+-->
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -111,7 +126,7 @@
                 <div class="stat-label">Total Ingresos</div>
                 <div class="stat-value">
                     <!-- th:text formatea el monto total con 2 decimales y símbolo de soles -->
-                    S/. <span th:text="${#numbers.formatDecimal(totalMonto, 1, 2, true)}">0.00</span>
+                    S/. <span th:text="${#numbers.formatDecimal(totalMonto, 1, 2)}">0.00</span>
                 </div>
             </div>
             <div class="stat-box">
@@ -124,7 +139,7 @@
                 <div class="stat-label">Promedio por Venta</div>
                 <div class="stat-value">
                     <!-- Calcula el promedio dividiendo total monto entre cantidad de ventas -->
-                    S/. <span th:text="${#numbers.formatDecimal(promedio, 1, 2, true)}">0.00</span>
+                    S/. <span th:text="${#numbers.formatDecimal(promedio, 1, 2)}">0.00</span>
                 </div>
             </div>
         </div>

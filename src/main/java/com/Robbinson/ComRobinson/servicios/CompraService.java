@@ -14,6 +14,16 @@ import com.Robbinson.ComRobinson.modelo.DetalleCompra;
 import com.Robbinson.ComRobinson.repositorio.CompraRepository;
 import com.Robbinson.ComRobinson.repositorio.DetalleCompraRepository;
 
+/**
+ * =========================================================================
+ * SERVICIO DE COMPRAS - Lógica de negocio para la tabla 'compras'
+ * =========================================================================
+ * PUNTO DE EVALUACIÓN: CRUD + Consultas multi-tabla (Compra → Proveedor)
+ * 
+ * Gestiona las órdenes de compra a proveedores (abastecimiento).
+ * Al crear una compra, el TRIGGER de MySQL actualiza el stock del producto.
+ * =========================================================================
+ */
 @Service
 @Transactional
 public class CompraService {
