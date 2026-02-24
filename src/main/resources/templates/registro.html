@@ -49,7 +49,7 @@ FLUJO POST-REGISTRO:
                         <form th:action="@{/registro}" th:object="${cliente}" method="post">
                             <div class="mb-3">
                                 <label class="form-label">Nombre Completo</label>
-                                <input type="text" th:field="*{nombreCompleto}" class="form-control" placeholder=" " required>
+                                <input type="text" th:field="*{nombreCompleto}" id="nombreCompleto" class="form-control" placeholder=" " required>
                             </div>
 
                             <div class="mb-3">
@@ -68,7 +68,7 @@ FLUJO POST-REGISTRO:
 
                             <div class="mb-3">
                                <label for="tipo_documento" class="form-label">Tipo de Documento *</label>
-                                <select class="form-select" id="tipo_documento" th:field="*{tipoDocumento}" required>
+                                <select class="form-select" id="tipo_documento" th:field="*{tipoDocumento}" required onchange="toggleBuscarDni()">
                                     <option value="">Selecciona un tipo de documento</option>
                                     <option th:each="tipo : ${T(com.Robbinson.ComRobinson.modelo.Cliente.TipoDocumento).values()}" 
                                              th:value="${tipo}" 
@@ -79,7 +79,13 @@ FLUJO POST-REGISTRO:
 
                              <div class="mb-3">
                                 <label class="form-label">Número de Documento</label>
-                                <input type="tel" th:field="*{documentoIdentidad}" class="form-control" placeholder="Tu número de documento" required>
+                                <div class="input-group">
+                                    <input type="tel" th:field="*{documentoIdentidad}" id="documentoIdentidad" class="form-control" placeholder="Tu número de documento" required maxlength="20">
+                                    <button type="button" id="btnBuscarDni" class="btn btn-outline-primary" onclick="buscarDni()" style="display:none;">
+                                        <i class="fas fa-search me-1"></i> Buscar
+                                    </button>
+                                </div>
+                                <div id="dniMensaje" class="form-text mt-1" style="display:none;"></div>
                             </div>
 
                             <button type="submit" class="btn btn-primary w-100">
@@ -106,6 +112,114 @@ FLUJO POST-REGISTRO:
 
     <!-- Scripts -->
     <div th:replace="~{fragments/footer :: scripts}"></div>
+
+    <!-- =========================================================================
+         SCRIPT DE CONSULTA DNI - API RENIEC
+         =========================================================================
+         Funcionalidad:
+           1. Muestra/oculta el botón "Buscar" según el tipo de documento (solo DNI)
+           2. Al presionar "Buscar", llama a /api/reniec/dni/{numero}
+           3. Si encuentra datos, autocompleta el campo "Nombre Completo"
+           4. Muestra mensajes de éxito/error al usuario
+         ========================================================================= -->
+    <script>
+        /**
+         * Muestra u oculta el botón "Buscar" según el tipo de documento seleccionado.
+         * Solo se muestra si el tipo es DNI (8 dígitos).
+         */
+        function toggleBuscarDni() {
+            const tipoDoc = document.getElementById('tipo_documento').value;
+            const btnBuscar = document.getElementById('btnBuscarDni');
+            const inputDoc = document.getElementById('documentoIdentidad');
+
+            if (tipoDoc === 'DNI') {
+                btnBuscar.style.display = 'inline-block';
+                inputDoc.setAttribute('maxlength', '8');
+                inputDoc.setAttribute('placeholder', 'Ingresa tu DNI de 8 dígitos');
+            } else {
+                btnBuscar.style.display = 'none';
+                inputDoc.setAttribute('maxlength', '20');
+                inputDoc.setAttribute('placeholder', 'Tu número de documento');
+                ocultarMensajeDni();
+            }
+        }
+
+        /**
+         * Consulta la API de RENIEC a través del backend.
+         * Autocompleta el nombre si la consulta es exitosa.
+         */
+        async function buscarDni() {
+            const dni = document.getElementById('documentoIdentidad').value.trim();
+            const btnBuscar = document.getElementById('btnBuscarDni');
+            const mensajeDiv = document.getElementById('dniMensaje');
+
+            // Validar que sea un DNI de 8 dígitos
+            if (!/^\d{8}$/.test(dni)) {
+                mostrarMensajeDni('El DNI debe tener exactamente 8 dígitos numéricos', 'danger');
+                return;
+            }
+
+            // Deshabilitar botón mientras consulta
+            btnBuscar.disabled = true;
+            btnBuscar.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Buscando...';
+
+            try {
+                const response = await fetch('/api/reniec/dni/' + dni);
+                const data = await response.json();
+
+                if (data.exito) {
+                    // Autocompletar el campo de nombre completo
+                    const inputNombre = document.getElementById('nombreCompleto');
+                    if (inputNombre) {
+                        inputNombre.value = data.nombreCompleto;
+                    }
+
+                    mostrarMensajeDni(
+                        '<i class="fas fa-check-circle me-1"></i> DNI encontrado: ' + data.nombreCompleto,
+                        'success'
+                    );
+                } else {
+                    mostrarMensajeDni(
+                        '<i class="fas fa-exclamation-triangle me-1"></i> ' + (data.mensaje || 'DNI no encontrado'),
+                        'danger'
+                    );
+                }
+            } catch (error) {
+                mostrarMensajeDni(
+                    '<i class="fas fa-times-circle me-1"></i> Error al consultar RENIEC. Intenta de nuevo.',
+                    'danger'
+                );
+            } finally {
+                // Restaurar botón
+                btnBuscar.disabled = false;
+                btnBuscar.innerHTML = '<i class="fas fa-search me-1"></i> Buscar';
+            }
+        }
+
+        /**
+         * Muestra un mensaje debajo del campo de documento.
+         */
+        function mostrarMensajeDni(mensaje, tipo) {
+            const mensajeDiv = document.getElementById('dniMensaje');
+            mensajeDiv.style.display = 'block';
+            mensajeDiv.className = 'form-text mt-1 text-' + tipo;
+            mensajeDiv.innerHTML = mensaje;
+        }
+
+        /**
+         * Oculta el mensaje de DNI.
+         */
+        function ocultarMensajeDni() {
+            const mensajeDiv = document.getElementById('dniMensaje');
+            mensajeDiv.style.display = 'none';
+            mensajeDiv.innerHTML = '';
+        }
+
+        // Al cargar la página, verificar si ya hay un tipo seleccionado
+        document.addEventListener('DOMContentLoaded', function() {
+            toggleBuscarDni();
+        });
+    </script>
 
 </body>
 </html>

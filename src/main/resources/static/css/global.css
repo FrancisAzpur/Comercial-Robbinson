@@ -38,28 +38,55 @@ body {
    NAVBAR - Solo estilos estructurales base
    Los colores se definen en cada CSS específico
    ========================================== */
-.navbar {
-    transition: all 0.4s ease;
-    padding: 1rem 0;
+.navbar,
+nav.navbar,
+nav.navbar.navbar-expand-lg,
+nav.navbar.fixed-top {
+    background: linear-gradient(90deg, var(--medium-blue), var(--dark-blue)) !important;
+    background-color: var(--dark-blue) !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2) !important;
+    transition: all 0.4s ease !important;
+    padding: 1rem 0 !important;
     z-index: 1000;
 }
 
-.navbar-brand {
+.navbar.scrolled {
+    background: var(--dark-blue) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+}
+
+.navbar .navbar-brand,
+nav.navbar .navbar-brand {
+    color: white !important;
     font-weight: 800;
     font-size: 1.5rem;
     transition: transform 0.3s ease;
 }
 
-.navbar-brand:hover {
+.navbar .navbar-brand:hover,
+nav.navbar .navbar-brand:hover {
+    color: white !important;
     transform: scale(1.05);
 }
 
-.nav-link {
+.navbar .nav-link,
+nav.navbar .nav-link {
+    color: rgba(255, 255, 255, 0.85) !important;
     font-weight: 500;
     transition: all 0.3s ease;
     position: relative;
     padding: 0.5rem 1rem;
     margin: 0 0.2rem;
+}
+
+.navbar .nav-link:hover,
+nav.navbar .nav-link:hover {
+    color: var(--accent-orange) !important;
+}
+
+.navbar .nav-link.active,
+nav.navbar .nav-link.active {
+    color: var(--accent-orange) !important;
 }
 
 .nav-link::after {
@@ -80,6 +107,15 @@ body {
 }
 
 /* Los estilos de hover y active se definen en cada CSS específico */
+
+/* Navbar toggler (hamburguesa) para tema oscuro */
+.navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.85%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
 
 /* Carrito en navbar */
 .cart-icon {
