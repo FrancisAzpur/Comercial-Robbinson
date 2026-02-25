@@ -113,4 +113,19 @@ public class ClienteService {
         }
         return Optional.empty();
     }
+
+    /**
+     * Actualiza la contraseña del cliente identificado por correo.
+     * Retorna true si encontró el cliente y guardó la nueva contraseña.
+     */
+    public boolean actualizarContrasenaPorCorreo(String correo, String nuevaContrasena) {
+        Optional<Cliente> opt = clienteRepository.findByCorreoElectronico(correo);
+        if (opt.isPresent()) {
+            Cliente cliente = opt.get();
+            cliente.setContrasenaHash(nuevaContrasena);
+            clienteRepository.save(cliente);
+            return true;
+        }
+        return false;
+    }
 }

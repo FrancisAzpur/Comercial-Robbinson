@@ -18,6 +18,7 @@ import com.Robbinson.ComRobinson.modelo.Producto;
 import com.Robbinson.ComRobinson.servicios.ClienteService;
 import com.Robbinson.ComRobinson.servicios.DireccionClienteService;
 import com.Robbinson.ComRobinson.servicios.ProductoService;
+import com.Robbinson.ComRobinson.servicios.EmailService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -58,6 +59,9 @@ public class HomeController {
 
     @Autowired
     private DireccionClienteService direccionClienteService;
+
+    @Autowired
+    private EmailService emailService;
 
     // ==================== PÁGINA DE INICIO ====================
 
@@ -236,6 +240,42 @@ public class HomeController {
             redirectAttributes.addFlashAttribute("mensajeError", "Error al registrar dirección: " + e.getMessage());
             return "redirect:/registro/direccion?idCliente=" + idCliente;
         }
+    }
+
+    // ==================== RECUPERACIÓN DE CONTRASEÑA ====================
+
+    /**
+     * Muestra formulario para ingresar el correo al que se enviará la nueva contraseña.
+     */
+    @GetMapping("/recuperar")
+    public String mostrarRecuperar() {
+        return "recuperar-contrasena";
+    }
+
+    /**
+     * Procesa la solicitud de recuperación: genera clave nueva, guarda y envía un correo.
+     */
+    @PostMapping("/recuperar")
+    public String procesarRecuperar(@RequestParam String correo,
+                                    RedirectAttributes redirectAttributes) {
+        Optional<Cliente> opt = clienteService.buscarPorCorreo(correo);
+        if (opt.isEmpty()) {
+            redirectAttributes.addFlashAttribute("mensajeError",
+                    "No existe ninguna cuenta asociada a ese correo");
+            return "redirect:/recuperar";
+        }
+        // generar clave temporal aleatoria sencilla
+        String nuevaClave = Long.toHexString(Double.doubleToLongBits(Math.random())).substring(0, 8);
+        boolean ok = clienteService.actualizarContrasenaPorCorreo(correo, nuevaClave);
+        if (ok) {
+            emailService.enviarRecuperacion(correo, nuevaClave);
+            redirectAttributes.addFlashAttribute("mensajeExito",
+                    "Se ha enviado un correo con instrucciones a " + correo);
+        } else {
+            redirectAttributes.addFlashAttribute("mensajeError",
+                    "No se pudo actualizar la contraseña. Intenta nuevamente.");
+        }
+        return "redirect:/recuperar";
     }
 
     // ==================== ADMINISTRACIÓN ====================
