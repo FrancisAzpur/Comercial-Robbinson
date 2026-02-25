@@ -203,19 +203,28 @@ BOOTSTRAP: cards, grid, badges, buttons
                             Suscríbete a nuestro newsletter y sé el primero en conocer
                             nuestras promociones exclusivas y ofertas relámpago.
                         </p>
+
+                        <!-- Alert de resultado (oculto por defecto) -->
+                        <div id="newsletter-alert" class="alert alert-dismissible fade mb-4" role="alert" style="display:none;">
+                            <span id="newsletter-alert-icon" class="me-2"></span>
+                            <span id="newsletter-alert-msg"></span>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+
                         <form id="form-newsletter" class="row g-3 justify-content-center">
                             <div class="col-md-6">
                                 <div class="input-group input-group-lg">
                                     <span class="input-group-text bg-white border-0">
                                         <i class="fas fa-envelope text-primary"></i>
                                     </span>
-                                    <input type="email" class="form-control border-0"
+                                    <input type="email" id="newsletter-email" class="form-control border-0"
                                         placeholder="Tu correo electrónico" required>
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <button type="submit" class="btn btn-light btn-lg w-100 fw-bold">
-                                    Suscribirse
+                                <button type="submit" id="btn-newsletter" class="btn btn-light btn-lg w-100 fw-bold">
+                                    <span id="btn-newsletter-text">Suscribirse</span>
+                                    <span id="btn-newsletter-spinner" class="spinner-border spinner-border-sm ms-2" role="status" style="display:none;"></span>
                                 </button>
                             </div>
                         </form>
@@ -223,7 +232,7 @@ BOOTSTRAP: cards, grid, badges, buttons
                             <small>
                                 <i class="fas fa-shield-alt me-1"></i>
                                 Al suscribirte aceptas recibir información sobre ofertas y promociones.
-                                Puedes darte de baja en cualquier momento.No pierdas nuestras ofertas increibles.
+                                Puedes darte de baja en cualquier momento. ¡No pierdas nuestras ofertas increíbles!
                             </small>
                         </p>
                     </div>
@@ -251,6 +260,63 @@ BOOTSTRAP: cards, grid, badges, buttons
             AOS.init({
                 duration: 1000,
                 once: true
+            });
+
+            // ============ NEWSLETTER AJAX ============
+            const form = document.getElementById('form-newsletter');
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                const emailInput = document.getElementById('newsletter-email');
+                const email = emailInput.value.trim();
+                if (!email) return;
+
+                const btn = document.getElementById('btn-newsletter');
+                const btnText = document.getElementById('btn-newsletter-text');
+                const spinner = document.getElementById('btn-newsletter-spinner');
+                const alertBox = document.getElementById('newsletter-alert');
+                const alertIcon = document.getElementById('newsletter-alert-icon');
+                const alertMsg = document.getElementById('newsletter-alert-msg');
+
+                // Deshabilitar botón y mostrar spinner
+                btn.disabled = true;
+                btnText.textContent = 'Enviando...';
+                spinner.style.display = 'inline-block';
+                alertBox.style.display = 'none';
+
+                fetch('/newsletter', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: 'email=' + encodeURIComponent(email)
+                })
+                .then(function (res) { return res.json(); })
+                .then(function (data) {
+                    // Mostrar alert con resultado
+                    alertBox.style.display = 'block';
+                    alertBox.classList.add('show');
+                    alertMsg.textContent = data.mensaje;
+
+                    if (data.status === 'ok') {
+                        alertBox.className = 'alert alert-success alert-dismissible fade show mb-4';
+                        alertIcon.innerHTML = '<i class="fas fa-check-circle"></i>';
+                        emailInput.value = '';
+                    } else {
+                        alertBox.className = 'alert alert-danger alert-dismissible fade show mb-4';
+                        alertIcon.innerHTML = '<i class="fas fa-exclamation-circle"></i>';
+                    }
+                })
+                .catch(function () {
+                    alertBox.style.display = 'block';
+                    alertBox.classList.add('show');
+                    alertBox.className = 'alert alert-danger alert-dismissible fade show mb-4';
+                    alertIcon.innerHTML = '<i class="fas fa-exclamation-circle"></i>';
+                    alertMsg.textContent = 'Error de conexión. Intenta de nuevo.';
+                })
+                .finally(function () {
+                    btn.disabled = false;
+                    btnText.textContent = 'Suscribirse';
+                    spinner.style.display = 'none';
+                });
             });
         });
     </script>

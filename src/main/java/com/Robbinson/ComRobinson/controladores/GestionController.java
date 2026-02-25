@@ -11,6 +11,10 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +34,7 @@ import com.Robbinson.ComRobinson.servicios.ClienteService;
 import com.Robbinson.ComRobinson.servicios.DireccionClienteService;
 import com.Robbinson.ComRobinson.servicios.PedidoService;
 import com.Robbinson.ComRobinson.servicios.ProductoService;
+import com.Robbinson.ComRobinson.servicios.ReportePdfService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -78,17 +83,20 @@ public class GestionController {
     private final DireccionClienteService direccionClienteService;
     private final PedidoService pedidoService;
     private final ProductoService productoService;
+    private final ReportePdfService reportePdfService;
     private final HttpSession httpSession;
 
     public GestionController(ClienteService clienteService,
                              DireccionClienteService direccionClienteService,
                              PedidoService pedidoService,
                              ProductoService productoService,
+                             ReportePdfService reportePdfService,
                              HttpSession httpSession) {
         this.clienteService = clienteService;
         this.direccionClienteService = direccionClienteService;
         this.pedidoService = pedidoService;
         this.productoService = productoService;
+        this.reportePdfService = reportePdfService;
         this.httpSession = httpSession;
     }
 
@@ -737,5 +745,36 @@ public class GestionController {
         modelo.addAttribute("pedidosPorMetodo", pedidosPorMetodo);
         modelo.addAttribute("titulo", "Gráficos de Pedidos");
         return "gestion/graficos-pedidos";
+    }
+
+    // ==================== REPORTES PDF ====================
+
+    /**
+     * Exportar reporte de ventas en PDF
+     * GET /gestion/reportes/ventas/pdf
+     *
+     * Genera un PDF con OpenPDF (LibrePDF) que contiene todas las ventas
+     * (pedidos ENTREGADOS) con: N° Pedido, Cliente, Fecha, Método de Pago, Total.
+     * El archivo se descarga automáticamente en el navegador.
+     */
+    @GetMapping("/reportes/ventas/pdf")
+    public ResponseEntity<byte[]> exportarVentasPdf() {
+        if (noHaySesion()) {
+            return ResponseEntity.status(HttpStatus.FOUND)
+                    .header(HttpHeaders.LOCATION, "/login")
+                    .build();
+        }
+        try {
+            byte[] pdfBytes = reportePdfService.generarReporteVentas();
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDispositionFormData("attachment", "Reporte_Ventas_Robinson.pdf");
+            headers.setContentLength(pdfBytes.length);
+
+            return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }

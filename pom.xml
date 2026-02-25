@@ -72,6 +72,28 @@
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-mail</artifactId>
 </dependency>
+
+		<!-- ============================================================ -->
+		<!-- BCryptPasswordEncoder - Encriptación de contraseñas           -->
+		<!-- Se usa org.springframework.security:spring-security-crypto    -->
+		<!-- que incluye BCryptPasswordEncoder SIN traer Spring Security   -->
+		<!-- completo, así no se añade filtro de seguridad al proyecto.    -->
+		<!-- ============================================================ -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-crypto</artifactId>
+		</dependency>
+
+		<!-- ============================================================ -->
+		<!-- OpenPDF (LibrePDF) - Generación de reportes en PDF           -->
+		<!-- Librería open-source fork de iText, sin restricciones AGPL.  -->
+		<!-- Se usa para exportar el reporte de ventas desde /gestion.    -->
+		<!-- ============================================================ -->
+		<dependency>
+			<groupId>com.github.librepdf</groupId>
+			<artifactId>openpdf</artifactId>
+			<version>2.0.3</version>
+		</dependency>
 	</dependencies>
 
 	<build>

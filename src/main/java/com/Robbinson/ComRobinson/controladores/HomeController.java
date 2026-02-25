@@ -1,6 +1,7 @@
 package com.Robbinson.ComRobinson.controladores;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.Robbinson.ComRobinson.modelo.Cliente;
@@ -17,8 +19,8 @@ import com.Robbinson.ComRobinson.modelo.DireccionCliente;
 import com.Robbinson.ComRobinson.modelo.Producto;
 import com.Robbinson.ComRobinson.servicios.ClienteService;
 import com.Robbinson.ComRobinson.servicios.DireccionClienteService;
-import com.Robbinson.ComRobinson.servicios.ProductoService;
 import com.Robbinson.ComRobinson.servicios.EmailService;
+import com.Robbinson.ComRobinson.servicios.ProductoService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -276,6 +278,29 @@ public class HomeController {
                     "No se pudo actualizar la contraseña. Intenta nuevamente.");
         }
         return "redirect:/recuperar";
+    }
+
+    // ==================== NEWSLETTER ====================
+
+    /**
+     * Endpoint AJAX para suscripción al newsletter de ofertas.
+     * Envía un correo HTML de bienvenida con diseño atractivo.
+     * Responde en JSON para que el frontend muestre un alert bonito.
+     */
+    @PostMapping("/newsletter")
+    @ResponseBody
+    public Map<String, String> suscribirNewsletter(@RequestParam String email) {
+        try {
+            if (email == null || email.isBlank() || !email.contains("@")) {
+                return Map.of("status", "error", "mensaje", "Por favor ingresa un correo electrónico válido");
+            }
+            emailService.enviarNewsletterBienvenida(email.trim());
+            return Map.of("status", "ok", "mensaje",
+                    "¡Listo! Hemos enviado un correo de bienvenida a " + email.trim());
+        } catch (Exception e) {
+            return Map.of("status", "error", "mensaje",
+                    "No pudimos enviar el correo. Verifica la dirección e intenta de nuevo.");
+        }
     }
 
     // ==================== ADMINISTRACIÓN ====================

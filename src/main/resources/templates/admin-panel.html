@@ -182,6 +182,23 @@ Requiere sesión activa (verificada en HomeController.adminPanel)
                 </div>
             </div>
 
+            <!-- Reporte de Ventas PDF (OpenPDF / LibrePDF) -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm border-0 border-top border-danger border-3">
+                    <div class="card-body text-center">
+                        <i class="fas fa-file-pdf fa-3x mb-3" style="color: #e07a5f;"></i>
+                        <h5 class="card-title">Reporte de Ventas</h5>
+                        <p class="card-text text-muted">Exportar ventas completadas en formato PDF</p>
+                        <a href="/gestion/reportes/ventas/pdf" class="btn btn-sm btn-danger">
+                            <i class="fas fa-download me-1"></i> Descargar PDF
+                        </a>
+                    </div>
+                    <div class="card-footer bg-light border-0 text-muted small">
+                        <i class="fas fa-check-circle text-success me-1"></i> Generado con OpenPDF
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <!-- Sección de información -->
@@ -198,6 +215,7 @@ Requiere sesión activa (verificada en HomeController.adminPanel)
                                 <i class="fas fa-check-circle text-success me-1"></i> Ventas calculadas automáticamente (pedidos entregados)<br>
                                 <i class="fas fa-check-circle text-success me-1"></i> Gráficos con Chart.js para ventas y pedidos<br>
                                 <i class="fas fa-check-circle text-success me-1"></i> Triggers SQL para stock y subtotales automáticos<br>
+                                <i class="fas fa-file-pdf text-danger me-1"></i> Reporte PDF con OpenPDF (LibrePDF)<br>
                                 <i class="fas fa-database text-primary me-1"></i> Base de datos: robbinson_db (MySQL)
                             </small>
                         </p>
